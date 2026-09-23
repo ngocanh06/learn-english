@@ -1,0 +1,602 @@
+[
+  {
+    "start": 7.32,
+    "end": 13.2,
+    "duration": 5.88,
+    "text": "It's 4 a.m.,  and the big test is in eight hours,"
+  },
+  {
+    "start": 13.2,
+    "end": 16.12,
+    "duration": 2.92,
+    "text": "followed by a piano recital."
+  },
+  {
+    "start": 16.12,
+    "end": 21.89,
+    "duration": 5.77,
+    "text": "You've been studying and playing for days, but you still don't feel ready for either."
+  },
+  {
+    "start": 21.89,
+    "end": 23.32,
+    "duration": 1.43,
+    "text": "So, what can you do?"
+  },
+  {
+    "start": 23.32,
+    "end": 25.32,
+    "duration": 2.0,
+    "text": "Well, you can drink another cup of coffee"
+  },
+  {
+    "start": 25.32,
+    "end": 28.08,
+    "duration": 2.76,
+    "text": "and spend the next few hours  cramming and practicing,"
+  },
+  {
+    "start": 28.08,
+    "end": 30.0,
+    "duration": 1.93,
+    "text": "but believe it or not,"
+  },
+  {
+    "start": 30.0,
+    "end": 33.48,
+    "duration": 3.48,
+    "text": "you might be better off closing the books, putting away the music,"
+  },
+  {
+    "start": 33.48,
+    "end": 35.82,
+    "duration": 2.33,
+    "text": "and going to sleep."
+  },
+  {
+    "start": 35.82,
+    "end": 38.18,
+    "duration": 2.36,
+    "text": "Sleep occupies nearly  a third of our lives,"
+  },
+  {
+    "start": 38.18,
+    "end": 43.15,
+    "duration": 4.97,
+    "text": "but many of us give surprisingly little attention and care to it."
+  },
+  {
+    "start": 43.15,
+    "end": 46.73,
+    "duration": 3.58,
+    "text": "This neglect is often the result  of a major misunderstanding."
+  },
+  {
+    "start": 46.73,
+    "end": 48.64,
+    "duration": 1.91,
+    "text": "Sleep isn't lost time,"
+  },
+  {
+    "start": 48.64,
+    "end": 52.33,
+    "duration": 3.69,
+    "text": "or just a way to rest  when all our important work is done."
+  },
+  {
+    "start": 52.33,
+    "end": 54.34,
+    "duration": 2.01,
+    "text": "Instead, it's a critical function,"
+  },
+  {
+    "start": 54.34,
+    "end": 58.76,
+    "duration": 4.42,
+    "text": "during which your body balances and regulates its vital systems,"
+  },
+  {
+    "start": 58.76,
+    "end": 60.35,
+    "duration": 1.59,
+    "text": "affecting respiration"
+  },
+  {
+    "start": 60.35,
+    "end": 65.44,
+    "duration": 5.08,
+    "text": "and regulating everything from circulation to growth and immune response."
+  },
+  {
+    "start": 65.44,
+    "end": 70.82,
+    "duration": 5.38,
+    "text": "That's great, but you can worry about  all those things after this test, right?"
+  },
+  {
+    "start": 70.82,
+    "end": 72.44,
+    "duration": 1.62,
+    "text": "Well, not so fast."
+  },
+  {
+    "start": 72.44,
+    "end": 75.47,
+    "duration": 3.04,
+    "text": "It turns out that sleep  is also crucial for your brain,"
+  },
+  {
+    "start": 75.47,
+    "end": 78.17,
+    "duration": 2.7,
+    "text": "with a fifth of your body's  circulatory blood"
+  },
+  {
+    "start": 78.17,
+    "end": 80.85,
+    "duration": 2.68,
+    "text": "being channeled to it as you drift off."
+  },
+  {
+    "start": 80.85,
+    "end": 83.46,
+    "duration": 2.61,
+    "text": "And what goes on  in your brain while you sleep"
+  },
+  {
+    "start": 83.46,
+    "end": 86.54,
+    "duration": 3.08,
+    "text": "is an intensely active period  of restructuring"
+  },
+  {
+    "start": 86.54,
+    "end": 89.36,
+    "duration": 2.82,
+    "text": "that's crucial for how our memory works."
+  },
+  {
+    "start": 89.36,
+    "end": 90.36,
+    "duration": 1.0,
+    "text": "At first glance,"
+  },
+  {
+    "start": 90.36,
+    "end": 94.25,
+    "duration": 3.9,
+    "text": "our ability to remember things  doesn't seem very impressive at all."
+  },
+  {
+    "start": 94.25,
+    "end": 97.04,
+    "duration": 2.78,
+    "text": "19th century psychologist  Herman Ebbinghaus"
+  },
+  {
+    "start": 97.04,
+    "end": 100.91,
+    "duration": 3.88,
+    "text": "demonstrated that we normally forget 40% of new material"
+  },
+  {
+    "start": 100.91,
+    "end": 103.39,
+    "duration": 2.48,
+    "text": "within the first twenty minutes,"
+  },
+  {
+    "start": 103.39,
+    "end": 107.13,
+    "duration": 3.74,
+    "text": "a phenomenon known as the forgetting curve."
+  },
+  {
+    "start": 107.13,
+    "end": 110.73,
+    "duration": 3.6,
+    "text": "But this loss can be prevented  through memory consolidation,"
+  },
+  {
+    "start": 110.73,
+    "end": 113.29,
+    "duration": 2.55,
+    "text": "the process by which information is moved"
+  },
+  {
+    "start": 113.29,
+    "end": 118.9,
+    "duration": 5.61,
+    "text": "from our fleeting short-term memory to our more durable long-term memory."
+  },
+  {
+    "start": 118.9,
+    "end": 122.62,
+    "duration": 3.72,
+    "text": "This consolidation occurs with the help of a major part of the brain,"
+  },
+  {
+    "start": 122.62,
+    "end": 125.34,
+    "duration": 2.72,
+    "text": "known as the hippocampus."
+  },
+  {
+    "start": 125.34,
+    "end": 127.36,
+    "duration": 2.02,
+    "text": "Its role in long-term memory formation"
+  },
+  {
+    "start": 127.36,
+    "end": 131.37,
+    "duration": 4.01,
+    "text": "was demonstrated in the 1950s by Brenda Milner"
+  },
+  {
+    "start": 131.37,
+    "end": 134.66,
+    "duration": 3.29,
+    "text": "in her research with  a patient known as H.M."
+  },
+  {
+    "start": 134.66,
+    "end": 136.96,
+    "duration": 2.3,
+    "text": "After having his hippocampus removed,"
+  },
+  {
+    "start": 136.96,
+    "end": 141.32,
+    "duration": 4.37,
+    "text": "H.M.'s ability to form new short-term memories was damaged,"
+  },
+  {
+    "start": 141.32,
+    "end": 145.89,
+    "duration": 4.57,
+    "text": "but he was able to learn physical tasks through repetition."
+  },
+  {
+    "start": 145.89,
+    "end": 147.72,
+    "duration": 1.83,
+    "text": "Due to the removal of his hippocampus,"
+  },
+  {
+    "start": 147.72,
+    "end": 152.29,
+    "duration": 4.58,
+    "text": "H.M.'s ability to form long-term memories was also damaged."
+  },
+  {
+    "start": 152.29,
+    "end": 154.44,
+    "duration": 2.14,
+    "text": "What this case revealed, among other things,"
+  },
+  {
+    "start": 154.44,
+    "end": 157.36,
+    "duration": 2.92,
+    "text": "was that the hippocampus  was specifically involved"
+  },
+  {
+    "start": 157.36,
+    "end": 162.06,
+    "duration": 4.7,
+    "text": "in the consolidation of long-term declarative memory,"
+  },
+  {
+    "start": 162.06,
+    "end": 165.32,
+    "duration": 3.25,
+    "text": "such as the facts and concepts you need to remember for that test,"
+  },
+  {
+    "start": 165.32,
+    "end": 167.12,
+    "duration": 1.81,
+    "text": "rather than procedural memory,"
+  },
+  {
+    "start": 167.12,
+    "end": 171.73,
+    "duration": 4.6,
+    "text": "such as the finger movements you need to master for that recital."
+  },
+  {
+    "start": 171.73,
+    "end": 175.39,
+    "duration": 3.67,
+    "text": "Milner's findings, along with work  by Eric Kandel in the 90's,"
+  },
+  {
+    "start": 175.39,
+    "end": 180.75,
+    "duration": 5.35,
+    "text": "have given us our current model  of how this consolidation process works."
+  },
+  {
+    "start": 180.75,
+    "end": 182.8,
+    "duration": 2.05,
+    "text": "Sensory data is initially transcribed"
+  },
+  {
+    "start": 182.8,
+    "end": 187.07,
+    "duration": 4.27,
+    "text": "and temporarily recorded in the neurons as short-term memory."
+  },
+  {
+    "start": 187.07,
+    "end": 189.62,
+    "duration": 2.55,
+    "text": "From there, it travels to the hippocampus,"
+  },
+  {
+    "start": 189.62,
+    "end": 193.15,
+    "duration": 3.53,
+    "text": "which strengthens and enhances  the neurons in that cortical area."
+  },
+  {
+    "start": 193.15,
+    "end": 195.37,
+    "duration": 2.22,
+    "text": "Thanks to the phenomenon of neuroplasticity,"
+  },
+  {
+    "start": 195.37,
+    "end": 200.34,
+    "duration": 4.97,
+    "text": "new synaptic buds are formed, allowing new connections between neurons,"
+  },
+  {
+    "start": 200.34,
+    "end": 202.18,
+    "duration": 1.84,
+    "text": "and strengthening the neural network"
+  },
+  {
+    "start": 202.18,
+    "end": 205.93,
+    "duration": 3.75,
+    "text": "where the information will be returned as long-term memory."
+  },
+  {
+    "start": 205.93,
+    "end": 208.8,
+    "duration": 2.87,
+    "text": "So why do we remember some things and not others?"
+  },
+  {
+    "start": 208.8,
+    "end": 210.69,
+    "duration": 1.89,
+    "text": "Well, there are a few ways to influence"
+  },
+  {
+    "start": 210.69,
+    "end": 214.3,
+    "duration": 3.61,
+    "text": "the extent and effectiveness  of memory retention."
+  },
+  {
+    "start": 214.3,
+    "end": 218.44,
+    "duration": 4.13,
+    "text": "For example, memories that are formed in times of heightened feeling,"
+  },
+  {
+    "start": 218.44,
+    "end": 219.47,
+    "duration": 1.03,
+    "text": "or even stress,"
+  },
+  {
+    "start": 219.47,
+    "end": 224.73,
+    "duration": 5.26,
+    "text": "will be better recorded due to  the hippocampus' link with emotion."
+  },
+  {
+    "start": 224.73,
+    "end": 228.72,
+    "duration": 4.0,
+    "text": "But one of the major factors contributing to memory consolidation is,"
+  },
+  {
+    "start": 228.72,
+    "end": 229.89,
+    "duration": 1.17,
+    "text": "you guessed it,"
+  },
+  {
+    "start": 229.89,
+    "end": 231.88,
+    "duration": 1.99,
+    "text": "a good night's sleep."
+  },
+  {
+    "start": 231.88,
+    "end": 234.21,
+    "duration": 2.34,
+    "text": "Sleep is composed of four stages,"
+  },
+  {
+    "start": 234.21,
+    "end": 236.95,
+    "duration": 2.74,
+    "text": "the deepest of which are known as slow-wave sleep"
+  },
+  {
+    "start": 236.95,
+    "end": 239.23,
+    "duration": 2.28,
+    "text": "and rapid eye movement."
+  },
+  {
+    "start": 239.23,
+    "end": 242.39,
+    "duration": 3.16,
+    "text": "EEG machines monitoring people during these stages"
+  },
+  {
+    "start": 242.39,
+    "end": 244.38,
+    "duration": 1.99,
+    "text": "have shown electrical impulses"
+  },
+  {
+    "start": 244.38,
+    "end": 249.69,
+    "duration": 5.31,
+    "text": "moving between the brainstem, hippocampus, thalamus, and cortex,"
+  },
+  {
+    "start": 249.69,
+    "end": 253.53,
+    "duration": 3.84,
+    "text": "which serve as relay stations  of memory formation."
+  },
+  {
+    "start": 253.53,
+    "end": 256.9,
+    "duration": 3.37,
+    "text": "And the different stages of sleep have been shown to help consolidate"
+  },
+  {
+    "start": 256.9,
+    "end": 259.11,
+    "duration": 2.21,
+    "text": "different types of memories."
+  },
+  {
+    "start": 259.11,
+    "end": 262.56,
+    "duration": 3.45,
+    "text": "During the non-REM slow-wave sleep,"
+  },
+  {
+    "start": 262.56,
+    "end": 266.12,
+    "duration": 3.57,
+    "text": "declarative memory is encoded  into a temporary store"
+  },
+  {
+    "start": 266.12,
+    "end": 268.95,
+    "duration": 2.83,
+    "text": "in the anterior part of the hippocampus."
+  },
+  {
+    "start": 268.95,
+    "end": 272.79,
+    "duration": 3.84,
+    "text": "Through a continuing dialogue  between the cortex and hippocampus,"
+  },
+  {
+    "start": 272.79,
+    "end": 275.5,
+    "duration": 2.7,
+    "text": "it is then repeatedly reactivated,"
+  },
+  {
+    "start": 275.5,
+    "end": 281.0,
+    "duration": 5.5,
+    "text": "driving its gradual redistribution to long-term storage in the cortex."
+  },
+  {
+    "start": 281.0,
+    "end": 284.88,
+    "duration": 3.89,
+    "text": "REM sleep, on the other hand, with its similarity to waking brain activity,"
+  },
+  {
+    "start": 284.88,
+    "end": 288.47,
+    "duration": 3.59,
+    "text": "is associated with the consolidation of procedural memory."
+  },
+  {
+    "start": 288.47,
+    "end": 290.31,
+    "duration": 1.83,
+    "text": "So based on the studies,"
+  },
+  {
+    "start": 290.31,
+    "end": 293.53,
+    "duration": 3.23,
+    "text": "going to sleep three hours after  memorizing your formulas"
+  },
+  {
+    "start": 293.53,
+    "end": 298.52,
+    "duration": 4.98,
+    "text": "and one hour after practicing your scales would be the most ideal."
+  },
+  {
+    "start": 298.51,
+    "end": 301.02,
+    "duration": 2.5,
+    "text": "So hopefully you can see now that skimping on sleep"
+  },
+  {
+    "start": 301.02,
+    "end": 303.29,
+    "duration": 2.27,
+    "text": "not only harms your long-term health,"
+  },
+  {
+    "start": 303.29,
+    "end": 305.07,
+    "duration": 1.78,
+    "text": "but actually makes it less likely"
+  },
+  {
+    "start": 305.07,
+    "end": 309.42,
+    "duration": 4.35,
+    "text": "that you'll retain all that knowledge and practice from the previous night,"
+  },
+  {
+    "start": 309.42,
+    "end": 313.54,
+    "duration": 4.12,
+    "text": "all of which just goes to affirm the wisdom of the phrase, \"Sleep on it.\""
+  },
+  {
+    "start": 313.54,
+    "end": 315.64,
+    "duration": 2.09,
+    "text": "When you think about  all the internal restructuring"
+  },
+  {
+    "start": 315.64,
+    "end": 319.37,
+    "duration": 3.73,
+    "text": "and forming of new connections that occurs while you slumber,"
+  },
+  {
+    "start": 319.37,
+    "end": 321.28,
+    "duration": 1.92,
+    "text": "you could even say that proper sleep"
+  },
+  {
+    "start": 321.28,
+    "end": 325.09,
+    "duration": 3.81,
+    "text": "will have you waking up every morning with a new and improved brain,"
+  },
+  {
+    "start": 325.09,
+    "end": 327.59,
+    "duration": 2.49,
+    "text": "ready to face the challenges ahead."
+  }
+]

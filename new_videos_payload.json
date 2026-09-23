@@ -1,0 +1,588 @@
+[
+  {
+    "id": "vid-a2-04",
+    "youtubeId": "lEXBxijQREo",
+    "channelId": "ted-ed",
+    "channelName": "TED-Ed",
+    "title": "How sugar affects the brain - Nicole Avena",
+    "category": "life",
+    "level": "A2",
+    "duration": "5:00",
+    "source": "youtube",
+    "thumbnail": "https://images.unsplash.com/photo-1514733670139-4d87a1941d55?w=600&auto=format&fit=crop&q=80",
+    "description": "Khám phá cách đường kích hoạt hệ thống tưởng thưởng dopamine trong não bộ và tạo ra cảm giác thèm ăn.",
+    "subtitles": [
+      {
+        "id": 1,
+        "startTime": 5.2,
+        "endTime": 10.8,
+        "text": "You eat a slice of cake, a scoop of ice cream, or a piece of chocolate.",
+        "vietnamese": "Bạn ăn một miếng bánh ngọt, một muỗng kem, hoặc một mẩu sô-cô-la.",
+        "ipa": "/juː iːt ə slaɪs ɒv keɪk ə skuːp ɒv aɪs kriːm ɔːr ə piːs ɒv ˈtʃɒklət/"
+      },
+      {
+        "id": 2,
+        "startTime": 11,
+        "endTime": 16.5,
+        "text": "Your taste buds immediately detect sugar, sending signals straight to your brain.",
+        "vietnamese": "Các gai vị giác của bạn ngay lập tức phát hiện vị đường, gửi tín hiệu thẳng tới não bộ.",
+        "ipa": "/jɔːr teɪst bʌdz ɪˈmiːdiətli dɪˈtɛkt ˈʃʊɡər ˈsɛndɪŋ ˈsɪɡnəlz streɪt tuː jɔːr breɪn/"
+      },
+      {
+        "id": 3,
+        "startTime": 17,
+        "endTime": 23.4,
+        "text": "This activates your reward system, releasing a chemical called dopamine.",
+        "vietnamese": "Điều này kích hoạt hệ thống tưởng thưởng của bạn, giải phóng một chất hóa học gọi là dopamine.",
+        "ipa": "/ðɪs ˈæktɪveɪts jɔːr rɪˈwɔːrd ˈsɪstəm rɪˈliːsɪŋ ə ˈkɛmɪkl kɔːld ˈdoʊpəmiːn/"
+      },
+      {
+        "id": 4,
+        "startTime": 24,
+        "endTime": 30.2,
+        "text": "Dopamine tells your body: this is great, you should definitely do this again!",
+        "vietnamese": "Dopamine báo cho cơ thể bạn: điều này thật tuyệt, bạn nhất định nên làm lại điều này!",
+        "ipa": "/ˈdoʊpəmiːn tɛlz jɔːr ˈbɒdi ðɪs ɪz ɡreɪt juː ʃʊd ˈdɛfɪnɪtli duː ðɪs əˈɡɛn/"
+      },
+      {
+        "id": 5,
+        "startTime": 30.8,
+        "endTime": 37.5,
+        "text": "Over time, consuming too much sugar can lead to tolerance and intense cravings.",
+        "vietnamese": "Theo thời gian, nạp quá nhiều đường có thể dẫn đến sự nhờn và cảm giác thèm dữ dội.",
+        "ipa": "/ˈoʊvər taɪm kənˈsjuːmɪŋ tuː mʌtʃ ˈʃʊɡər kæn liːd tuː ˈtɒlərəns ænd ɪnˈtɛns ˈkreɪvɪŋz/"
+      }
+    ]
+  },
+  {
+    "id": "vid-a2-05",
+    "youtubeId": "_0472_sKjbs",
+    "channelId": "ted-ed",
+    "channelName": "TED-Ed",
+    "title": "How do our bodies build muscle? - Jeffrey Siegel",
+    "category": "science",
+    "level": "A2",
+    "duration": "4:20",
+    "source": "youtube",
+    "thumbnail": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&auto=format&fit=crop&q=80",
+    "description": "Cơ chế khoa học của việc tập luyện: Các sợi cơ bị vi tổn thương và hồi phục nở nang hơn nhờ protein và nghỉ ngơi.",
+    "subtitles": [
+      {
+        "id": 1,
+        "startTime": 4.8,
+        "endTime": 11.2,
+        "text": "We have over 600 muscles in our body, making up about half of our total weight.",
+        "vietnamese": "Chúng ta có hơn 600 cơ bắp trong cơ thể, chiếm khoảng một nửa tổng trọng lượng.",
+        "ipa": "/wiː hæv ˈoʊvər sɪks ˈhʌndrəd ˈmʌslz ɪn ˈaʊər ˈbɒdi ˈmeɪkɪŋ ʌp əˈbaʊt hæf ɒv ˈaʊər ˈtoʊtl weɪt/"
+      },
+      {
+        "id": 2,
+        "startTime": 11.8,
+        "endTime": 17.5,
+        "text": "Whenever you lift heavy weights, your muscle fibers undergo tiny microscopic tears.",
+        "vietnamese": "Mỗi khi bạn nâng tạ nặng, các sợi cơ bắp của bạn trải qua những vết rách siêu nhỏ.",
+        "ipa": "/wɛnˈɛvər juː lɪft ˈhɛvi weɪts jɔːr ˈmʌsl ˈfaɪbərz ˌʌndərˈɡoʊ ˈtaɪni ˌmaɪkrəˈskɒpɪk tɛərz/"
+      },
+      {
+        "id": 3,
+        "startTime": 18,
+        "endTime": 24.5,
+        "text": "The body responds to this injury by sending cytokines to repair and rebuild the damage.",
+        "vietnamese": "Cơ thể phản ứng lại tổn thương này bằng cách gửi cytokine đến để sửa chữa và tái tạo lại.",
+        "ipa": "/ðə ˈbɒdi rɪˈspɒndz tuː ðɪs ˈɪndʒəri baɪ ˈsɛndɪŋ ˈsaɪtoʊkaɪnz tuː rɪˈpɛər ænd ˌriːˈbɪld ðə ˈdæmɪdʒ/"
+      },
+      {
+        "id": 4,
+        "startTime": 25,
+        "endTime": 31.8,
+        "text": "With proper nutrition and restful sleep, your muscle fibers grow thicker and stronger.",
+        "vietnamese": "Với dinh dưỡng hợp lý và giấc ngủ sâu, các sợi cơ của bạn sẽ phát triển dày và khỏe hơn.",
+        "ipa": "/wɪð ˈprɒpər njuːˈtrɪʃn ænd ˈrɛstfl sliːp jɔːr ˈmʌsl ˈfaɪbərz ɡroʊ ˈθɪkər ænd ˈstrɒŋɡər/"
+      }
+    ]
+  },
+  {
+    "id": "vid-a2-06",
+    "youtubeId": "9sT08yR3U14",
+    "channelId": "ted-ed",
+    "channelName": "TED-Ed",
+    "title": "Why is yawning contagious? - Claudia Aguirre",
+    "category": "life",
+    "level": "A2",
+    "duration": "3:50",
+    "source": "youtube",
+    "thumbnail": "https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=600&auto=format&fit=crop&q=80",
+    "description": "Tại sao khi thấy người khác ngáp thì chúng ta cũng ngáp theo? Giả thuyết về sự đồng cảm và nơ-ron phản chiếu.",
+    "subtitles": [
+      {
+        "id": 1,
+        "startTime": 4.5,
+        "endTime": 10.2,
+        "text": "You see someone yawn across the room, and suddenly you feel an irresistible urge to yawn too.",
+        "vietnamese": "Bạn nhìn thấy ai đó ngáp ở phía bên kia phòng, và đột nhiên bạn cảm thấy thôi thúc không thể cưỡng lại được.",
+        "ipa": "/juː siː ˈsʌmwʌn jɔːn əˈkrɒs ðə ruːm ænd ˈsʌdənli juː fiːl æn ˌɪrɪˈzɪstəbl ɜːrdʒ tuː jɔːn tuː/"
+      },
+      {
+        "id": 2,
+        "startTime": 10.8,
+        "endTime": 17.5,
+        "text": "Contagious yawning is a fascinating phenomenon observed in humans, chimpanzees, and even dogs.",
+        "vietnamese": "Ngáp lây lan là một hiện tượng hấp dẫn được quan sát thấy ở người, tinh tinh và thậm chí cả loài chó.",
+        "ipa": "/kənˈteɪdʒəs ˈjɔːnɪŋ ɪz ə ˈfæsɪneɪtɪŋ fɪˈnɒmɪnən əbˈzɜːrvd ɪn ˈhjuːmənz ˌtʃɪmpænˈziːz ænd ˈiːvn dɒɡz/"
+      },
+      {
+        "id": 3,
+        "startTime": 18,
+        "endTime": 24.8,
+        "text": "Scientists believe mirror neurons in our brain may help us understand and share the feelings of others.",
+        "vietnamese": "Các nhà khoa học tin rằng tế bào thần kinh phản chiếu trong não có thể giúp chúng ta thấu hiểu và sẻ chia cảm xúc.",
+        "ipa": "/ˈsaɪəntɪsts bɪˈliːv ˈmɪrər ˈnjʊərɒnz ɪn ˈaʊər breɪn meɪ hɛlp ʌs ˌʌndərˈstænd ænd ʃɛər ðə ˈfiːlɪŋz ɒv ˈʌðərz/"
+      }
+    ]
+  },
+  {
+    "id": "vid-a2-07",
+    "youtubeId": "foLf5Bi9qPg",
+    "channelId": "ted-ed",
+    "channelName": "TED-Ed",
+    "title": "How does caffeine keep us awake? - Hanan Qasim",
+    "category": "science",
+    "level": "A2",
+    "duration": "4:45",
+    "source": "youtube",
+    "thumbnail": "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=600&auto=format&fit=crop&q=80",
+    "description": "Caffeine là phân tử tương tự adenosine. Nó gắn vào các thụ thể thần kinh để ngăn chặn cảm giác buồn ngủ.",
+    "subtitles": [
+      {
+        "id": 1,
+        "startTime": 6,
+        "endTime": 12.5,
+        "text": "Every morning, billions of people around the world rely on a cup of coffee to wake up.",
+        "vietnamese": "Mỗi buổi sáng, hàng tỷ người trên khắp thế giới dựa vào một tách cà phê để tỉnh táo.",
+        "ipa": "/ˈɛvri ˈmɔːrnɪŋ ˈbɪljənz ɒv ˈpiːpl əˈraʊnd ðə wɜːrld rɪˈlaɪ ɒn ə kʌp ɒv ˈkɒfi tuː weɪk ʌp/"
+      },
+      {
+        "id": 2,
+        "startTime": 13,
+        "endTime": 19.8,
+        "text": "Throughout the day, a chemical called adenosine builds up in our brain, making us feel tired.",
+        "vietnamese": "Suốt cả ngày, một chất hóa học gọi là adenosine tích tụ dần trong não khiến chúng ta cảm thấy mệt.",
+        "ipa": "/θruːˈaʊt ðə deɪ ə ˈkɛmɪkl kɔːld əˈdɛnəsiːn bɪldz ʌp ɪn ˈaʊər breɪn ˈmeɪkɪŋ ʌs fiːl ˈtaɪərd/"
+      },
+      {
+        "id": 3,
+        "startTime": 20.4,
+        "endTime": 27.2,
+        "text": "Caffeine has a nearly identical structure to adenosine, allowing it to block those sleep receptors.",
+        "vietnamese": "Caffeine có cấu trúc gần như giống hệt adenosine, cho phép nó khóa các thụ thể buồn ngủ đó lại.",
+        "ipa": "/ˈkæfiːn hæz ə ˈnɪərli aɪˈdɛntɪkl ˈstrʌktʃər tuː əˈdɛnəsiːn əˈlaʊɪŋ ɪt tuː blɒk ðoʊz sliːp rɪˈsɛptərz/"
+      },
+      {
+        "id": 4,
+        "startTime": 27.8,
+        "endTime": 34.5,
+        "text": "Instead of feeling drowsy, you feel energized, alert, and ready to tackle your day.",
+        "vietnamese": "Thay vì cảm thấy uể oải, bạn cảm thấy tràn đầy năng lượng, tỉnh táo và sẵn sàng cho ngày mới.",
+        "ipa": "/ɪnˈstɛd ɒv ˈfiːlɪŋ ˈdraʊzi juː fiːl ˈɛnərdʒaɪzd əˈlɜːrt ænd ˈrɛdi tuː ˈtækl jɔːr deɪ/"
+      }
+    ]
+  },
+  {
+    "id": "vid-a2-08",
+    "youtubeId": "a9P994Uj92k",
+    "channelId": "ted-ed",
+    "channelName": "TED-Ed",
+    "title": "Why do we sweat? - John Sugden",
+    "category": "science",
+    "level": "A2",
+    "duration": "4:10",
+    "source": "youtube",
+    "thumbnail": "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600&auto=format&fit=crop&q=80",
+    "description": "Khám phá hệ thống điều hòa thân nhiệt tự nhiên tinh vi giúp con người bền bỉ trong vận động.",
+    "subtitles": [
+      {
+        "id": 1,
+        "startTime": 5,
+        "endTime": 11.2,
+        "text": "Sweat might feel uncomfortable, but it is one of our most essential evolutionary superpowers.",
+        "vietnamese": "Mồ hôi có vẻ gây khó chịu, nhưng nó là một trong những siêu năng lực tiến hóa thiết yếu nhất của chúng ta.",
+        "ipa": "/swɛt maɪt fiːl ʌnˈkʌmftəbl bʌt ɪt ɪz wʌn ɒv ˈaʊər moʊst ɪˈsɛnʃl ˌiːvəˈluːʃənri ˈsuːpərpaʊərz/"
+      },
+      {
+        "id": 2,
+        "startTime": 11.8,
+        "endTime": 18.5,
+        "text": "As moisture evaporates from our skin, it draws away heat, cooling down our entire body.",
+        "vietnamese": "Khi hơi ẩm bốc hơi từ da, nó hút bớt nhiệt lượng, làm mát toàn bộ cơ thể của chúng ta.",
+        "ipa": "/æz ˈmɔɪstʃər ɪˈvæpəreɪts frɒm ˈaʊər skɪn ɪt drɔːz əˈweɪ hiːt ˈkuːlɪŋ daʊn ˈaʊər ɪnˈtaɪər ˈbɒdi/"
+      },
+      {
+        "id": 3,
+        "startTime": 19,
+        "endTime": 25.5,
+        "text": "This cooling mechanism allowed our early ancestors to run long distances under the hot sun.",
+        "vietnamese": "Cơ chế làm mát này đã cho phép tổ tiên chúng ta chạy cự ly dài dưới trời nắng gắt.",
+        "ipa": "/ðɪs ˈkuːlɪŋ ˈmɛkənɪzəm əˈlaʊd ˈaʊər ˈɜːrli ˈænsɛstərz tuː rʌn lɒŋ ˈdɪstənsɪz ˈʌndər ðə hɒt sʌn/"
+      }
+    ]
+  },
+  {
+    "id": "vid-b1-06",
+    "youtubeId": "n3Xv_g3g-mA",
+    "channelId": "kurzgesagt",
+    "channelName": "Kurzgesagt – In a Nutshell",
+    "title": "Loneliness - Why You Are Lonely and How to Make Friends",
+    "category": "life",
+    "level": "B1",
+    "duration": "10:55",
+    "source": "youtube",
+    "thumbnail": "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=600&auto=format&fit=crop&q=80",
+    "description": "Sự cô đơn là một phản xạ sinh học tự nhiên báo hiệu cơ thể cần kết nối xã hội, giống như cơn đói báo hiệu cần ăn.",
+    "subtitles": [
+      {
+        "id": 1,
+        "startTime": 8.5,
+        "endTime": 16,
+        "text": "Almost everybody feels lonely at some point in their lives, but nobody likes to talk about it.",
+        "vietnamese": "Hầu như ai cũng cảm thấy cô đơn vào một thời điểm nào đó trong đời, nhưng không ai muốn nói về điều đó.",
+        "ipa": "/ˈɔːlmoʊst ˈɛvrɪbɒdi fiːlz ˈloʊnli æt sʌm pɔɪnt ɪn ðɛər laɪvz bʌt ˈnoʊbədi laɪks tuː tɔːk əˈbaʊt ɪt/"
+      },
+      {
+        "id": 2,
+        "startTime": 16.5,
+        "endTime": 24.2,
+        "text": "Just like physical pain tells you to step away from fire, loneliness tells you to seek connection.",
+        "vietnamese": "Giống như cơn đau thể xác bảo bạn tránh xa ngọn lửa, sự cô đơn nhắc nhở bạn hãy tìm kiếm sự kết nối.",
+        "ipa": "/dʒʌst laɪk ˈfɪzɪkl peɪn tɛlz juː tuː stɛp əˈweɪ frɒm ˈfaɪər ˈloʊnlinəs tɛlz juː tuː siːk kəˈnɛkʃn/"
+      },
+      {
+        "id": 3,
+        "startTime": 24.8,
+        "endTime": 32.5,
+        "text": "To our hunter-gatherer ancestors, being separated from the tribe was a literal death sentence.",
+        "vietnamese": "Đối với tổ tiên săn bắt hái lượm của chúng ta, bị tách khỏi bộ tộc đồng nghĩa với cái chết.",
+        "ipa": "/tuː ˈaʊər ˈhʌntər ˈɡæðərər ˈænsɛstərz ˈbiːɪŋ ˈsɛpəreɪtɪd frɒm ðə traɪb wɒz ə ˈlɪtərəl dɛθ ˈsɛntəns/"
+      },
+      {
+        "id": 4,
+        "startTime": 33,
+        "endTime": 41.2,
+        "text": "Today, we can survive physically alone, but our ancient social brain still craves meaningful community.",
+        "vietnamese": "Ngày nay, chúng ta có thể sống sót một mình, nhưng bộ não xã hội cổ xưa vẫn khao khát cộng đồng ý nghĩa.",
+        "ipa": "/təˈdeɪ wiː kæn sərˈvaɪv ˈfɪzɪkli əˈloʊn bʌt ˈaʊər ˈeɪnʃənt ˈsoʊʃl breɪn stɪl kreɪvz ˈmiːnɪŋfl kəˈmjuːnəti/"
+      }
+    ]
+  },
+  {
+    "id": "vid-b1-07",
+    "youtubeId": "u4ZoJKF_VuA",
+    "channelId": "speeches",
+    "channelName": "TED & Inspiring Speeches",
+    "title": "How great leaders inspire action | Simon Sinek",
+    "category": "speeches",
+    "level": "B1",
+    "duration": "18:04",
+    "source": "youtube",
+    "thumbnail": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&auto=format&fit=crop&q=80",
+    "description": "Thuyết Vòng Tròn Vàng (Golden Circle): Mọi người không mua những gì bạn làm, họ mua lý do tại sao bạn làm điều đó.",
+    "subtitles": [
+      {
+        "id": 1,
+        "startTime": 12,
+        "endTime": 18.5,
+        "text": "How do you explain when things don't go as we assume, or when others achieve things that seem to defy all the assumptions?",
+        "vietnamese": "Bạn giải thích thế nào khi mọi thứ không diễn ra như dự tính, hoặc khi người khác đạt được những điều dường như vượt ngoài mọi giả định?",
+        "ipa": "/haʊ duː juː ɪkˈspleɪn wɛn θɪŋz doʊnt ɡoʊ æz wiː əˈsjuːm ɔːr wɛn ˈʌðərz əˈtʃiːv θɪŋz ðæt siːm tuː dɪˈfaɪ ɔːl ðə əˈsʌmpʃənz/"
+      },
+      {
+        "id": 2,
+        "startTime": 19,
+        "endTime": 26.5,
+        "text": "Why is Apple so innovative? Year after year, they're more innovative than all their competition.",
+        "vietnamese": "Tại sao Apple lại sáng tạo đến vậy? Năm này qua năm khác, họ sáng tạo hơn mọi đối thủ cạnh tranh.",
+        "ipa": "/waɪ ɪz ˈæpl soʊ ˈɪnəvətɪv jɪər ˈæftər jɪər ðɛər mɔːr ˈɪnəvətɪv ðæn ɔːl ðɛər ˌkɒmpəˈtɪʃn/"
+      },
+      {
+        "id": 3,
+        "startTime": 27,
+        "endTime": 34.8,
+        "text": "People don't buy what you do; people buy why you do it. And what you do simply proves what you believe.",
+        "vietnamese": "Mọi người không mua những gì bạn làm; mọi người mua lý do tại sao bạn làm điều đó. Và những gì bạn làm chỉ đơn giản chứng minh niềm tin của bạn.",
+        "ipa": "/ˈpiːpl doʊnt baɪ wɒt juː duː ˈpiːpl baɪ waɪ juː duː ɪt ænd wɒt juː duː ˈsɪmpli pruːvz wɒt juː bɪˈliːv/"
+      }
+    ]
+  },
+  {
+    "id": "vid-b1-08",
+    "youtubeId": "eIho2S0ZahI",
+    "channelId": "speeches",
+    "channelName": "TED & Inspiring Speeches",
+    "title": "How to speak so that people want to listen | Julian Treasure",
+    "category": "language",
+    "level": "B1",
+    "duration": "9:58",
+    "source": "youtube",
+    "thumbnail": "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=600&auto=format&fit=crop&q=80",
+    "description": "Chuyên gia âm thanh Julian Treasure chỉ ra 7 thói quen xấu khi nói chuyện và 4 nền tảng vàng HAIL để giọng nói đầy sức hút.",
+    "subtitles": [
+      {
+        "id": 1,
+        "startTime": 11.2,
+        "endTime": 19,
+        "text": "The human voice is the instrument we all play. It's the most powerful sound in the world, probably.",
+        "vietnamese": "Giọng nói con người là nhạc cụ mà tất cả chúng ta đều chơi. Có lẽ đó là thứ âm thanh quyền năng nhất trên thế giới.",
+        "ipa": "/ðə ˈhjuːmən vɔɪs ɪz ðə ˈɪnstrəmənt wiː ɔːl pleɪ ɪts ðə moʊst ˈpaʊərfl saʊnd ɪn ðə wɜːrld ˈprɒbəbli/"
+      },
+      {
+        "id": 2,
+        "startTime": 19.5,
+        "endTime": 27.5,
+        "text": "And yet, many people have the experience that when they speak, nobody is listening to them.",
+        "vietnamese": "Thế nhưng, nhiều người từng trải qua cảm giác rằng khi họ cất tiếng nói, dường như chẳng có ai lắng nghe họ.",
+        "ipa": "/ænd jɛt ˈmɛni ˈpiːpl hæv ðə ɪkˈspɪəriəns ðæt wɛn ðeɪ spiːk ˈnoʊbədi ɪz ˈlɪsnɪŋ tuː ðɛm/"
+      },
+      {
+        "id": 3,
+        "startTime": 28,
+        "endTime": 36.5,
+        "text": "If you want your voice to be powerful, stand on these four cornerstones: Honesty, Authenticity, Integrity, and Love.",
+        "vietnamese": "Nếu bạn muốn giọng nói của mình có trọng lượng, hãy đứng trên 4 nền tảng: Chân thật, Đích thực, Chính trực và Bao dung.",
+        "ipa": "/ɪf juː wɒnt jɔːr vɔɪs tuː biː ˈpaʊərfl stænd ɒn ðiːz fɔːr ˈkɔːrnərstoʊnz ˈɒnəsti ɔːθɛnˈtɪsəti ɪnˈtɛɡrəti ænd lʌv/"
+      }
+    ]
+  },
+  {
+    "id": "vid-b1-09",
+    "youtubeId": "arJLy3hX1E8",
+    "channelId": "ted-ed",
+    "channelName": "TED-Ed",
+    "title": "The psychology of narcissism - W. Keith Campbell",
+    "category": "life",
+    "level": "B1",
+    "duration": "5:10",
+    "source": "youtube",
+    "thumbnail": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop&q=80",
+    "description": "Tìm hiểu nguồn gốc tâm lý học của tính cách ái kỷ và cách nó hủy hoại các mối quan hệ xã hội lâu dài.",
+    "subtitles": [
+      {
+        "id": 1,
+        "startTime": 6,
+        "endTime": 12.8,
+        "text": "Narcissism is more than just a personality trait; it is a complex psychological pattern.",
+        "vietnamese": "Ái kỷ không chỉ đơn thuần là một nét tính cách; nó là một mô thức tâm lý vô cùng phức tạp.",
+        "ipa": "/ˈnɑːrsɪsɪzəm ɪz mɔːr ðæn dʒʌst ə ˌpɜːrsəˈnæləti treɪt ɪt ɪz ə ˈkɒmplɛks ˌsaɪkəˈlɒdʒɪkl ˈpætərn/"
+      },
+      {
+        "id": 2,
+        "startTime": 13.5,
+        "endTime": 21,
+        "text": "Narcissists often appear charming and confident at first, but struggle with genuine empathy and criticism.",
+        "vietnamese": "Những người ái kỷ ban đầu thường tỏ ra rất quyến rũ và tự tin, nhưng lại gặp khó khăn trong việc đồng cảm chân thành.",
+        "ipa": "/ˈnɑːrsɪsɪsts ˈɔːfn əˈpɪər ˈtʃɑːrmɪŋ ænd ˈkɒnfɪdənt æt fɜːrst bʌt ˈstrʌɡl wɪð ˈdʒɛnjuɪn ˈɛmpəθi ænd ˈkrɪtɪsɪzəm/"
+      },
+      {
+        "id": 3,
+        "startTime": 21.5,
+        "endTime": 29.2,
+        "text": "Understanding narcissism helps us set healthy emotional boundaries and cultivate authentic self-esteem.",
+        "vietnamese": "Thấu hiểu chứng ái kỷ giúp chúng ta thiết lập ranh giới cảm xúc lành mạnh và nuôi dưỡng lòng tự trọng đích thực.",
+        "ipa": "/ˌʌndərˈstændɪŋ ˈnɑːrsɪsɪzəm hɛlps ʌs sɛt ˈhɛlθi ɪˈmoʊʃənl ˈbaʊndəriz ænd ˈkʌltɪveɪt ɔːˈθɛntɪk sɛlf-ɪˈstiːm/"
+      }
+    ]
+  },
+  {
+    "id": "vid-b2-06",
+    "youtubeId": "MBRqu0YOH14",
+    "channelId": "kurzgesagt",
+    "channelName": "Kurzgesagt – In a Nutshell",
+    "title": "Optimistic Nihilism - Kurzgesagt",
+    "category": "life",
+    "level": "B2",
+    "duration": "6:10",
+    "source": "youtube",
+    "thumbnail": "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=600&auto=format&fit=crop&q=80",
+    "description": "Nếu vũ trụ không có ý nghĩa định sẵn, điều đó không đáng sợ — nó mở ra tự do tuyệt đối để chúng ta tự quyết định ý nghĩa cuộc đời mình.",
+    "subtitles": [
+      {
+        "id": 1,
+        "startTime": 7.2,
+        "endTime": 15,
+        "text": "If our universe has no inherent purpose, does that mean our existence is completely meaningless?",
+        "vietnamese": "Nếu vũ trụ của chúng ta không có mục đích nội tại nào, liệu điều đó có nghĩa là sự tồn tại của chúng ta hoàn toàn vô nghĩa?",
+        "ipa": "/ɪf ˈaʊər ˈjuːnɪvɜːrs hæz noʊ ɪnˈhɪərənt ˈpɜːrpəs dʌz ðæt miːn ˈaʊər ɪɡˈzɪstəns ɪz kəmˈpliːtli ˈmiːnɪŋləs/"
+      },
+      {
+        "id": 2,
+        "startTime": 15.5,
+        "endTime": 24,
+        "text": "Not necessarily. If the universe has no purpose, then you get to decide what your purpose is.",
+        "vietnamese": "Không nhất thiết phải vậy. Nếu vũ trụ không có mục đích định sẵn, thì bạn được quyền tự quyết định mục đích của đời mình.",
+        "ipa": "/nɒt ˌnɛsəˈsɛrɪli ɪf ðə ˈjuːnɪvɜːrs hæz noʊ ˈpɜːrpəs ðɛn juː ɡɛt tuː dɪˈsaɪd wɒt jɔːr ˈpɜːrpəs ɪz/"
+      },
+      {
+        "id": 3,
+        "startTime": 24.5,
+        "endTime": 33.2,
+        "text": "You are the universe experiencing itself. Every moment of joy, wonder, and kindness you create matters.",
+        "vietnamese": "Bạn chính là vũ trụ đang trải nghiệm chính nó. Mọi khoảnh khắc vui vẻ, kỳ diệu và tử tế mà bạn tạo ra đều có giá trị.",
+        "ipa": "/juː ɑːr ðə ˈjuːnɪvɜːrs ɪkˈspɪəriənsɪŋ ɪtˈsɛlf ˈɛvri ˈmoʊmənt ɒv dʒɔɪ ˈwʌndər ænd ˈkaɪndnəs juː kriˈeɪt ˈmætərz/"
+      }
+    ]
+  },
+  {
+    "id": "vid-b2-07",
+    "youtubeId": "iCvmsMzlF7o",
+    "channelId": "speeches",
+    "channelName": "TED & Inspiring Speeches",
+    "title": "The power of vulnerability | Brené Brown",
+    "category": "speeches",
+    "level": "B2",
+    "duration": "20:19",
+    "source": "youtube",
+    "thumbnail": "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=600&auto=format&fit=crop&q=80",
+    "description": "Tiến sĩ Brené Brown phân tích lòng dũng cảm: Dám mở lòng trước tổn thương là cội nguồn của niềm vui, tình yêu và sự gắn kết con người.",
+    "subtitles": [
+      {
+        "id": 1,
+        "startTime": 14,
+        "endTime": 22.5,
+        "text": "Vulnerability is not weakness; it is our most accurate measurement of courage.",
+        "vietnamese": "Dám tổn thương không phải là yếu đuối; đó là thước đo chuẩn xác nhất cho lòng can đảm của chúng ta.",
+        "ipa": "/ˌvʌlnərəˈbɪləti ɪz nɒt ˈwiːknəs ɪt ɪz ˈaʊər moʊst ˈækjərət ˈmɛʒərmənt ɒv ˈkɜːrɪdʒ/"
+      },
+      {
+        "id": 2,
+        "startTime": 23,
+        "endTime": 31.8,
+        "text": "When we numb the difficult emotions like fear and grief, we inadvertently numb joy, gratitude, and happiness as well.",
+        "vietnamese": "Khi chúng ta làm tê liệt những cảm xúc khó khăn như sợ hãi và đau buồn, chúng ta cũng vô tình làm tê liệt cả niềm vui, lòng biết ơn và hạnh phúc.",
+        "ipa": "/wɛn wiː nʌm ðə ˈdɪfɪkəlt ɪˈmoʊʃənz laɪk fɪər ænd ɡriːf wiː ˌɪnədˈvɜːrtəntli nʌm dʒɔɪ ˈɡrætɪtjuːd ænd ˈhæpinəs æz wɛl/"
+      },
+      {
+        "id": 3,
+        "startTime": 32.2,
+        "endTime": 41,
+        "text": "To live wholeheartedly, we must believe that we are enough just as we are, and dare to be truly seen.",
+        "vietnamese": "Để sống trọn vẹn bằng cả trái tim, ta phải tin rằng bản thân đã đủ tốt theo cách vốn có, và dám để người khác thấy con người thật của mình.",
+        "ipa": "/tuː lɪv ˌhoʊlˈhɑːrtɪdli wiː mʌst bɪˈliːv ðæt wiː ɑːr ɪˈnʌf dʒʌst æz wiː ɑːr ænd dɛər tuː biː ˈtruːli siːn/"
+      }
+    ]
+  },
+  {
+    "id": "vid-b2-08",
+    "youtubeId": "WppvXEcO_gQ",
+    "channelId": "ted-ed",
+    "channelName": "TED-Ed",
+    "title": "The science of stage fright and how to overcome it - Mikael Cho",
+    "category": "language",
+    "level": "B2",
+    "duration": "4:15",
+    "source": "youtube",
+    "thumbnail": "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&auto=format&fit=crop&q=80",
+    "description": "Phản xạ run sợ khi nói trước đám đông xuất phát từ cơ chế sinh tồn chiến-hay-chạy của hạch hạnh nhân, và mẹo chuyển hóa nó thành năng lượng.",
+    "subtitles": [
+      {
+        "id": 1,
+        "startTime": 5.5,
+        "endTime": 12.8,
+        "text": "Your palms sweat, your heart races, and suddenly your mind goes completely blank.",
+        "vietnamese": "Lòng bàn tay bạn đổ mồ hôi, tim đập thình thịch, và đột nhiên tâm trí bạn hoàn toàn trống rỗng.",
+        "ipa": "/jɔːr pɑːmz swɛt jɔːr hɑːrt ˈreɪsɪz ænd ˈsʌdənli jɔːr maɪnd ɡoʊz kəmˈpliːtli blæŋk/"
+      },
+      {
+        "id": 2,
+        "startTime": 13.2,
+        "endTime": 21,
+        "text": "This fight-or-flight response is evolutionary; your hypothalamus treats public scrutiny as a physical threat.",
+        "vietnamese": "Phản ứng chiến-hay-chạy này là do tiến hóa; vùng dưới đồi xem sự soi xét của đám đông như một mối đe dọa thể xác.",
+        "ipa": "/ðɪs faɪt ɔːr flaɪt rɪˈspɒns ɪz ˌiːvəˈluːʃənri jɔːr ˌhaɪpoʊˈθæləməs triːts ˈpʌblɪk ˈskruːtəni æz ə ˈfɪzɪkl θrɛt/"
+      },
+      {
+        "id": 3,
+        "startTime": 21.5,
+        "endTime": 29.5,
+        "text": "By practicing deep diaphragmatic breathing, you can reset your autonomic nervous system and regain total composure.",
+        "vietnamese": "Bằng cách luyện tập thở sâu bằng cơ hoành, bạn có thể tái thiết lập hệ thần kinh tự chủ và lấy lại sự bình tĩnh tuyệt đối.",
+        "ipa": "/baɪ ˈpræktɪsɪŋ diːp ˌdaɪəfræɡˈmætɪk ˈbriːðɪŋ juː kæn ˌriːˈsɛt jɔːr ˌɔːtəˈnɒmɪk ˈnɜːrvəs ˈsɪstəm ænd rɪˈɡeɪn ˈtoʊtl kəmˈpoʊʒər/"
+      }
+    ]
+  },
+  {
+    "id": "vid-c1-01",
+    "youtubeId": "UjtOGPJ0URM",
+    "channelId": "kurzgesagt",
+    "channelName": "Kurzgesagt – In a Nutshell",
+    "title": "The Great Filter - Why Alien Life Would Be Our Doom",
+    "category": "science",
+    "level": "C1",
+    "duration": "10:35",
+    "source": "youtube",
+    "thumbnail": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&auto=format&fit=crop&q=80",
+    "description": "Nghịch lý Fermi và giả thuyết Bộ Lọc Lớn (The Great Filter): Tìm thấy sự sống ngoài Trái Đất có thể là tin tức tồi tệ nhất đối với nhân loại.",
+    "subtitles": [
+      {
+        "id": 1,
+        "startTime": 8,
+        "endTime": 17.5,
+        "text": "If the universe is so vast and ancient, with billions of habitable planets, where is everybody?",
+        "vietnamese": "Nếu vũ trụ bao la và cổ xưa đến vậy, với hàng tỷ hành tinh có thể sinh sống, thì tất cả những người khác đang ở đâu?",
+        "ipa": "/ɪf ðə ˈjuːnɪvɜːrs ɪz soʊ væst ænd ˈeɪnʃənt wɪð ˈbɪljənz ɒv ˈhæbɪtəbl ˈplænɪts wɛər ɪz ˈɛvrɪbɒdi/"
+      },
+      {
+        "id": 2,
+        "startTime": 18,
+        "endTime": 27.2,
+        "text": "The Great Filter hypothesis suggests that at some point in the evolution of life, there is an evolutionary barrier that is nearly impossible to overcome.",
+        "vietnamese": "Giả thuyết Bộ Lọc Lớn cho rằng tại một thời điểm nào đó trong sự tiến hóa của sự sống, tồn tại một rào cản tiến hóa gần như không thể vượt qua.",
+        "ipa": "/ðə ɡreɪt ˈfɪltər haɪˈpɒθəsɪs səˈdʒɛsts ðæt æt sʌm pɔɪnt ɪn ðə ˌiːvəˈluːʃn ɒv laɪf ðɛər ɪz æn ˌiːvəˈluːʃənri ˈbæriər ðæt ɪz ˈnɪərli ɪmˈpɒsəbl tuː ˌoʊvərˈkʌm/"
+      },
+      {
+        "id": 3,
+        "startTime": 27.8,
+        "endTime": 36.5,
+        "text": "If the filter is ahead of us, then our future is grim; but if it is behind us, humanity might be the sole pioneer.",
+        "vietnamese": "Nếu bộ lọc nằm ở phía trước, thì tương lai của chúng ta thật ảm đạm; nhưng nếu nó đã ở sau lưng, nhân loại có thể là kẻ tiên phong duy nhất.",
+        "ipa": "/ɪf ðə ˈfɪltər ɪz əˈhɛd ɒv ʌs ðɛn ˈaʊər ˈfjuːtʃər ɪz ɡrɪm bʌt ɪf ɪt ɪz bɪˈhaɪnd ʌs hjuːˈmænəti maɪt biː ðə soʊl ˌpaɪəˈnɪər/"
+      }
+    ]
+  },
+  {
+    "id": "vid-c1-02",
+    "youtubeId": "UF8uR6Z6KLc",
+    "channelId": "speeches",
+    "channelName": "TED & Inspiring Speeches",
+    "title": "Steve Jobs: Stay Hungry, Stay Foolish (Stanford 2005 - Part 2)",
+    "category": "speeches",
+    "level": "C1",
+    "duration": "15:04",
+    "source": "youtube",
+    "thumbnail": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&auto=format&fit=crop&q=80",
+    "description": "Steve Jobs chia sẻ câu chuyện về Tình yêu và Sự mất mát: Bị sa thải khỏi Apple đã giải phóng ông bước vào thời kỳ sáng tạo nhất cuộc đời.",
+    "subtitles": [
+      {
+        "id": 1,
+        "startTime": 312,
+        "endTime": 320.5,
+        "text": "I was convinced that the only thing that kept me going was that I loved what I did.",
+        "vietnamese": "Tôi tin chắc rằng điều duy nhất giúp tôi tiếp tục tiến lên là việc tôi yêu những gì mình đã làm.",
+        "ipa": "/aɪ wɒz kənˈvɪnst ðæt ðə ˈoʊnli θɪŋ ðæt kɛpt miː ˈɡoʊɪŋ wɒz ðæt aɪ lʌvd wɒt aɪ dɪd/"
+      },
+      {
+        "id": 2,
+        "startTime": 321,
+        "endTime": 329.5,
+        "text": "You've got to find what you love, and that is as true for your work as it is for your lovers.",
+        "vietnamese": "Bạn phải tìm ra thứ bạn yêu thích, và điều đó hoàn toàn đúng cho công việc cũng như cho những người bạn yêu thương.",
+        "ipa": "/juːv ɡɒt tuː faɪnd wɒt juː lʌv ænd ðæt ɪz æz truː fɔːr jɔːr wɜːrk æz ɪt ɪz fɔːr jɔːr ˈlʌvərz/"
+      },
+      {
+        "id": 3,
+        "startTime": 330,
+        "endTime": 339.2,
+        "text": "Your work is going to fill a large part of your life, and the only way to be truly satisfied is to do what you believe is great work.",
+        "vietnamese": "Công việc sẽ lấp đầy phần lớn cuộc đời bạn, và cách duy nhất để thực sự mãn nguyện là làm điều bạn tin là công việc vĩ đại.",
+        "ipa": "/jɔːr wɜːrk ɪz ˈɡoʊɪŋ tuː fɪl ə lɑːrdʒ pɑːrt ɒv jɔːr laɪf ænd ðə ˈoʊnli weɪ tuː biː ˈtruːli ˈsætɪsfaɪd ɪz tuː duː wɒt juː bɪˈliːv ɪz ɡreɪt wɜːrk/"
+      }
+    ]
+  }
+]
