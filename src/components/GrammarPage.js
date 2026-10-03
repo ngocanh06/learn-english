@@ -752,9 +752,9 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
                   } catch (e) {}
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold border transition ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold border transition ${
                   isLight
-                    ? 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100 shadow-sm'
+                    ? 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100 shadow-xs'
                     : 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800'
                 }`}
               >
@@ -770,7 +770,7 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
                       tab: 'calendar-view',
                     })
                   }
-                  className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold border transition cursor-pointer ${
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold border transition cursor-pointer ${
                     isLight
                       ? 'bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700 shadow-xs'
                       : 'bg-blue-950/50 hover:bg-blue-900/60 border-blue-800 text-blue-300'
@@ -787,7 +787,7 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
             <div className="flex items-center gap-2">
               <button
                 onClick={() => toggleFavorite(currentLesson.id)}
-                className={`p-2.5 px-3 rounded-2xl text-xs font-bold border transition flex items-center gap-1.5 ${
+                className={`p-2.5 px-3 rounded-xl text-xs font-medium border transition flex items-center gap-1.5 ${
                   favoriteIds[currentLesson.id]
                     ? 'bg-amber-500/15 border-amber-500/40 text-amber-500'
                     : isLight
@@ -813,18 +813,18 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
                     })
                   );
                 }}
-                className="p-2.5 px-3.5 rounded-2xl text-xs font-black bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:opacity-95 text-white flex items-center gap-1.5 shadow-sm hover:scale-102 transition cursor-pointer"
+                className="p-2.5 px-3.5 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1.5 transition cursor-pointer"
                 title="Hỏi Trợ Lý AI về bài học này"
               >
-                <i className="fa-solid fa-robot text-amber-300" />
-                <span>Hỏi Trợ Lý AI</span>
+                <i className="fa-solid fa-comment-dots" />
+                <span>Trợ lý giải đáp</span>
               </button>
 
               <button
                 onClick={() => toggleRemembered(currentLesson.id)}
-                className={`p-2.5 px-3.5 rounded-2xl text-xs font-bold border transition flex items-center gap-1.5 ${
+                className={`p-2.5 px-3.5 rounded-xl text-xs font-semibold border transition flex items-center gap-1.5 ${
                   rememberedIds[currentLesson.id]
-                    ? 'bg-emerald-600 border-emerald-500 text-white shadow-sm'
+                    ? 'bg-emerald-600 border-emerald-500 text-white shadow-xs'
                     : isLight
                     ? 'bg-white border-slate-200 text-slate-700'
                     : 'bg-slate-900 border-slate-800 text-slate-300'
@@ -840,17 +840,17 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
 
           {/* Lesson Header */}
           <div
-            className={`p-6 md:p-8 rounded-3xl border ${
-              isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-slate-900 border-slate-800'
+            className={`p-6 md:p-8 rounded-xl border ${
+              isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-slate-900 border-slate-800'
             }`}
           >
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs font-black uppercase tracking-wider text-blue-600 dark:text-blue-400">
+              <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
                 Bài {currentLesson.id.replace('p2-', '')} • {currentLesson.subtitle || currentLesson.category}
               </span>
             </div>
 
-            <h1 className="text-2xl md:text-3xl font-black tracking-tight text-slate-900 dark:text-white leading-snug">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900 dark:text-white leading-snug">
               {currentLesson.title}
             </h1>
           </div>
@@ -860,8 +860,8 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
 
           {/* Lesson Clean Theoretical Content */}
           <div
-            className={`p-6 md:p-8 rounded-3xl border leading-relaxed text-slate-700 dark:text-slate-300 ${
-              isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-slate-900/90 border-slate-800'
+            className={`p-6 md:p-8 rounded-xl border leading-relaxed text-slate-700 dark:text-slate-300 ${
+              isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-slate-900/90 border-slate-800'
             }`}
           >
             {currentLesson.content}
@@ -869,22 +869,22 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
 
           {/* AI Helper Callout Banner */}
           <div
-            className={`p-5 rounded-3xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
+            className={`p-4 md:p-5 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
               isLight
-                ? 'bg-gradient-to-r from-blue-50/80 via-indigo-50/60 to-purple-50/80 border-blue-200'
-                : 'bg-gradient-to-r from-blue-950/30 via-indigo-950/20 to-purple-950/30 border-blue-800/40'
+                ? 'bg-slate-50 border-slate-200'
+                : 'bg-slate-900 border-slate-800'
             }`}
           >
-            <div className="flex items-center gap-3.5">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-sm shrink-0">
-                <i className="fa-solid fa-lightbulb text-amber-300 text-base" />
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                <i className="fa-solid fa-lightbulb text-sm" />
               </div>
               <div>
-                <h4 className="text-sm font-black text-slate-900 dark:text-white">
+                <h4 className="text-sm font-semibold text-slate-900 dark:text-white">
                   Bạn có chỗ nào chưa hiểu trong bài lý thuyết này?
                 </h4>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                  Bấm để hỏi Trợ Lý AI giải thích cặn kẽ, đưa thêm ví dụ và chỉ ra các bẫy đề thi hay gặp.
+                  Trợ lý AI có thể giải thích chi tiết, cung cấp thêm ví dụ và phân tích bẫy ngữ pháp.
                 </p>
               </div>
             </div>
@@ -901,10 +901,10 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
                   })
                 );
               }}
-              className="px-4 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black shrink-0 transition shadow-md hover:scale-102 flex items-center gap-2 cursor-pointer self-start sm:self-center"
+              className="px-3.5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shrink-0 transition flex items-center gap-2 cursor-pointer self-start sm:self-center"
             >
-              <i className="fa-solid fa-robot" />
-              <span>Hỏi Trợ Lý AI Ngay</span>
+              <i className="fa-solid fa-comment-dots text-xs" />
+              <span>Hỏi trợ lý giải đáp</span>
             </button>
           </div>
 
@@ -929,7 +929,7 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
                 }
               }}
               disabled={fullIndex.findIndex((l) => l.id === currentLesson.id) <= 0}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold border transition disabled:opacity-30 ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold border transition disabled:opacity-30 ${
                 isLight ? 'bg-white border-slate-200 text-slate-700' : 'bg-slate-900 border-slate-800 text-slate-300'
               }`}
             >
@@ -944,7 +944,7 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
                 }
               }}
               disabled={fullIndex.findIndex((l) => l.id === currentLesson.id) >= fullIndex.length - 1}
-              className="px-5 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black shadow-md flex items-center gap-2 transition hover:scale-102"
+              className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs flex items-center gap-2 transition"
             >
               <span>Bài tiếp theo</span>
               <i className="fa-solid fa-chevron-right" />

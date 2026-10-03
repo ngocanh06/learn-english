@@ -168,27 +168,28 @@ export default function Sidebar({
 
           {/* IELTS Study Abroad Track Card */}
           {!isMini && (
-            <div className="mx-3 my-2 p-3 rounded-2xl bg-gradient-to-br from-blue-600/10 via-indigo-600/10 to-purple-600/10 border border-blue-500/30">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[10px] font-black uppercase tracking-wider text-blue-500 flex items-center gap-1">
-                  <i className="fa-solid fa-plane-departure text-[9px]" />
-                  <span>IELTS Academic</span>
+            <div className={`mx-3 my-2 p-3 rounded-xl border ${
+              isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-850/80 border-slate-800'
+            }`}>
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200">
+                  IELTS Academic
                 </span>
-                <span className="px-1.5 py-0.5 rounded text-[9px] font-black bg-amber-500 text-slate-950">
-                  7.0+ Du Học
+                <span className="text-[10px] font-semibold text-blue-600 dark:text-blue-400">
+                  Mục tiêu 7.0+
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 mb-2 leading-tight">
-                Lộ trình 24 tuần cấp tốc chuẩn Cambridge 12-19.
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 mb-2.5 leading-tight">
+                Lộ trình 24 tuần cấp tốc theo chuẩn Cambridge.
               </p>
               <button
                 onClick={() => {
                   onNavigate('ielts-roadmap');
                   if (isDrawer) setMobileOpen(false);
                 }}
-                className="w-full py-1.5 px-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-all text-center flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
+                className="w-full py-1.5 px-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition text-center flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                <span>Mở Lộ Trình IELTS</span>
+                <span>Xem lộ trình IELTS</span>
                 <i className="fa-solid fa-arrow-right text-[10px]" />
               </button>
             </div>

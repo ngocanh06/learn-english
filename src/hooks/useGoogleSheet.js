@@ -118,42 +118,49 @@ export function useGoogleSheet(baseUrl, gid, sheetType = 1, directUrl = null) {
 
   const cacheKey = `gsheet_${gid || 'vocab_part'}_${sheetType}`;
 
+  const [isOfflineBackup, setIsOfflineBackup] = useState(false);
+
   useEffect(() => {
     let isMounted = true;
     const currentFallback = getFallbackData(sheetType, gid);
+
+    // Read cached payload if any (fresh or stale)
+    let staleCachedData = null;
+    try {
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        const { timestamp, payload } = JSON.parse(cached);
+        if (Array.isArray(payload) && payload.length > 0) {
+          staleCachedData = payload;
+          if (Date.now() - timestamp < CACHE_TTL) {
+            setData(payload);
+            setLoading(false);
+            setError(null);
+            setIsOfflineBackup(false);
+            return;
+          }
+        }
+      }
+    } catch (e) {}
 
     // If static fallback is available, populate data immediately so user never hangs
     if (currentFallback && currentFallback.length > 0) {
       setData(currentFallback);
       setLoading(false);
       setError(null);
-    }
-
-    // Try localStorage cache if valid and fresh
-    try {
-      const cached = localStorage.getItem(cacheKey);
-      if (cached) {
-        const { timestamp, payload } = JSON.parse(cached);
-        if (Array.isArray(payload) && payload.length > 0 && Date.now() - timestamp < CACHE_TTL) {
-          setData(payload);
-          setLoading(false);
-          setError(null);
-          return;
-        } else if (Array.isArray(payload) && payload.length === 0) {
-          localStorage.removeItem(cacheKey);
-        }
-      }
-    } catch (e) {}
-
-    // Only show loading spinner if we don't have any data yet
-    if (!currentFallback || currentFallback.length === 0) {
+      setIsOfflineBackup(false);
+    } else if (staleCachedData && staleCachedData.length > 0) {
+      // Use stale cache while revalidating so UI doesn't drop to 0 words
+      setData(staleCachedData);
+      setLoading(false);
+      setIsOfflineBackup(false);
+    } else {
       setLoading(true);
     }
-    setError(null);
 
     const url = directUrl || (gid ? buildCsvUrl(baseUrl, gid) : `${baseUrl}?output=csv`);
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000);
+    const timeoutId = setTimeout(() => controller.abort(), 7000);
 
     const parseAndSetData = (csvText) => {
       if (!csvText || typeof csvText !== 'string' || !csvText.trim()) {
@@ -168,12 +175,18 @@ export function useGoogleSheet(baseUrl, gid, sheetType = 1, directUrl = null) {
             if (processed && processed.length > 0) {
               setData(processed);
               setError(null);
+              setIsOfflineBackup(false);
               try {
                 localStorage.setItem(cacheKey, JSON.stringify({ timestamp: Date.now(), payload: processed }));
               } catch (e) {}
             } else if (currentFallback && currentFallback.length > 0) {
               setData(currentFallback);
               setError(null);
+              setIsOfflineBackup(false);
+            } else if (staleCachedData && staleCachedData.length > 0) {
+              setData(staleCachedData);
+              setIsOfflineBackup(true);
+              setError('Không thể đồng bộ dữ liệu mới nhất. Đang sử dụng dữ liệu đã lưu.');
             } else {
               setError('Không tìm thấy từ vựng trong dữ liệu Google Sheet');
             }
@@ -181,6 +194,10 @@ export function useGoogleSheet(baseUrl, gid, sheetType = 1, directUrl = null) {
             if (currentFallback && currentFallback.length > 0) {
               setData(currentFallback);
               setError(null);
+            } else if (staleCachedData && staleCachedData.length > 0) {
+              setData(staleCachedData);
+              setIsOfflineBackup(true);
+              setError('Không thể đồng bộ dữ liệu mới nhất. Đang sử dụng dữ liệu đã lưu.');
             } else {
               setError('Lỗi xử lý dữ liệu từ vựng');
             }
@@ -192,6 +209,10 @@ export function useGoogleSheet(baseUrl, gid, sheetType = 1, directUrl = null) {
           if (currentFallback && currentFallback.length > 0) {
             setData(currentFallback);
             setError(null);
+          } else if (staleCachedData && staleCachedData.length > 0) {
+            setData(staleCachedData);
+            setIsOfflineBackup(true);
+            setError('Không thể đồng bộ dữ liệu mới nhất. Đang sử dụng dữ liệu đã lưu.');
           } else {
             setError(err.message || 'Lỗi đọc dữ liệu CSV');
           }
@@ -200,7 +221,23 @@ export function useGoogleSheet(baseUrl, gid, sheetType = 1, directUrl = null) {
       });
     };
 
-    // Attempt direct fetch with 3s timeout
+    const handleFetchError = (err) => {
+      if (!isMounted) return;
+      if (currentFallback && currentFallback.length > 0) {
+        setData(currentFallback);
+        setError(null);
+        setIsOfflineBackup(false);
+      } else if (staleCachedData && staleCachedData.length > 0) {
+        setData(staleCachedData);
+        setIsOfflineBackup(true);
+        setError('Không thể đồng bộ dữ liệu mới nhất. Đang sử dụng dữ liệu đã lưu.');
+      } else {
+        setError('Không thể tải dữ liệu: Google Sheets đang phản hồi chậm hoặc ngoại tuyến.');
+      }
+      setLoading(false);
+    };
+
+    // Attempt direct fetch with 7s timeout
     fetch(url, { signal: controller.signal })
       .then(res => {
         clearTimeout(timeoutId);
@@ -212,7 +249,6 @@ export function useGoogleSheet(baseUrl, gid, sheetType = 1, directUrl = null) {
         clearTimeout(timeoutId);
         if (!isMounted) return;
 
-        // If fallback exists, gracefully use fallback without showing error or hanging
         if (currentFallback && currentFallback.length > 0) {
           setData(currentFallback);
           setError(null);
@@ -223,7 +259,7 @@ export function useGoogleSheet(baseUrl, gid, sheetType = 1, directUrl = null) {
         // Try proxy fallback only if no static fallback exists
         const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
         const proxyController = new AbortController();
-        const proxyTimeoutId = setTimeout(() => proxyController.abort(), 3000);
+        const proxyTimeoutId = setTimeout(() => proxyController.abort(), 6000);
 
         fetch(proxyUrl, { signal: proxyController.signal })
           .then(res => {
@@ -239,14 +275,7 @@ export function useGoogleSheet(baseUrl, gid, sheetType = 1, directUrl = null) {
           })
           .catch(err2 => {
             clearTimeout(proxyTimeoutId);
-            if (!isMounted) return;
-            if (currentFallback && currentFallback.length > 0) {
-              setData(currentFallback);
-              setError(null);
-            } else {
-              setError(`Không thể tải dữ liệu: Google Sheets đang phản hồi chậm hoặc ngoại tuyến.`);
-            }
-            setLoading(false);
+            handleFetchError(err2);
           });
       });
 
@@ -258,12 +287,11 @@ export function useGoogleSheet(baseUrl, gid, sheetType = 1, directUrl = null) {
   }, [baseUrl, gid, sheetType, directUrl, cacheKey, reloadKey]);
 
   const refresh = () => {
-    try { localStorage.removeItem(cacheKey); } catch (e) {}
     setReloadKey(k => k + 1);
     setLoading(true);
   };
 
-  return { data, loading, error, refresh };
+  return { data, loading, error, isOfflineBackup, refresh };
 }
 
 

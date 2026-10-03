@@ -4,6 +4,8 @@ import { useUserStorage } from '../hooks/useUserStorage';
 import { VOCAB_DATABASE } from '../data/vocabularyByLevelAndPart';
 import { getDisplayIpa, healSavedVocabList } from '../services/ipaService';
 
+import { speakEnglish } from '../utils/speechHelper';
+
 // Fix decomposed Unicode accents
 const formatVietnameseText = (str) => {
   if (!str) return '';
@@ -68,6 +70,8 @@ export default function VocabStudyStudio({
   emptyTitle = 'Chưa có từ vựng nào trong danh sách này',
   emptyDesc = 'Vui lòng chọn danh mục hoặc thêm từ vựng để bắt đầu học.',
   deckBadge = 'TỪ VỰNG',
+  initialMode = 'list',
+  initialLevelFilter = 'all',
 }) {
   const isLight = theme === 'light';
 
@@ -79,20 +83,19 @@ export default function VocabStudyStudio({
   const [knownWordsMap, setKnownWordsMap] = useUserStorage('vocab_mastery_v2', {});
 
   // Studio Study Modes: 'list' | 'flashcard' | 'quiz' | 'match' | 'spelling'
-  const [studyMode, setStudyMode] = useState('list');
+  const [studyMode, setStudyMode] = useState(initialMode || 'list');
   const [searchTerm, setSearchTerm] = useState('');
-  const [levelFilter, setLevelFilter] = useState('all'); // 'all' | '1' | '2' | '3' | '4' | 'need_review'
+  const [levelFilter, setLevelFilter] = useState(initialLevelFilter || 'all'); // 'all' | '1' | '2' | '3' | '4' | 'need_review'
   const [sortBy, setSortBy] = useState('default'); // 'default' | 'az' | 'newest'
+
+  useEffect(() => {
+    if (initialMode) setStudyMode(initialMode);
+    if (initialLevelFilter) setLevelFilter(initialLevelFilter);
+  }, [initialMode, initialLevelFilter]);
 
   // Audio speech helper
   const speak = useCallback((text) => {
-    if ('speechSynthesis' in window && text) {
-      window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = 'en-US';
-      u.rate = 0.85;
-      window.speechSynthesis.speak(u);
-    }
+    speakEnglish(text, { rate: 0.85 });
   }, []);
 
   // Helper to read word's level

@@ -147,6 +147,54 @@ export default function Dashboard({ onNavigate, scores = [], scheduleRows = [], 
       }));
   }, [safeScores]);
 
+  // Determine the next unfinished lesson for Continue Learning
+  const continueLearningItem = useMemo(() => {
+    const unfinishedRow =
+      safeSchedule.find(
+        (r) => r && r.status !== 'Complete' && r.note !== 'Complete'
+      ) || safeSchedule[0];
+
+    return {
+      title: unfinishedRow?.task || unfinishedRow?.dayTitle || 'Lộ trình TOEIC & 5 Trụ Cột Đa Nguồn',
+      desc:
+        unfinishedRow?.description ||
+        `Nhiệm vụ Ngày ${unfinishedRow?.day || 1}: Nghe chép chính tả, từ vựng đề thi & ngữ pháp.`,
+      dateKey: unfinishedRow?.date || null,
+      dayNum: unfinishedRow?.day || 1,
+      targetNav: 'ai-coach',
+      params: { tab: 'calendar-view', dateKey: unfinishedRow?.date },
+    };
+  }, [safeSchedule]);
+
+  // Determine the primary weak skill to focus on
+  const weakAreaAnalysis = useMemo(() => {
+    if (safeScores.length > 0) {
+      const avgListening = safeScores.reduce((acc, s) => acc + (+s.listening || 0), 0) / safeScores.length;
+      const avgReading = safeScores.reduce((acc, s) => acc + (+s.reading || 0), 0) / safeScores.length;
+      if (avgListening < avgReading) {
+        return {
+          skill: 'Kỹ Năng Nghe (Listening)',
+          tip: 'Điểm Listening trung bình đang thấp hơn Reading. Hãy tăng cường nghe chép chính tả Daily Dictation và Shadowing mỗi ngày 20 phút.',
+          navTarget: 'video-hub',
+          actionLabel: 'Luyện Nghe & Shadowing',
+        };
+      } else {
+        return {
+          skill: 'Kỹ Năng Đọc & Ngữ Pháp (Reading)',
+          tip: 'Điểm Reading cần cải thiện. Hãy tập trung giải đề đọc Study4 và củng cố các chuyên đề ngữ pháp Part 5 & 6.',
+          navTarget: 'reading',
+          actionLabel: 'Luyện Đọc CEFR',
+        };
+      }
+    }
+    return {
+      skill: 'Từ Vựng Thực Chiến & Ngữ Pháp',
+      tip: 'Duy trì giải từ vựng đề thi Study4 và làm bài tập trắc nghiệm ngữ pháp mỗi ngày để tăng phản xạ làm bài.',
+      navTarget: 'vocabulary',
+      actionLabel: 'Học Từ Vựng Ngay',
+    };
+  }, [safeScores]);
+
   const QUICK_CARDS = [
     {
       id: 'ielts-roadmap',
@@ -248,76 +296,182 @@ export default function Dashboard({ onNavigate, scores = [], scheduleRows = [], 
         </div>
       )}
 
-      {/* Clean, Elegant Hero Header with Sleek Dark Luxury Styling */}
+      {/* Hero Welcome & Today Status */}
       <div
-        className={`p-6 md:p-8 rounded-3xl border transition-all relative overflow-hidden text-white shadow-sm ${
+        className={`p-6 rounded-xl border transition-all ${
           isLight
-            ? 'bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border-slate-800'
-            : 'bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border-slate-800'
+            ? 'bg-white border-slate-200 text-slate-900 shadow-xs'
+            : 'bg-slate-900 border-slate-800 text-white shadow-xs'
         }`}
       >
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-2 max-w-xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-[11px] font-bold tracking-wider capitalize text-slate-300">
-              <i className="fa-regular fa-calendar" />
-              <span>{todayStr}</span>
-            </div>
-            <h1 className="text-2xl md:text-3xl font-black tracking-tight leading-tight">
-              Xin chào, <span className="text-white font-black">{currentUser ? currentUser.name : 'Học viên'}</span> 👋
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+              {todayStr}
+            </span>
+            <h1 className="text-xl md:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+              Xin chào, {currentUser ? currentUser.name : 'Học viên'}
             </h1>
-            <p className="text-slate-300 text-xs md:text-sm leading-relaxed">
-              Trung tâm học tiếng Anh & luyện thi TOEIC toàn diện với 5 trụ cột đa nguồn: Luyện Đọc, Luyện Viết, Nghe Chép Chính Tả, Ngữ Pháp & Video Shadowing.
+            <p className="text-slate-600 dark:text-slate-400 text-xs md:text-sm leading-relaxed">
+              Trung tâm học tiếng Anh &amp; luyện thi TOEIC với 5 trụ cột: Luyện Đọc, Luyện Viết, Nghe Chép Chính Tả, Ngữ Pháp &amp; Video Shadowing.
             </p>
-            <div className="pt-2 flex items-center gap-3 flex-wrap">
+            <div className="pt-2 flex items-center gap-2.5 flex-wrap">
               <button
                 onClick={() => onNavigate('ai-coach')}
-                className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition shadow-sm flex items-center gap-2 cursor-pointer active:scale-95"
+                className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition cursor-pointer"
               >
-                <i className="fa-solid fa-bolt" />
-                <span>Vào Lộ Trình Hôm Nay</span>
+                Vào lộ trình hôm nay
               </button>
               <button
                 onClick={() => onNavigate('reading')}
-                className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs transition border border-white/20 flex items-center gap-2 cursor-pointer active:scale-95"
+                className={`px-4 py-2 rounded-lg font-semibold text-xs transition border cursor-pointer ${
+                  isLight
+                    ? 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                    : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-750'
+                }`}
               >
-                <i className="fa-solid fa-book-open-reader" />
-                <span>Luyện Đọc CEFR</span>
+                Luyện đọc CEFR
               </button>
             </div>
           </div>
 
           {/* Goal & Score Stat Badge */}
           <div
-            className="flex items-center gap-4 p-4 md:p-5 rounded-2xl bg-white/10 border border-white/10 shrink-0 text-white shadow-sm backdrop-blur-md"
+            className={`flex items-center gap-4 p-4 rounded-xl border shrink-0 ${
+              isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-850 border-slate-800'
+            }`}
           >
             <div>
-              <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">
+              <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block">
                 Điểm cao nhất
               </span>
-              <span className="text-3xl font-black text-white font-mono">{bestScore || 0}</span>
-              <span className="text-[11px] text-slate-400 block mt-0.5 font-medium">Mục tiêu: {targetScore}</span>
+              <span className="text-2xl font-bold font-mono text-slate-900 dark:text-white">
+                {bestScore || 0}
+              </span>
+              <span className="text-[11px] text-slate-400 block mt-0.5">Mục tiêu: {targetScore}</span>
             </div>
             <div
-              className="w-14 h-14 rounded-2xl flex flex-col items-center justify-center font-black text-sm bg-blue-500/20 border border-blue-400/30 text-blue-300 shadow-inner"
+              className={`w-12 h-12 rounded-xl flex flex-col items-center justify-center font-bold text-xs ${
+                isLight ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-blue-950/40 text-blue-300 border border-blue-800'
+              }`}
             >
               <span>{bestScore ? Math.min(100, Math.round((bestScore / targetScore) * 100)) : 0}%</span>
-              <span className="text-[8px] font-bold uppercase tracking-tight text-blue-200/80">Tiến độ</span>
+              <span className="text-[8px] font-medium uppercase text-slate-400">Tiến độ</span>
             </div>
           </div>
         </div>
-
-        {/* Subtle Decorative Background Circles */}
-        <div className="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-blue-500/10 pointer-events-none blur-3xl" />
       </div>
 
-      {/* ─── HỘP NHẮC NHỞ HỌC BÙ BÀI HỌC CÁC NGÀY TRƯỚC ─── */}
-      <OverdueStudyReminderBanner
-        overdueData={overdueData}
-        onNavigate={onNavigate}
-        onSelectDate={() => onNavigate('ai-coach', { tab: 'calendar-view' })}
-        onToggleTaskDone={handleToggleTaskDone}
-        theme={theme}
-      />
+      {/* ─── 2. CONTINUE LEARNING & TODAY'S LEARNING ─── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Continue Learning Card */}
+        <div
+          className={`p-5 rounded-xl border flex flex-col justify-between transition-all ${
+            isLight
+              ? 'bg-white border-slate-200'
+              : 'bg-slate-900 border-slate-800'
+          }`}
+        >
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-blue-600 dark:text-blue-400">
+                Tiếp tục bài học dở
+              </span>
+              <span className="text-xs font-mono text-slate-400">
+                Ngày {continueLearningItem.dayNum}
+              </span>
+            </div>
+            <h3 className="text-sm md:text-base font-bold text-slate-900 dark:text-white truncate">
+              {continueLearningItem.title}
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+              {continueLearningItem.desc}
+            </p>
+          </div>
+          <div className="pt-4">
+            <button
+              onClick={() => onNavigate(continueLearningItem.targetNav, continueLearningItem.params)}
+              className="w-full py-2 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition cursor-pointer"
+            >
+              Tiếp tục học ngay
+            </button>
+          </div>
+        </div>
+
+        {/* Today's Learning Overview Card */}
+        <div
+          className={`p-5 rounded-xl border flex flex-col justify-between transition-all ${
+            isLight
+              ? 'bg-white border-slate-200'
+              : 'bg-slate-900 border-slate-800'
+          }`}
+        >
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                Lộ trình hôm nay
+              </span>
+              <span className="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400">
+                {pct}% hoàn thành
+              </span>
+            </div>
+            <h3 className="text-sm md:text-base font-bold text-slate-900 dark:text-white">
+              5 Trụ cột: Nghe, Nói, Đọc, Viết, Từ vựng & Ngữ pháp
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+              Đã hoàn thành {completedDays} / {totalScheduledDays} ngày theo tiến trình học tập.
+            </p>
+          </div>
+          <div className="pt-4">
+            <button
+              onClick={() => onNavigate('ai-coach')}
+              className={`w-full py-2 px-3 rounded-lg font-semibold text-xs transition border cursor-pointer ${
+                isLight
+                  ? 'bg-slate-50 hover:bg-slate-100 text-slate-800 border-slate-200'
+                  : 'bg-slate-800 hover:bg-slate-750 text-slate-200 border-slate-700'
+              }`}
+            >
+              Mở lịch học hôm nay
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* ─── 3. REVIEW & WEAK AREA (SECTION 17) ─── */}
+      <div className="space-y-4">
+        {/* Review: Overdue Task Reminder Banner */}
+        <OverdueStudyReminderBanner
+          overdueData={overdueData}
+          onNavigate={onNavigate}
+          onSelectDate={() => onNavigate('ai-coach', { tab: 'calendar-view' })}
+          onToggleTaskDone={handleToggleTaskDone}
+          theme={theme}
+        />
+
+        {/* Weak Area / Focus Skill Insight Card */}
+        <div
+          className={`p-4 px-5 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+            isLight
+              ? 'bg-slate-50 border-slate-200 text-slate-900'
+              : 'bg-slate-850 border-slate-800 text-slate-100'
+          }`}
+        >
+          <div className="space-y-1">
+            <span className="text-[11px] font-semibold text-amber-600 dark:text-amber-400 block">
+              Trọng tâm cần rèn luyện: {weakAreaAnalysis.skill}
+            </span>
+            <p className="text-xs text-slate-600 dark:text-slate-400 leading-snug">
+              {weakAreaAnalysis.tip}
+            </p>
+          </div>
+          <button
+            onClick={() => onNavigate(weakAreaAnalysis.navTarget)}
+            className="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shrink-0 transition cursor-pointer self-end sm:self-center"
+          >
+            {weakAreaAnalysis.actionLabel}
+          </button>
+        </div>
+      </div>
 
       {/* 4 Clean, Unified Metric Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
@@ -372,12 +526,12 @@ export default function Dashboard({ onNavigate, scores = [], scheduleRows = [], 
       <DashboardRoadmapWidget onNavigate={onNavigate} theme={theme} />
 
       {/* Analytics & Leaderboard */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div
-          className={`lg:col-span-2 border rounded-3xl p-5 md:p-6 shadow-sm transition-all ${
+          className={`lg:col-span-2 border rounded-xl p-5 ${
             isLight
-              ? 'bg-gradient-to-br from-white via-slate-50/60 to-white border-slate-200/80 shadow-slate-100'
-              : 'bg-gradient-to-br from-slate-900/95 via-slate-900 to-indigo-950/20 border-slate-800/90 shadow-slate-950/40'
+              ? 'bg-white border-slate-200'
+              : 'bg-slate-900 border-slate-800'
           }`}
         >
           <div className="flex items-center justify-between mb-4">
@@ -421,10 +575,10 @@ export default function Dashboard({ onNavigate, scores = [], scheduleRows = [], 
 
         {/* Leaderboard Widget */}
         <div
-          className={`border rounded-3xl p-5 md:p-6 shadow-sm flex flex-col justify-between transition-all ${
+          className={`border rounded-xl p-5 flex flex-col justify-between ${
             isLight
-              ? 'bg-gradient-to-br from-white via-slate-50/60 to-white border-slate-200/80 shadow-slate-100'
-              : 'bg-gradient-to-br from-slate-900/95 via-slate-900 to-indigo-950/20 border-slate-800/90 shadow-slate-950/40'
+              ? 'bg-white border-slate-200'
+              : 'bg-slate-900 border-slate-800'
           }`}
         >
           <div>
@@ -501,64 +655,43 @@ export default function Dashboard({ onNavigate, scores = [], scheduleRows = [], 
         </div>
       )}
 
-      {/* Clean Quick Access Grid with Rich Card Artwork */}
+      {/* Phân hệ học tập & Lối tắt nhanh */}
       <div>
         <div className="flex items-center justify-between mb-3">
           <h3 className={`font-black text-sm uppercase tracking-wider ${isLight ? 'text-slate-900' : 'text-white'}`}>
-            Phân hệ học tập & Luyện tập
+            Phân hệ học tập & Lối tắt nhanh
           </h3>
-          <span className="text-xs font-bold text-slate-400 font-mono">6 Phân hệ tích hợp</span>
+          <span className="text-xs font-bold text-slate-400 font-mono">7 Phân hệ</span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
           {QUICK_CARDS.map((c) => (
             <button
               key={c.id}
               onClick={() => onNavigate(c.id)}
-              className={`rounded-3xl border text-left transition-all duration-300 group flex flex-col justify-between overflow-hidden shadow-xs hover:shadow-xl hover:-translate-y-1 cursor-pointer ${
+              className={`p-4 rounded-2xl border text-left transition-all duration-200 group flex flex-col justify-between shadow-xs hover:shadow-md hover:-translate-y-0.5 cursor-pointer ${
                 isLight
-                  ? 'bg-white border-slate-200/90 hover:border-indigo-500/60 hover:shadow-indigo-500/10'
-                  : 'bg-gradient-to-b from-slate-900 to-slate-900/95 border-slate-800 hover:border-indigo-500/50 hover:shadow-indigo-500/15'
+                  ? 'bg-white border-slate-200/90 hover:border-indigo-500/50 hover:bg-slate-50/50'
+                  : 'bg-slate-900/90 border-slate-800 hover:border-indigo-500/50 hover:bg-slate-800/60'
               }`}
             >
-              {/* Card Cover Image Header */}
-              <div className="h-32 w-full relative overflow-hidden bg-slate-100 dark:bg-slate-800">
-                <img
-                  src={c.image}
-                  alt={c.label}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-
-                {/* Top Badge */}
-                <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
-                  <div className="w-8 h-8 rounded-xl bg-white/20 backdrop-blur-md text-white flex items-center justify-center text-xs shadow-sm border border-white/30">
-                    <i className={`fa-solid ${c.icon}`} />
-                  </div>
-                  <span className="text-[10px] font-black uppercase px-2.5 py-1 rounded-full bg-black/40 backdrop-blur-md text-white border border-white/20 shadow-xs">
-                    {c.badge}
-                  </span>
+              <div className="flex items-start justify-between gap-2 mb-2.5">
+                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-sm font-bold shrink-0 group-hover:scale-105 transition-transform">
+                  <i className={`fa-solid ${c.icon}`} />
                 </div>
-
-                {/* Title on bottom of image */}
-                <div className="absolute bottom-2.5 left-3.5 right-3.5">
-                  <h4 className="font-black text-sm text-white drop-shadow-sm flex items-center justify-between">
-                    <span>{c.label}</span>
-                    <i className="fa-solid fa-arrow-right text-xs text-white/70 group-hover:text-white group-hover:translate-x-1 transition-all" />
-                  </h4>
-                </div>
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${c.badgeColor || 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300'}`}>
+                  {c.badge}
+                </span>
               </div>
 
-              {/* Card Description */}
-              <div className="p-4 pt-3 space-y-1.5 flex-1 flex flex-col justify-between">
-                <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+              <div>
+                <h4 className="font-bold text-xs md:text-sm text-slate-900 dark:text-white flex items-center justify-between group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                  <span>{c.label}</span>
+                  <i className="fa-solid fa-arrow-right text-[11px] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                </h4>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 mt-1 leading-relaxed">
                   {c.desc}
                 </p>
-                <div className="pt-1 flex items-center gap-1.5 text-[11px] font-bold text-blue-600 dark:text-blue-400">
-                  <span>Khám phá ngay</span>
-                  <i className="fa-solid fa-chevron-right text-[9px]" />
-                </div>
               </div>
             </button>
           ))}

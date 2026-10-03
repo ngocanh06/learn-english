@@ -151,20 +151,20 @@ export default function GlobalAIAssistant({ activeNav = 'grammar', navParams = {
         {/* Main Floating Trigger Button */}
         <button
           onClick={() => setIsOpen((prev) => !prev)}
-          className={`h-11 w-11 sm:h-12 sm:w-auto sm:px-4 rounded-full shadow-lg flex items-center justify-center gap-2 transition-all duration-200 transform hover:scale-105 active:scale-95 cursor-pointer ${
+          className={`h-11 w-11 sm:h-11 sm:w-auto sm:px-3.5 rounded-full shadow-md flex items-center justify-center gap-2 transition-colors cursor-pointer ${
             isOpen
-              ? 'bg-rose-600 hover:bg-rose-700 text-white shadow-rose-500/20'
-              : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-blue-500/30'
+              ? 'bg-slate-700 hover:bg-slate-800 text-white'
+              : 'bg-blue-600 hover:bg-blue-700 text-white'
           }`}
-          title={isOpen ? 'Đóng Trợ Lý AI' : 'Mở Trợ Lý AI'}
+          title={isOpen ? 'Đóng hỏi đáp' : 'Hỏi đáp bài học'}
         >
           <i
             className={`fa-solid ${
-              isOpen ? 'fa-xmark text-sm' : 'fa-robot text-sm'
-            } transition-transform`}
+              isOpen ? 'fa-xmark text-sm' : 'fa-comment-dots text-sm'
+            }`}
           />
-          <span className="font-extrabold text-xs tracking-wide hidden sm:inline">
-            {isOpen ? 'Đóng' : 'Trợ Lý AI'}
+          <span className="font-semibold text-xs tracking-wide hidden sm:inline">
+            {isOpen ? 'Đóng' : 'Hỏi đáp'}
           </span>
         </button>
       </div>
@@ -172,30 +172,29 @@ export default function GlobalAIAssistant({ activeNav = 'grammar', navParams = {
       {/* ─── 2. FLOATING CHAT MODAL / DIALOG (WHEN OPEN) ─── */}
       {isOpen && (
         <div
-          className={`fixed bottom-24 right-4 sm:right-6 z-50 w-[92vw] sm:w-[460px] max-h-[82vh] h-[640px] rounded-3xl border shadow-2xl flex flex-col overflow-hidden transition-all duration-300 font-sans backdrop-blur-2xl ${
+          className={`fixed bottom-20 right-4 sm:right-6 z-50 w-[92vw] sm:w-[440px] max-h-[80vh] h-[600px] rounded-xl border shadow-lg flex flex-col overflow-hidden transition-all duration-200 font-sans ${
             isLight
-              ? 'bg-white/95 border-slate-200/90 text-slate-900 shadow-indigo-200/60'
-              : 'bg-slate-900/95 border-slate-700/80 text-white shadow-black/90'
+              ? 'bg-white border-slate-200 text-slate-900'
+              : 'bg-slate-900 border-slate-800 text-white'
           }`}
         >
           {/* Modal Header */}
-          <div className="p-4 px-5 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-3 shrink-0 bg-gradient-to-r from-blue-600/10 via-indigo-600/10 to-transparent">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-md shrink-0">
-                <i className="fa-solid fa-graduation-cap text-base" />
+          <div className="p-3.5 px-4 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-3 shrink-0 bg-slate-50 dark:bg-slate-850">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0">
+                <i className="fa-solid fa-graduation-cap text-xs" />
               </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
-                  <h3 className="font-black text-sm text-slate-900 dark:text-white truncate">
-                    Trợ Lý Học Tập AI
+                  <h3 className="font-bold text-xs md:text-sm text-slate-900 dark:text-white truncate">
+                    Trợ lý học tập
                   </h3>
-                  <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-500/15 text-emerald-500 border border-emerald-500/20 font-mono">
-                    Online 24/7
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
+                    Sẵn sàng
                   </span>
                 </div>
-                <p className="text-[11px] text-blue-600 dark:text-blue-400 truncate font-semibold mt-0.5 flex items-center gap-1">
-                  <i className="fa-solid fa-compass text-[10px]" />
-                  <span>{contextLabel}</span>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                  {contextLabel}
                 </p>
               </div>
             </div>

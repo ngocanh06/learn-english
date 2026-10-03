@@ -171,7 +171,6 @@ export const CURATED_IPA_DICT = {
   procrastination: '/proʊˌkræstəˈneɪʃən/',
   sustainable: '/səˈsteɪnəbl/',
   lifestyle: '/ˈlaɪfˌstaɪl/',
-  neighborhood: '/ˈneɪbərˌhʊd/',
   confidence: '/ˈkɑːnfədəns/',
   routine: '/ruːˈtiːn/',
   knowledge: '/ˈnɑːlɪdʒ/',
@@ -196,7 +195,7 @@ export function isDummyIpa(rawIpa, word) {
   if (!trimmed) return true;
 
   // Strip slashes, brackets, whitespace, punctuation
-  const cleanIpa = trimmed.replace(/[/\[\]\s]/g, '').toLowerCase();
+  const cleanIpa = trimmed.replace(/[/[\s\]]/g, '').toLowerCase();
   const cleanWord = (word || '').replace(/[^a-zA-Z]/g, '').toLowerCase();
 
   if (!cleanIpa) return true;
@@ -225,7 +224,7 @@ export function cleanAndNormalizeIpa(rawIpa) {
   let s = String(rawIpa).trim();
 
   // 1. Normalize slashes, brackets & excessive whitespace
-  s = s.replace(/^[/\[\s]+|[/\]\s]+$/g, '').replace(/\s+/g, ' ');
+  s = s.replace(/^[/[\s]+|[/\]\s]+$/g, '').replace(/\s+/g, ' ');
 
   // 2. Normalize stress marks: ASCII quotes & backticks -> standard IPA primary stress
   s = s.replace(/['`]/g, 'ˈ').replace(/,/g, 'ˌ');

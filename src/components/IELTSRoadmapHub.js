@@ -14,6 +14,7 @@ import IELTSWritingStudioPro from './ielts/IELTSWritingStudioPro';
 import IELTSSpeakingSimulator from './ielts/IELTSSpeakingSimulator';
 import IELTSVocabStudio from './ielts/IELTSVocabStudio';
 import IELTSPlacementTest from './ielts/IELTSPlacementTest';
+import IELTS33TopicsStudio from './ielts/IELTS33TopicsStudio';
 import VocabFromSheet from './VocabFromSheet';
 import { IELTS_VOCAB_SHEET } from '../config/sheets';
 import { useGoogleSheet } from '../hooks/useGoogleSheet';
@@ -119,6 +120,73 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
     return calculateIeltsBand(calcType, correctAnswers);
   }, [calcType, correctAnswers]);
 
+  // Adaptive learning analysis (Current Band vs Target 7.0+, Skill Gap & Next Lesson)
+  const adaptiveAnalysis = useMemo(() => {
+    const currentBand = diagnosticResult?.estimatedBand ? diagnosticResult.estimatedBand.toFixed(1) : '5.5';
+    const targetBand = '7.0+';
+
+    const skillStats = {
+      listening: { total: 0, done: 0 },
+      reading: { total: 0, done: 0 },
+      writing: { total: 0, done: 0 },
+      speaking: { total: 0, done: 0 },
+      vocab: { total: 0, done: 0 },
+    };
+
+    IELTS_WEEKS_DATA.forEach((w) => {
+      w.tasks.forEach((t) => {
+        const s = (t.skill || 'vocab').toLowerCase();
+        const key = skillStats[s] ? s : 'vocab';
+        skillStats[key].total += 1;
+        if (completedTasks[t.id]) {
+          skillStats[key].done += 1;
+        }
+      });
+    });
+
+    const skillKeys = ['writing', 'speaking', 'listening', 'reading'];
+    let lowestSkill = 'writing';
+    let lowestPct = 100;
+    skillKeys.forEach((k) => {
+      const { total, done } = skillStats[k];
+      const p = total > 0 ? (done / total) * 100 : 0;
+      if (p <= lowestPct) {
+        lowestPct = p;
+        lowestSkill = k;
+      }
+    });
+
+    let nextTask = null;
+    let nextWeek = null;
+    for (const w of IELTS_WEEKS_DATA) {
+      for (const t of w.tasks) {
+        if (!completedTasks[t.id]) {
+          nextTask = t;
+          nextWeek = w;
+          break;
+        }
+      }
+      if (nextTask) break;
+    }
+
+    return {
+      currentBand,
+      targetBand,
+      skillStats,
+      weakSkill: lowestSkill,
+      weakSkillLabel:
+        lowestSkill === 'writing'
+          ? 'Writing (Task 1 & Task 2)'
+          : lowestSkill === 'speaking'
+          ? 'Speaking (Phản xạ 3 Part)'
+          : lowestSkill === 'reading'
+          ? 'Reading (Tốc độ & bẫy)'
+          : 'Listening (Cam 12-18)',
+      nextTask,
+      nextWeek,
+    };
+  }, [diagnosticResult, completedTasks]);
+
   const getSkillBadge = (skill) => {
     const s = (skill || '').toLowerCase();
     switch (s) {
@@ -159,81 +227,77 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
     <div className="space-y-6 font-sans">
       {/* ─── 1. HERO STUDY ABROAD BANNER ─────────────────────────────── */}
       <div
-        className={`relative overflow-hidden rounded-3xl p-6 md:p-8 border shadow-lg transition-all duration-300 ${
+        className={`relative overflow-hidden rounded-xl p-6 md:p-7 border transition-all duration-200 ${
           isLight
-            ? 'bg-gradient-to-r from-blue-700 via-indigo-700 to-sky-700 text-white border-blue-600'
-            : 'bg-gradient-to-r from-blue-950 via-indigo-950 to-slate-900 text-white border-blue-900/60'
+            ? 'bg-slate-900 text-white border-slate-800'
+            : 'bg-slate-900 text-white border-slate-800'
         }`}
       >
-        {/* Ambient background glow */}
-        <div className="absolute -right-16 -top-16 w-80 h-80 bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute right-1/3 -bottom-20 w-60 h-60 bg-purple-500/20 rounded-full blur-3xl pointer-events-none" />
-
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div className="space-y-3 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-bold tracking-wide uppercase">
-              <i className="fa-solid fa-plane-departure text-amber-400" />
-              <span>IELTS Academic Track • Mục Tiêu Du Học Quốc Tế</span>
+          <div className="space-y-2.5 max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white/10 border border-white/15 text-xs font-semibold tracking-wide uppercase">
+              <i className="fa-solid fa-graduation-cap text-blue-400" />
+              <span>IELTS Academic Track • Mục Tiêu 7.0+</span>
             </div>
 
-            <h1 className="text-2xl md:text-3xl font-black tracking-tight leading-snug">
-              Lộ Trình Bứt Phá IELTS Academic 5.5 → 7.0+
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight leading-snug">
+              Lộ Trình Ôn Luyện IELTS Academic 5.5 → 7.0+
             </h1>
 
-            <p className="text-sm md:text-base text-blue-100/90 leading-relaxed">
-              Chiến lược 24 tuần cấp tốc (3 - 4 giờ/ngày) chia theo 4 slots khoa học: giải trọn bộ
+            <p className="text-sm md:text-base text-slate-300 leading-relaxed">
+              Chiến lược 24 tuần cấp tốc chia theo 4 khung giờ khoa học: giải bộ
               Cambridge IELTS 12 - 19, làm chủ Writing Task 1 & 2, phản xạ Speaking Part 1 - 3 và
               hấp thụ 570 từ vựng Academic Word List.
             </p>
 
             {/* Quick Metrics Chips */}
-            <div className="flex flex-wrap items-center gap-3 pt-2 text-xs">
-              <span className="px-3 py-1.5 rounded-xl bg-black/25 backdrop-blur-md border border-white/10 flex items-center gap-1.5">
-                <i className="fa-solid fa-bullseye text-amber-400" />
-                <span>Target: <strong>7.0+ Overall</strong> (Không skill &lt; 6.5)</span>
+            <div className="flex flex-wrap items-center gap-2.5 pt-1 text-xs">
+              <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 flex items-center gap-1.5 text-slate-200">
+                <i className="fa-solid fa-bullseye text-blue-400" />
+                <span>Target: <strong className="text-white">7.0+ Overall</strong></span>
               </span>
-              <span className="px-3 py-1.5 rounded-xl bg-black/25 backdrop-blur-md border border-white/10 flex items-center gap-1.5">
-                <i className="fa-solid fa-clock text-sky-400" />
-                <span>Cường độ: <strong>3 - 4 giờ/ngày</strong> (4 Slots)</span>
+              <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 flex items-center gap-1.5 text-slate-200">
+                <i className="fa-solid fa-clock text-blue-400" />
+                <span>Cường độ: <strong className="text-white">3 - 4 giờ/ngày</strong></span>
               </span>
-              <span className="px-3 py-1.5 rounded-xl bg-black/25 backdrop-blur-md border border-white/10 flex items-center gap-1.5">
-                <i className="fa-solid fa-graduation-cap text-emerald-400" />
-                <span>Chuẩn: <strong>Đại học &amp; Thạc sĩ quốc tế</strong></span>
+              <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 flex items-center gap-1.5 text-slate-200">
+                <i className="fa-solid fa-certificate text-emerald-400" />
+                <span>Chuẩn: <strong className="text-white">Đại học quốc tế</strong></span>
               </span>
             </div>
           </div>
 
           {/* Progress Card */}
-          <div className="p-5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 min-w-[280px] lg:w-80 flex flex-col justify-between shrink-0 shadow-inner">
+          <div className="p-4 md:p-5 rounded-xl bg-white/5 border border-white/10 min-w-[260px] lg:w-72 flex flex-col justify-between shrink-0">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-blue-200">
-                Tiến Độ Toàn Lộ Trình
+              <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                Tiến Độ Lộ Trình
               </span>
-              <span className="text-2xl font-black font-mono text-amber-300">
+              <span className="text-2xl font-bold font-mono text-emerald-400">
                 {progressPercent}%
               </span>
             </div>
 
             {/* Progress Bar */}
-            <div className="w-full h-3 rounded-full bg-black/30 overflow-hidden mb-3">
+            <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden mb-3">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-amber-400 to-emerald-400 transition-all duration-500"
+                className="h-full rounded-full bg-emerald-500 transition-all duration-500"
                 style={{ width: `${Math.max(4, progressPercent)}%` }}
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-2 text-xs text-blue-100">
+            <div className="grid grid-cols-2 gap-2 text-xs text-slate-300">
               <div className="p-2 rounded-lg bg-black/20 text-center">
                 <div className="font-bold text-white font-mono text-sm">
                   {completedCount} / {totalTasksCount}
                 </div>
-                <div className="text-[10px] text-blue-200">Nhiệm vụ xong</div>
+                <div className="text-[10px] text-slate-400">Nhiệm vụ xong</div>
               </div>
               <div className="p-2 rounded-lg bg-black/20 text-center">
                 <div className="font-bold text-white font-mono text-sm">
                   {completedWeeksCount} / 24
                 </div>
-                <div className="text-[10px] text-blue-200">Tuần hoàn tất</div>
+                <div className="text-[10px] text-slate-400">Tuần hoàn tất</div>
               </div>
             </div>
           </div>
@@ -243,21 +307,22 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
       {/* ─── 2. SUB-NAV TABS ────────────────────────────────────────── */}
       <div
         id="ielts-subnav-root"
-        className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 overflow-x-auto scrollbar-hide"
+        className="flex items-center gap-1.5 p-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 overflow-x-auto scrollbar-hide"
       >
         {[
           {
             id: 'placement-test',
-            label: 'Test Năng Lực Đầu Vào 🎯',
+            label: 'Đánh giá năng lực đầu vào',
             icon: 'fa-crosshairs',
-            badge: diagnosticResult ? `Band ${diagnosticResult.estimatedBand.toFixed(1)}` : 'Nên làm ngay',
+            badge: diagnosticResult ? `Band ${diagnosticResult.estimatedBand.toFixed(1)}` : 'Nên làm',
           },
           { id: 'roadmap', label: 'Lộ Trình 24 Tuần', icon: 'fa-calendar-week' },
-          { id: 'listening-lab', label: 'Phòng Luyện Nghe (Listening Lab)', icon: 'fa-headphones', badge: 'Cam 12-18' },
-          { id: 'reading-lab', label: 'Phòng Luyện Đọc (Reading Lab)', icon: 'fa-book-open', badge: 'Cam 17-18' },
-          { id: 'writing-studio', label: 'Luyện Viết (Writing Studio)', icon: 'fa-pen-nib', badge: 'AI Chấm' },
-          { id: 'speaking-sim', label: 'Luyện Nói (Speaking Simulator)', icon: 'fa-microphone-lines', badge: 'Thu âm' },
-          { id: 'sheet-vocab', label: 'Từ Vựng IELTS (Google Sheet) 📑', icon: 'fa-earth-americas', badge: `${ieltsSheetData?.length || 0} từ` },
+          { id: 'listening-lab', label: 'Phòng Luyện Nghe', icon: 'fa-headphones', badge: 'Cam 12-18' },
+          { id: 'reading-lab', label: 'Phòng Luyện Đọc', icon: 'fa-book-open', badge: 'Cam 17-18' },
+          { id: 'writing-studio', label: 'Luyện Viết (Writing)', icon: 'fa-pen-nib', badge: 'Chấm bài' },
+          { id: 'speaking-sim', label: 'Luyện Nói (Speaking)', icon: 'fa-microphone-lines', badge: 'Thu âm' },
+          { id: 'ielts-33-topics', label: '33 Chủ Đề Từ Vựng IELTS', icon: 'fa-book-bookmark', badge: '4,050 từ' },
+          { id: 'sheet-vocab', label: 'Từ Vựng IELTS (Google Sheet)', icon: 'fa-earth-americas', badge: `${ieltsSheetData?.length || 0} từ` },
           { id: 'awl-vocab', label: 'Từ Vựng AWL (Flashcards)', icon: 'fa-layer-group', badge: '570 từ' },
           { id: 'calculator', label: 'Bảng Điểm & Quy Đổi Band', icon: 'fa-calculator' },
           { id: 'writing', label: 'Writing Cheat Sheet', icon: 'fa-file-lines' },
@@ -269,9 +334,9 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
             <button
               key={tab.id}
               onClick={() => setActiveSubTab(tab.id)}
-              className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap select-none ${
+              className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-2 whitespace-nowrap select-none ${
                 active
-                  ? 'bg-blue-600 text-white shadow-md'
+                  ? 'bg-blue-600 text-white shadow-xs'
                   : isLight
                   ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                   : 'text-slate-400 hover:text-white hover:bg-slate-800'
@@ -281,12 +346,10 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
               <span>{tab.label}</span>
               {tab.badge && (
                 <span
-                  className={`px-1.5 py-0.5 rounded text-[9px] font-black leading-none ${
+                  className={`px-1.5 py-0.5 rounded text-[10px] font-medium leading-none ${
                     active
                       ? 'bg-white text-blue-600'
-                      : tab.id === 'placement-test' && !diagnosticResult
-                      ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white animate-pulse'
-                      : 'bg-gradient-to-r from-amber-500 to-rose-500 text-white'
+                      : 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
                   }`}
                 >
                   {tab.badge}
@@ -317,101 +380,142 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
       {/* ═══════════════════════════════════════════════════════════════ */}
       {activeSubTab === 'roadmap' && (
         <div className="space-y-6">
-          {/* Diagnostic Assessment Banner */}
-          {diagnosticResult ? (
-            <div
-              className={`p-5 rounded-3xl border flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm ${
-                isLight
-                  ? 'bg-gradient-to-r from-emerald-50 via-teal-50 to-blue-50 border-emerald-200'
-                  : 'bg-gradient-to-r from-emerald-950/40 via-teal-950/30 to-blue-950/40 border-emerald-800/60'
-              }`}
-            >
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center font-black text-xl shadow-md shrink-0">
-                  {diagnosticResult.estimatedBand.toFixed(1)}
+          {/* ─── IELTS ADAPTIVE GUIDANCE & ACTION CARD (MASTER PROMPT V2.1) ─── */}
+          <div
+            className={`p-6 rounded-3xl border transition-all shadow-sm ${
+              isLight
+                ? 'bg-gradient-to-r from-blue-50/70 via-indigo-50/50 to-white border-blue-200 text-slate-900'
+                : 'bg-gradient-to-r from-slate-900 via-blue-950/30 to-slate-900 border-blue-900/60 text-white'
+            }`}
+          >
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+              {/* Left Column: Adaptive Level & Skill Gap Analysis */}
+              <div className="space-y-3 max-w-xl">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider bg-blue-600 text-white shadow-xs">
+                    <i className="fa-solid fa-compass mr-1.5" />
+                    Lộ Trình Thích Ứng (Adaptive Path)
+                  </span>
+                  <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                    Mục tiêu: Du học Đại học / Thạc sĩ quốc tế
+                  </span>
                 </div>
-                <div>
-                  <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500 text-white">
-                      Đã Test Năng Lực
-                    </span>
-                    <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
-                      Điểm: {diagnosticResult.score}/25 câu đúng ({diagnosticResult.percentage}%)
+
+                <div className="flex items-center gap-4 pt-1">
+                  <div>
+                    <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">Trình độ hiện tại</span>
+                    <span className="text-2xl font-black text-blue-600 dark:text-blue-400 font-mono">
+                      Band {adaptiveAnalysis.currentBand}
                     </span>
                   </div>
-                  <h4 className={`text-base font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>
-                    Xuất phát điểm đề xuất: <span className="text-blue-500 font-black">Tuần {diagnosticResult.recommendedWeek}</span> ({diagnosticResult.recommendationTitle})
-                  </h4>
-                  <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
-                    Hệ thống đã bỏ qua các nội dung cơ bản bạn đã nắm chắc và tập trung thẳng vào mục tiêu 7.0+ du học.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2.5 shrink-0 self-end md:self-center">
-                <button
-                  onClick={() => {
-                    setExpandedWeek(diagnosticResult.recommendedWeek);
-                    const el = document.getElementById(`week-card-${diagnosticResult.recommendedWeek}`);
-                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                  }}
-                  className="px-4 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm flex items-center gap-2 transition-all cursor-pointer"
-                >
-                  <i className="fa-solid fa-arrow-down-short-wide text-xs" />
-                  <span>Xem Tuần {diagnosticResult.recommendedWeek}</span>
-                </button>
-                <button
-                  onClick={() => setActiveSubTab('placement-test')}
-                  className={`px-3.5 py-2.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                    isLight
-                      ? 'border-slate-300 hover:bg-slate-100 text-slate-700'
-                      : 'border-slate-700 hover:bg-slate-800 text-slate-300'
-                  }`}
-                >
-                  <i className="fa-solid fa-rotate-right text-xs mr-1.5" />
-                  Test lại
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div
-              className={`p-5 rounded-3xl border flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm ${
-                isLight
-                  ? 'bg-gradient-to-r from-amber-50 via-blue-50 to-indigo-50 border-amber-200'
-                  : 'bg-gradient-to-r from-amber-950/40 via-blue-950/30 to-indigo-950/40 border-amber-800/60'
-              }`}
-            >
-              <div className="flex items-start gap-3.5">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-rose-500 text-white flex items-center justify-center text-xl shadow-md shrink-0">
-                  <i className="fa-solid fa-crosshairs animate-spin-slow" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500 text-white">
-                      Khuyến nghị bắt buộc
-                    </span>
-                    <span className="text-xs font-bold text-amber-600 dark:text-amber-400">
-                      Khoảng 15 - 20 phút
+                  <i className="fa-solid fa-arrow-right text-slate-400 text-sm" />
+                  <div>
+                    <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">Mục tiêu bứt phá</span>
+                    <span className="text-2xl font-black text-amber-500 font-mono">
+                      Band {adaptiveAnalysis.targetBand}
                     </span>
                   </div>
-                  <h4 className={`text-base font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>
-                    Làm Bài Test Năng Lực Để Tìm Đúng Tuần Xuất Phát Cho Bạn
-                  </h4>
-                  <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 max-w-2xl leading-relaxed">
-                    Bạn đã có nền tảng từ vựng, ngữ pháp cơ bản và nghe hiểu dẫn. Đừng bắt đầu từ Tuần 1 mất thời gian! Hãy làm bài kiểm tra 25 câu chuẩn hóa để hệ thống xác định chính xác năng lực thực tế và nhảy thẳng vào tuần học phù hợp.
-                  </p>
+                  <div className="h-8 w-px bg-slate-200 dark:bg-slate-800 mx-1" />
+                  <div>
+                    <span className="text-[10px] uppercase font-bold text-rose-500 tracking-wider block">Kỹ năng cần tập trung</span>
+                    <span className="text-sm font-black text-rose-600 dark:text-rose-400">
+                      {adaptiveAnalysis.weakSkillLabel}
+                    </span>
+                  </div>
                 </div>
+
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                  {diagnosticResult
+                    ? `Dựa trên kết quả Test Năng Lực (${diagnosticResult.score}/25 câu đúng), hệ thống đề xuất học tập từ Tuần ${diagnosticResult.recommendedWeek} và tập trung giải quyết bẫy điểm yếu.`
+                    : 'Chưa làm bài test đánh giá đầu vào. Hãy làm bài test 15 phút để hệ thống tự động cá nhân hóa lộ trình và nhảy thẳng vào tuần phù hợp.'}
+                </p>
               </div>
 
-              <button
-                onClick={() => setActiveSubTab('placement-test')}
-                className="px-5 py-3 rounded-2xl text-xs font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-lg shadow-blue-500/25 flex items-center gap-2 shrink-0 self-end md:self-center transition-all cursor-pointer"
+              {/* Right Column: Next Recommended Action */}
+              <div
+                className={`p-5 rounded-2xl border flex flex-col justify-between min-w-[300px] lg:w-96 shrink-0 ${
+                  isLight
+                    ? 'bg-white border-blue-200/90 shadow-sm'
+                    : 'bg-slate-800/90 border-slate-700 shadow-md'
+                }`}
               >
-                <i className="fa-solid fa-play text-xs" />
-                <span>Bắt Đầu Test Năng Lực</span>
-              </button>
+                <div>
+                  <div className="flex items-center justify-between text-xs mb-2">
+                    <span className="font-black text-blue-600 dark:text-blue-400 uppercase tracking-wider text-[10px] flex items-center gap-1.5">
+                      <i className="fa-solid fa-bolt" />
+                      Bài Học Kế Tiếp Hôm Nay
+                    </span>
+                    <span className="font-mono text-slate-400 text-[11px]">
+                      {completedCount}/{totalTasksCount} ({progressPercent}%)
+                    </span>
+                  </div>
+
+                  {adaptiveAnalysis.nextTask ? (
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-2">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-300">
+                          Tuần {adaptiveAnalysis.nextWeek?.weekNum}
+                        </span>
+                        <h5 className="font-bold text-xs truncate text-slate-900 dark:text-white">
+                          {adaptiveAnalysis.nextTask.title}
+                        </h5>
+                      </div>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 leading-tight">
+                        {adaptiveAnalysis.nextTask.desc}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-xs text-emerald-500 font-bold">
+                      Xuất sắc! Bạn đã hoàn thành toàn bộ các bài học trong lộ trình 24 tuần.
+                    </p>
+                  )}
+                </div>
+
+                <div className="pt-4 flex items-center gap-2">
+                  {adaptiveAnalysis.nextTask && (
+                    <>
+                      <button
+                        onClick={() => {
+                          if (adaptiveAnalysis.nextWeek) {
+                            setExpandedWeek(adaptiveAnalysis.nextWeek.weekNum);
+                            const el = document.getElementById(`week-card-${adaptiveAnalysis.nextWeek.weekNum}`);
+                            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                          }
+                        }}
+                        className="flex-1 py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition shadow-xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-98"
+                      >
+                        <i className="fa-solid fa-play text-[10px]" />
+                        <span>Vào Học Ngay</span>
+                      </button>
+
+                      <button
+                        onClick={() => toggleTask(adaptiveAnalysis.nextTask.id)}
+                        className={`py-2 px-3 rounded-xl border text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer ${
+                          isLight
+                            ? 'border-slate-300 hover:bg-slate-100 text-slate-700'
+                            : 'border-slate-600 hover:bg-slate-700 text-slate-200'
+                        }`}
+                        title="Đánh dấu hoàn thành"
+                      >
+                        <i className="fa-solid fa-check text-xs" />
+                        <span>Xong</span>
+                      </button>
+                    </>
+                  )}
+
+                  {!diagnosticResult && (
+                    <button
+                      onClick={() => setActiveSubTab('placement-test')}
+                      className="py-2 px-3 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
+                    >
+                      <i className="fa-solid fa-crosshairs text-[10px]" />
+                      <span>Làm Test</span>
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
-          )}
+          </div>
 
           {/* Phase Cards Selector */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -786,6 +890,13 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
       {/* ═══════════════════════════════════════════════════════════════ */}
       {activeSubTab === 'speaking-sim' && (
         <IELTSSpeakingSimulator theme={theme} />
+      )}
+
+      {/* ═══════════════════════════════════════════════════════════════ */}
+      {/* ─── TAB: 33 CHỦ ĐỀ TỪ VỰNG IELTS THỰC CHIẾN (4,050 TỪ) ────── */}
+      {/* ═══════════════════════════════════════════════════════════════ */}
+      {activeSubTab === 'ielts-33-topics' && (
+        <IELTS33TopicsStudio theme={theme} />
       )}
 
       {/* ═══════════════════════════════════════════════════════════════ */}

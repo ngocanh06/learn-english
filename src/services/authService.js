@@ -153,7 +153,18 @@ function saveUsers(users) {
 export function getActiveSession() {
   try {
     const sessionJson = localStorage.getItem(SESSION_STORAGE_KEY);
-    if (!sessionJson) return null;
+    if (!sessionJson) {
+      // Auto-initialize primary student profile (Ngọc Anh) for PWA cold start and seamless cross-platform sync
+      const users = getAllUsers();
+      const defaultStudent = users.find((u) => u.username === 'ngocanh136' || u.id === 'user_ngocanh136') || users[0];
+      if (defaultStudent) {
+        const { password: _, ...cleanUser } = defaultStudent;
+        setActiveSession(cleanUser);
+        migrateGuestData(cleanUser.id);
+        return cleanUser;
+      }
+      return null;
+    }
     const session = JSON.parse(sessionJson);
     // Find current fresh user record
     const users = getAllUsers();

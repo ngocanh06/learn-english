@@ -38,7 +38,7 @@ export default function Header({
           </button>
 
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-lg flex items-center justify-center shadow-sm">
+            <div className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center">
               <i className={`fa-solid ${currentItem.icon} text-white text-xs`} />
             </div>
             <div>
