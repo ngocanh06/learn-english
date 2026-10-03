@@ -19,6 +19,7 @@ import {
 import study4ListeningData from '../data/study4ListeningTest1.json';
 import study4ReadingData from '../data/study4ReadingTest1.json';
 import { VOCAB_DATABASE } from '../data/vocabularyByLevelAndPart';
+import OverdueStudyReminderBanner from './OverdueStudyReminderBanner';
 import { calculateOverdueTasks } from '../utils/overdueTasksHelper';
 import { DEFAULT_USER_LEARNING_PROFILE } from '../config/learningCertifications';
 
