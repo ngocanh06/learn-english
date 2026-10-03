@@ -51,6 +51,7 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
   const [selectedSkill, setSelectedSkill] = useState('ALL');
   const [expandedWeek, setExpandedWeek] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
+  const [sprintFilterActive, setSprintFilterActive] = useState(true);
 
   // Band Score Calculator state
   const [calcType, setCalcType] = useState('reading'); // 'reading' | 'listening'
@@ -100,6 +101,9 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
   // Filtered weeks
   const filteredWeeks = useMemo(() => {
     return IELTS_WEEKS_DATA.filter((w) => {
+      if (sprintFilterActive && dynamicIelts.totalWeeks && dynamicIelts.totalWeeks < 24) {
+        if (w.week > dynamicIelts.totalWeeks) return false;
+      }
       if (selectedPhase !== 'ALL' && w.phase !== selectedPhase) return false;
       if (selectedSkill !== 'ALL') {
         const hasSkill = w.tasks.some(
@@ -120,7 +124,7 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
       }
       return true;
     });
-  }, [selectedPhase, selectedSkill, searchQuery]);
+  }, [selectedPhase, selectedSkill, searchQuery, sprintFilterActive, dynamicIelts.totalWeeks]);
 
   // Calculated Band
   const currentBandResult = useMemo(() => {
@@ -476,7 +480,18 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
             icon: 'fa-crosshairs',
             badge: diagnosticResult ? `Band ${diagnosticResult.estimatedBand.toFixed(1)}` : 'Nên làm',
           },
-          { id: 'roadmap', label: 'Lộ Trình 24 Tuần', icon: 'fa-calendar-week' },
+          {
+            id: 'roadmap',
+            label: dynamicIelts.daysRemaining <= 45
+              ? `Lộ Trình Cấp Tốc (${dynamicIelts.totalWeeks} Tuần)`
+              : dynamicIelts.daysRemaining <= 70
+              ? `Lộ Trình Tăng Tốc (${dynamicIelts.totalWeeks} Tuần)`
+              : dynamicIelts.daysRemaining <= 130
+              ? `Lộ Trình Chuẩn (${dynamicIelts.totalWeeks} Tuần)`
+              : 'Lộ Trình Toàn Diện (24 Tuần)',
+            icon: 'fa-calendar-week',
+            badge: `${dynamicIelts.totalWeeks} tuần`,
+          },
           { id: 'listening-lab', label: 'Phòng Luyện Nghe', icon: 'fa-headphones', badge: 'Cam 12-18' },
           { id: 'reading-lab', label: 'Phòng Luyện Đọc', icon: 'fa-book-open', badge: 'Cam 17-18' },
           { id: 'writing-studio', label: 'Luyện Viết (Writing)', icon: 'fa-pen-nib', badge: 'Chấm bài' },
@@ -736,6 +751,23 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
           >
             {/* Skill Filters */}
             <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto scrollbar-hide">
+              {dynamicIelts.totalWeeks < 24 && (
+                <button
+                  onClick={() => setSprintFilterActive(!sprintFilterActive)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all select-none flex items-center gap-1.5 whitespace-nowrap cursor-pointer shrink-0 ${
+                    sprintFilterActive
+                      ? 'bg-amber-500 text-slate-950 shadow-xs'
+                      : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+                  }`}
+                >
+                  <i className="fa-solid fa-bolt text-[10px]" />
+                  <span>
+                    {sprintFilterActive
+                      ? `Lọc ${dynamicIelts.totalWeeks} tuần (${dynamicIelts.daysRemaining} ngày)`
+                      : 'Hiện đủ 24 tuần'}
+                  </span>
+                </button>
+              )}
               <span className="text-xs font-bold text-slate-400 mr-1 shrink-0">Kỹ năng:</span>
               {['ALL', 'Listening', 'Reading', 'Writing', 'Speaking', 'Vocab'].map((sk) => {
                 const active = selectedSkill === sk;

@@ -100,8 +100,8 @@ export default function AILearningCoach({
   const [knownVocab] = useUserStorage('vocab_mastery_v2', {});
 
   // Active Hub Tab: 'my-plan' | 'calendar-view' | 'master-roadmap' | 'writing-studio' | 'cefr-hub' | 'dailydictation' | 'study4-toeic'
-  const [savedActiveTab, setSavedActiveTab] = useUserStorage('ai_coach_active_tab_v2', 'calendar-view');
-  const [activeTab, setActiveTabState] = useState(() => initialTab || savedActiveTab || 'calendar-view');
+  const [savedActiveTab, setSavedActiveTab] = useUserStorage('ai_coach_active_tab_v3', 'my-plan');
+  const [activeTab, setActiveTabState] = useState(() => initialTab || savedActiveTab || 'my-plan');
 
   const setActiveTab = useCallback((tab) => {
     setActiveTabState(tab);
@@ -514,12 +514,18 @@ export default function AILearningCoach({
       {/* ─── TABS NAVIGATION (Clean Segmented Pills) ─── */}
       <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 w-fit overflow-x-auto scrollbar-hide">
         {[
-          { id: 'calendar-view', label: 'Lịch Học (Tháng / Tuần / Ngày)', icon: 'fa-calendar-days' },
+          {
+            id: 'my-plan',
+            label: '🎯 Kế Hoạch Cá Nhân Hóa (Adaptive Engine)',
+            icon: 'fa-compass-drafting',
+            badge: 'Tự Động Tính Toán',
+          },
           learningProfile?.certification === 'toeic'
-            ? { id: 'study4-toeic', label: 'Lộ Trình TOEIC Thực Chiến (Study4) 🎯', icon: 'fa-table-list', badge: 'Mục Tiêu TOEIC' }
+            ? { id: 'study4-toeic', label: 'Lộ Trình Đề Thi TOEIC (ETS Study4) 🎯', icon: 'fa-table-list', badge: 'Chi Tiết Buổi' }
             : learningProfile?.certification === 'none'
-            ? { id: 'master-roadmap', label: 'Lộ Trình Nền Tảng 5 Kỹ Năng 🌿', icon: 'fa-layer-group', badge: 'Mục Tiêu Nền Tảng' }
-            : { id: 'ielts-roadmap', label: 'Lộ Trình IELTS 7.0+ Du Học ✈️', icon: 'fa-plane-departure', badge: 'Mục Tiêu IELTS' },
+            ? { id: 'master-roadmap', label: 'Lộ Trình Nền Tảng 5 Kỹ Năng 🌿', icon: 'fa-layer-group', badge: 'Nền Tảng' }
+            : { id: 'ielts-roadmap', label: 'Lộ Trình IELTS Cambridge ✈️', icon: 'fa-plane-departure', badge: 'Cambridge' },
+          { id: 'calendar-view', label: 'Thời Khóa Biểu (Lịch Học Ngày / Tuần)', icon: 'fa-calendar-days' },
           { id: 'dailydictation', label: 'DailyDictation (Luyện Nghe)', icon: 'fa-headphones' },
           { id: 'writing-studio', label: 'Luyện Dịch Câu (Writing Studio)', icon: 'fa-pen-nib' },
         ].map((tab) => {
@@ -555,6 +561,7 @@ export default function AILearningCoach({
             <PersonalizedPlanDashboard
               profile={learningProfile}
               onOpenSettings={() => setOnboardingModalOpen(true)}
+              onUpdateProfile={(updated) => setLearningProfile(updated)}
               onNavigate={(nav, params) => {
                 if (['vocab', 'vocabulary', 'reading', 'writing', 'video-hub', 'grammar'].includes(nav)) {
                   onNavigate && onNavigate(nav, params);

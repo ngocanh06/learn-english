@@ -880,7 +880,18 @@ export function generatePersonalizedRoadmap(rawUserProfile, rawGoal = {}) {
   let totalWeeks = 16; // default 4 months
   let hasSpecificDeadline = false;
 
-  if (examDate) {
+  const explicitDays = rawGoal.daysRemaining ?? userProfile.daysRemaining;
+  const explicitMonths = rawGoal.targetDurationMonths ?? userProfile.targetDurationMonths;
+
+  if (explicitDays !== undefined && explicitDays !== null) {
+    daysRemaining = Number(explicitDays);
+    totalWeeks = Math.max(2, Math.ceil(daysRemaining / 7));
+    hasSpecificDeadline = true;
+  } else if (explicitMonths) {
+    daysRemaining = Number(explicitMonths) * 30;
+    totalWeeks = Math.max(2, Math.ceil(daysRemaining / 7));
+    hasSpecificDeadline = true;
+  } else if (examDate) {
     const today = new Date();
     const targetDate = new Date(examDate);
     const diffTime = targetDate - today;
