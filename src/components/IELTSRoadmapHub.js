@@ -18,9 +18,16 @@ import IELTS33TopicsStudio from './ielts/IELTS33TopicsStudio';
 import VocabFromSheet from './VocabFromSheet';
 import { IELTS_VOCAB_SHEET } from '../config/sheets';
 import { useGoogleSheet } from '../hooks/useGoogleSheet';
+import { DEFAULT_USER_LEARNING_PROFILE } from '../config/learningCertifications';
+import { generateDynamicIeltsSchedule } from '../services/dynamicScheduleEngine';
+import PersonalizedOnboardingModal from './PersonalizedOnboardingModal';
 
 export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
   const isLight = theme === 'light';
+
+  const [learningProfile, setLearningProfile] = useUserStorage('user_learning_profile_v1', DEFAULT_USER_LEARNING_PROFILE);
+  const [onboardingOpen, setOnboardingOpen] = useState(false);
+  const dynamicIelts = useMemo(() => generateDynamicIeltsSchedule(learningProfile), [learningProfile]);
 
   // Persistence: Completed IELTS tasks { [taskId]: boolean }
   const [completedTasks, setCompletedTasks] = useUserStorage('ielts_completed_tasks_v1', {});
@@ -235,34 +242,48 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
       >
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-2.5 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white/10 border border-white/15 text-xs font-semibold tracking-wide uppercase">
-              <i className="fa-solid fa-graduation-cap text-blue-400" />
-              <span>IELTS Academic Track • Mục Tiêu 7.0+</span>
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white/10 border border-white/15 text-xs font-semibold tracking-wide uppercase">
+                <i className="fa-solid fa-graduation-cap text-blue-400" />
+                <span>IELTS Academic Track • Band {learningProfile?.targetScore || '7.0'}</span>
+              </div>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-blue-500/20 text-blue-300 border border-blue-400/30">
+                {dynamicIelts.paceLabel}
+              </span>
             </div>
 
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight leading-snug">
-              Lộ Trình Ôn Luyện IELTS Academic 5.5 → 7.0+
-            </h1>
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <h1 className="text-2xl md:text-3xl font-bold tracking-tight leading-snug">
+                Lộ Trình IELTS Academic: Mục Tiêu Band {learningProfile?.targetScore || '7.0'}
+              </h1>
+              <button
+                onClick={() => setOnboardingOpen(true)}
+                className="px-3 py-1.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/20 transition flex items-center gap-1.5 cursor-pointer"
+              >
+                <i className="fa-solid fa-sliders text-blue-400" />
+                <span>Đổi Mục Tiêu</span>
+              </button>
+            </div>
 
             <p className="text-sm md:text-base text-slate-300 leading-relaxed">
-              Chiến lược 24 tuần cấp tốc chia theo 4 khung giờ khoa học: giải bộ
-              Cambridge IELTS 12 - 19, làm chủ Writing Task 1 & 2, phản xạ Speaking Part 1 - 3 và
-              hấp thụ 570 từ vựng Academic Word List.
+              Chiến lược {dynamicIelts.totalWeeks} tuần cá nhân hóa theo quỹ thời gian: luyện tập bộ{' '}
+              {dynamicIelts.cambridgeSeries}, làm chủ Writing Task 1 & 2, phản xạ Speaking Part 1 - 3 và
+              hấp thụ từ vựng chuyên sâu Academic Word List.
             </p>
 
             {/* Quick Metrics Chips */}
             <div className="flex flex-wrap items-center gap-2.5 pt-1 text-xs">
               <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 flex items-center gap-1.5 text-slate-200">
                 <i className="fa-solid fa-bullseye text-blue-400" />
-                <span>Target: <strong className="text-white">7.0+ Overall</strong></span>
+                <span>Target: <strong className="text-white">Band {learningProfile?.targetScore || '7.0'} Overall</strong></span>
               </span>
               <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 flex items-center gap-1.5 text-slate-200">
                 <i className="fa-solid fa-clock text-blue-400" />
-                <span>Cường độ: <strong className="text-white">3 - 4 giờ/ngày</strong></span>
+                <span>Cường độ: <strong className="text-white">{learningProfile?.dailyStudyMinutes || 60} phút/ngày</strong></span>
               </span>
               <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 flex items-center gap-1.5 text-slate-200">
-                <i className="fa-solid fa-certificate text-emerald-400" />
-                <span>Chuẩn: <strong className="text-white">Đại học quốc tế</strong></span>
+                <i className="fa-solid fa-book-bookmark text-emerald-400" />
+                <span>Đề thi: <strong className="text-white">{dynamicIelts.cambridgeSeries}</strong></span>
               </span>
             </div>
           </div>
@@ -301,6 +322,145 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* ─── INTERACTIVE IELTS ROADMAP TUNER ─── */}
+      <div className={`p-4 md:p-5 rounded-2xl border transition-all space-y-3 ${
+        isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900 border-slate-800'
+      }`}>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <span className="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center text-xs font-bold shadow-xs">
+              <i className="fa-solid fa-sliders" />
+            </span>
+            <span className="text-xs font-extrabold text-slate-900 dark:text-white uppercase tracking-wider">
+              Tùy Chỉnh Mục Tiêu & Thời Gian Ôn Luyện IELTS
+            </span>
+          </div>
+          <span className="text-[11px] text-slate-500 italic">
+            Lộ trình tự động điều chỉnh bộ Cambridge và chiến lược tương ứng
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+          {/* Target Band */}
+          <div className="space-y-1.5 p-3 rounded-xl bg-white dark:bg-slate-850 border border-slate-200 dark:border-slate-800">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
+              1. Mục Tiêu Band Điểm
+            </span>
+            <div className="grid grid-cols-3 gap-1">
+              {[
+                { band: '5.5', label: 'Band 5.5' },
+                { band: '6.5', label: 'Band 6.5' },
+                { band: '7.5', label: 'Band 7.5+' },
+              ].map((btn) => {
+                const active = String(learningProfile?.targetScore) === btn.band;
+                return (
+                  <button
+                    key={btn.band}
+                    onClick={() => {
+                      setLearningProfile((prev) => ({
+                        ...prev,
+                        targetScore: btn.band,
+                      }));
+                    }}
+                    className={`py-1.5 px-1 rounded-lg text-center font-black text-xs transition cursor-pointer ${
+                      active
+                        ? 'bg-blue-600 text-white shadow-xs'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    {btn.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Deadline */}
+          <div className="space-y-1.5 p-3 rounded-xl bg-white dark:bg-slate-850 border border-slate-200 dark:border-slate-800">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
+              2. Thời Gian Ôn Thi
+            </span>
+            <div className="grid grid-cols-4 gap-1">
+              {[
+                { days: 30, label: '30N' },
+                { days: 60, label: '60N' },
+                { days: 90, label: '90N' },
+                { days: 180, label: '180N' },
+              ].map((btn) => {
+                const active = (dynamicIelts.daysRemaining || 60) === btn.days;
+                return (
+                  <button
+                    key={btn.days}
+                    onClick={() => {
+                      setLearningProfile((prev) => ({
+                        ...prev,
+                        daysRemaining: btn.days,
+                        examDate: null,
+                      }));
+                    }}
+                    className={`py-1.5 px-1 rounded-lg text-center font-black text-xs transition cursor-pointer ${
+                      active
+                        ? 'bg-indigo-600 text-white shadow-xs'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    {btn.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Daily Study Time */}
+          <div className="space-y-1.5 p-3 rounded-xl bg-white dark:bg-slate-850 border border-slate-200 dark:border-slate-800">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
+              3. Cường Độ Học/Ngày
+            </span>
+            <div className="grid grid-cols-3 gap-1">
+              {[
+                { min: 30, label: '30p' },
+                { min: 60, label: '60p' },
+                { min: 90, label: '90p+' },
+              ].map((btn) => {
+                const active = Number(learningProfile?.dailyStudyMinutes || learningProfile?.dailyGoalMin || 60) === btn.min;
+                return (
+                  <button
+                    key={btn.min}
+                    onClick={() => {
+                      setLearningProfile((prev) => ({
+                        ...prev,
+                        dailyStudyMinutes: btn.min,
+                        dailyGoalMin: btn.min,
+                      }));
+                    }}
+                    className={`py-1.5 px-1 rounded-lg text-center font-black text-xs transition cursor-pointer ${
+                      active
+                        ? 'bg-emerald-600 text-white shadow-xs'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    {btn.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Dynamic IELTS Strategy Banner */}
+        <div className="p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/25 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+          <div className="flex items-center gap-2">
+            <i className="fa-solid fa-bolt text-blue-500 shrink-0" />
+            <span className="font-extrabold text-blue-700 dark:text-blue-300">
+              {dynamicIelts.strategyTitle}
+            </span>
+          </div>
+          <span className="font-mono text-slate-500 dark:text-slate-400 font-semibold">
+            Tài liệu trọng tâm: <strong className="text-blue-600 dark:text-blue-400">{dynamicIelts.cambridgeSeries}</strong>
+          </span>
         </div>
       </div>
 
@@ -1408,6 +1568,15 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
           </div>
         </div>
       )}
+
+      {/* Global Quick Goal Modal */}
+      <PersonalizedOnboardingModal
+        isOpen={onboardingOpen}
+        onClose={() => setOnboardingOpen(false)}
+        initialProfile={learningProfile}
+        onSaveProfile={(updated) => setLearningProfile(updated)}
+        theme={theme}
+      />
     </div>
   );
 }

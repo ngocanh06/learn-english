@@ -22,6 +22,7 @@ import IELTSRoadmapHub from './IELTSRoadmapHub';
 import PersonalizedPlanDashboard from './PersonalizedPlanDashboard';
 import PersonalizedOnboardingModal from './PersonalizedOnboardingModal';
 import { DEFAULT_USER_LEARNING_PROFILE, CERTIFICATIONS } from '../config/learningCertifications';
+import { generateDynamicToeicSchedule } from '../services/dynamicScheduleEngine';
 import { useAuth } from '../context/AuthContext';
 import {
   DEFAULT_DICTATION_STARS,
@@ -134,6 +135,11 @@ export default function AILearningCoach({
     const idx = diffDays >= 0 ? diffDays % STUDY4_VOCAB_TRACK.length : 0;
     return STUDY4_VOCAB_TRACK[idx] || STUDY4_VOCAB_TRACK[0];
   }, [now]);
+
+  // Dynamic Personalized TOEIC Schedule (Recalculates with Target, Deadline, Level, Time)
+  const dynamicToeicSchedule = useMemo(() => {
+    return generateDynamicToeicSchedule(learningProfile);
+  }, [learningProfile]);
 
   // Current Short Story dynamic target
   const currentShortStory = useMemo(() => {
@@ -1453,26 +1459,223 @@ export default function AILearningCoach({
                 isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
               }`}
             >
-              {/* Header with Dual Track Philosophy */}
+              {/* Header with Personalized Engine Meta */}
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-slate-200 dark:border-slate-800">
                 <div className="space-y-1">
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-2.5 flex-wrap">
                     <span className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 text-white flex items-center justify-center font-black text-sm shadow-md">
                       <i className="fa-solid fa-bolt" />
                     </span>
                     <h2 className="text-lg md:text-xl font-black text-slate-900 dark:text-white">
-                      Lộ Trình TOEIC Study4 (Tách Biệt Lịch Làm Đề & Từ Vựng)
+                      Lộ Trình TOEIC Cá Nhân Hóa (ETS Study4): Mục Tiêu {learningProfile?.targetScore || 650}
                     </h2>
+                    <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30">
+                      {dynamicToeicSchedule.paceLabel}
+                    </span>
                   </div>
                   <p className="text-xs text-slate-500 dark:text-slate-400 max-w-2xl leading-relaxed">
-                    💡 <strong>Chiến thuật học song song:</strong> Làm đề bấm giờ thực chiến ngay theo từng Test mà không cần chờ học xong từ vựng (tránh bị delay tiến độ). Từ vựng Study4 được tách riêng để bạn tự học tích lũy và ôn Flashcard bất cứ lúc nào.
+                    💡 <strong>Engine Cá Nhân Hóa:</strong> Lộ trình được tự động điều chỉnh số buổi ({dynamicToeicSchedule.totalSessions} buổi), bộ đề thi trọng tâm ({dynamicToeicSchedule.eligibleTests.map((t) => `Test ${t}`).join(', ')}) và thời lượng phù hợp với hạn thi {learningProfile?.examDate ? `${learningProfile.examDate} (${dynamicToeicSchedule.daysRemaining} ngày còn lại)` : 'hiện tại'} của bạn.
                   </p>
                 </div>
 
                 <div className="flex items-center gap-3">
                   <span className="px-3 py-1.5 rounded-xl text-xs font-mono font-extrabold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
-                    {Object.values(study4StatusMap).filter((s) => s === 'Hoàn thành').length} / {STUDY4_TOEIC_SCHEDULE.length} Buổi Xong
+                    {Object.values(study4StatusMap).filter((s) => s === 'Hoàn thành').length} / {dynamicToeicSchedule.totalSessions} Buổi Xong
                   </span>
+                  <button
+                    onClick={() => setOnboardingModalOpen(true)}
+                    className="px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-blue-600 hover:text-white transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                  >
+                    <i className="fa-solid fa-sliders text-blue-500" />
+                    <span>Đổi Mục Tiêu</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* ─── INTERACTIVE PERSONALIZATION TUNER (LIVE RECONFIGURATION) ─── */}
+              <div className={`p-5 rounded-3xl border transition-all space-y-4 ${
+                isLight ? 'bg-gradient-to-br from-slate-50 to-blue-50/40 border-blue-200/80 shadow-sm' : 'bg-slate-850/90 border-slate-800 shadow-md'
+              }`}>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center text-xs font-bold shadow-xs">
+                      <i className="fa-solid fa-sliders" />
+                    </span>
+                    <span className="text-xs font-extrabold text-slate-900 dark:text-white uppercase tracking-wider">
+                      Bộ Tái Thiết Lập Lộ Trình Tức Thì (Interactive Tuner)
+                    </span>
+                  </div>
+                  <span className="text-[11px] text-slate-500 italic">
+                    Bấm để trải nghiệm hệ thống tự tính toán lại số buổi, thời lượng & đề thi
+                  </span>
+                </div>
+
+                {/* 4 Interactive Control Rows */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                  {/* Row 1: Target Score */}
+                  <div className="space-y-1.5 p-3 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800">
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
+                      1. Mục Tiêu Điểm
+                    </span>
+                    <div className="grid grid-cols-3 gap-1">
+                      {[
+                        { score: '450', label: '450 Nền' },
+                        { score: '650', label: '650 Chuẩn' },
+                        { score: '850', label: '850+ Cao' },
+                      ].map((btn) => {
+                        const active = String(learningProfile?.targetScore) === btn.score;
+                        return (
+                          <button
+                            key={btn.score}
+                            onClick={() => {
+                              setLearningProfile((prev) => ({
+                                ...prev,
+                                targetScore: btn.score,
+                              }));
+                            }}
+                            className={`py-1.5 px-1 rounded-xl text-center font-black text-xs transition cursor-pointer ${
+                              active
+                                ? 'bg-blue-600 text-white shadow-xs'
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                            }`}
+                          >
+                            {btn.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Row 2: Exam Horizon / Deadline */}
+                  <div className="space-y-1.5 p-3 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800">
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
+                      2. Hạn Thi / Thời Gian Ôn
+                    </span>
+                    <div className="grid grid-cols-4 gap-1">
+                      {[
+                        { days: 30, label: '30N' },
+                        { days: 60, label: '60N' },
+                        { days: 90, label: '90N' },
+                        { days: 180, label: '180N' },
+                      ].map((btn) => {
+                        const active = (dynamicToeicSchedule.daysRemaining || 60) === btn.days;
+                        return (
+                          <button
+                            key={btn.days}
+                            onClick={() => {
+                              setLearningProfile((prev) => ({
+                                ...prev,
+                                daysRemaining: btn.days,
+                                examDate: null,
+                              }));
+                            }}
+                            className={`py-1.5 px-1 rounded-xl text-center font-black text-xs transition cursor-pointer ${
+                              active
+                                ? 'bg-indigo-600 text-white shadow-xs'
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                            }`}
+                          >
+                            {btn.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Row 3: Daily Study Time */}
+                  <div className="space-y-1.5 p-3 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800">
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
+                      3. Thời Gian Học/Ngày
+                    </span>
+                    <div className="grid grid-cols-3 gap-1">
+                      {[
+                        { min: 30, label: '30p' },
+                        { min: 60, label: '60p' },
+                        { min: 90, label: '90p' },
+                      ].map((btn) => {
+                        const active = Number(learningProfile?.dailyStudyMinutes || learningProfile?.dailyGoalMin || 60) === btn.min;
+                        return (
+                          <button
+                            key={btn.min}
+                            onClick={() => {
+                              setLearningProfile((prev) => ({
+                                ...prev,
+                                dailyStudyMinutes: btn.min,
+                                dailyGoalMin: btn.min,
+                              }));
+                            }}
+                            className={`py-1.5 px-1 rounded-xl text-center font-black text-xs transition cursor-pointer ${
+                              active
+                                ? 'bg-emerald-600 text-white shadow-xs'
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                            }`}
+                          >
+                            {btn.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Row 4: Bottleneck Skill */}
+                  <div className="space-y-1.5 p-3 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800">
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
+                      4. Điểm Nghẽn Cần Khắc Phục
+                    </span>
+                    <div className="grid grid-cols-3 gap-1">
+                      {[
+                        { key: 'listening', label: '🎧 Nghe' },
+                        { key: 'reading', label: '📖 Đọc' },
+                        { key: 'balanced', label: '⚖️ Cân bằng' },
+                      ].map((btn) => {
+                        const active = (learningProfile?.primaryBottleneck || 'listening') === btn.key;
+                        return (
+                          <button
+                            key={btn.key}
+                            onClick={() => {
+                              setLearningProfile((prev) => ({
+                                ...prev,
+                                primaryBottleneck: btn.key,
+                              }));
+                            }}
+                            className={`py-1.5 px-1 rounded-xl text-center font-black text-xs transition cursor-pointer ${
+                              active
+                                ? 'bg-rose-600 text-white shadow-xs'
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                            }`}
+                          >
+                            {btn.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                {/* ─── DYNAMIC STRATEGY CALLOUT BANNER ─── */}
+                <div className={`p-4 rounded-2xl border transition-all ${
+                  dynamicToeicSchedule.paceType === 'sprint'
+                    ? 'bg-amber-500/10 border-amber-500/30 text-amber-900 dark:text-amber-200'
+                    : dynamicToeicSchedule.paceType === 'comprehensive'
+                    ? 'bg-purple-500/10 border-purple-500/30 text-purple-900 dark:text-purple-200'
+                    : 'bg-blue-500/10 border-blue-500/30 text-blue-900 dark:text-blue-200'
+                }`}>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-current/15 mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="font-black text-sm">
+                        {dynamicToeicSchedule.strategyTitle}
+                      </span>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-current/15">
+                        {dynamicToeicSchedule.totalSessions} Buổi • {dynamicToeicSchedule.dailyMinutes}p/buổi
+                      </span>
+                    </div>
+                    <span className="text-xs font-mono font-bold">
+                      Đề trọng tâm: {dynamicToeicSchedule.eligibleTests.map((t) => `Test ${t}`).join(', ')}
+                    </span>
+                  </div>
+                  <p className="text-xs leading-relaxed opacity-90">
+                    {dynamicToeicSchedule.strategyDesc}
+                  </p>
                 </div>
               </div>
 
@@ -1482,17 +1685,17 @@ export default function AILearningCoach({
                   {
                     id: 'tests',
                     icon: 'fa-solid fa-bullseye',
-                    label: `Lịch Làm & Chữa Đề (${STUDY4_TEST_TRACK.length} Buổi)`,
+                    label: `Lịch Thực Chiến Cá Nhân Hóa (${dynamicToeicSchedule.totalSessions} Buổi)`,
                     desc: 'Ưu tiên giải đề thực chiến',
-                    badge: `${STUDY4_TEST_TRACK.length} buổi`,
+                    badge: `${dynamicToeicSchedule.totalSessions} buổi`,
                     badgeColor: 'bg-rose-500/15 text-rose-600 dark:text-rose-400',
                   },
                   {
                     id: 'exams-grid',
                     icon: 'fa-solid fa-bolt',
-                    label: 'Bảng 10 Đề Thi (Test 1 ➔ 10)',
+                    label: `Bảng Đề Thi Trọng Tâm (${dynamicToeicSchedule.eligibleTests.length} Tests)`,
                     desc: 'Chọn đề làm ngay',
-                    badge: '10 Tests',
+                    badge: `${dynamicToeicSchedule.eligibleTests.length} Tests`,
                     badgeColor: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400',
                   },
                   {
@@ -1506,9 +1709,9 @@ export default function AILearningCoach({
                   {
                     id: 'all',
                     icon: 'fa-solid fa-clipboard-list',
-                    label: 'Toàn Bộ 49 Buổi',
+                    label: `Toàn Bộ ${dynamicToeicSchedule.totalSessions} Buổi`,
                     desc: 'Xem tổng quan',
-                    badge: '49 buổi',
+                    badge: `${dynamicToeicSchedule.totalSessions} buổi`,
                     badgeColor: 'bg-slate-500/15 text-slate-600 dark:text-slate-400',
                   },
                 ].map((st) => {
@@ -1694,10 +1897,10 @@ export default function AILearningCoach({
                     </thead>
                     <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
                       {(study4SubView === 'tests'
-                        ? STUDY4_TEST_TRACK
+                        ? dynamicToeicSchedule.sessions
                         : study4SubView === 'vocab'
                         ? STUDY4_VOCAB_TRACK
-                        : STUDY4_TOEIC_SCHEDULE
+                        : dynamicToeicSchedule.sessions
                       ).map((session) => {
                         // TEST_TRACK dùng trackIndex, VOCAB_TRACK cũng dùng trackIndex; main schedule dùng day
                         const sessionKey = session.trackIndex ?? session.day;
@@ -1797,6 +2000,12 @@ export default function AILearningCoach({
                                 )}
                               </div>
                               <div className="text-[11px] text-slate-400 mt-0.5">{session.note}</div>
+                              {session.whyThisTask && (
+                                <div className="text-[11px] text-blue-600 dark:text-blue-400 font-semibold flex items-center gap-1.5 mt-1 bg-blue-50/60 dark:bg-blue-950/30 p-1.5 rounded-lg border border-blue-200/60 dark:border-blue-900/40">
+                                  <i className="fa-solid fa-circle-question text-[10px] shrink-0" />
+                                  <span>Tại sao học: {session.whyThisTask}</span>
+                                </div>
+                              )}
                             </td>
 
                             <td className="py-3.5 px-2 font-mono font-bold text-slate-500">
