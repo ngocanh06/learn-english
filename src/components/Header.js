@@ -1,6 +1,8 @@
 import React from 'react';
 import { NAV_ITEMS } from '../config/navigation';
 import { useAuth } from '../context/AuthContext';
+import { useUserStorage } from '../hooks/useUserStorage';
+import { DEFAULT_USER_LEARNING_PROFILE, CERTIFICATIONS } from '../config/learningCertifications';
 
 export default function Header({
   activeNav,
@@ -12,6 +14,8 @@ export default function Header({
 }) {
   const isLight = theme === 'light';
   const { currentUser, isAuthenticated, openLogin } = useAuth();
+  const [learningProfile] = useUserStorage('user_learning_profile_v1', DEFAULT_USER_LEARNING_PROFILE);
+  const activeCert = CERTIFICATIONS.find((c) => c.id === learningProfile?.certification) || CERTIFICATIONS[1];
   const currentItem = NAV_ITEMS.find((n) => n.id === activeNav) || NAV_ITEMS[0];
 
   return (
@@ -50,8 +54,17 @@ export default function Header({
           </div>
         </div>
 
-        {/* Right actions: Overdue Bell, Theme & User */}
+        {/* Right actions: Goal Badge, Overdue Bell, Theme & User */}
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => onNavigate('ai-coach', { tab: 'my-plan' })}
+            className={`px-2 py-1 rounded-lg border text-[10px] font-bold flex items-center gap-1.5 transition ${activeCert.badgeColor}`}
+            title="Xem kế hoạch cá nhân hóa"
+          >
+            <i className={`fa-solid ${activeCert.icon} text-[10px]`} />
+            <span className="truncate max-w-[85px]">{activeCert.shortName}</span>
+          </button>
+
           {overdueCount > 0 && (
             <button
               onClick={() => onNavigate('ai-coach', { tab: 'calendar-view' })}

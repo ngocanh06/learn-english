@@ -19,8 +19,8 @@ import {
 import study4ListeningData from '../data/study4ListeningTest1.json';
 import study4ReadingData from '../data/study4ReadingTest1.json';
 import { VOCAB_DATABASE } from '../data/vocabularyByLevelAndPart';
-import OverdueStudyReminderBanner from './OverdueStudyReminderBanner';
 import { calculateOverdueTasks } from '../utils/overdueTasksHelper';
+import { DEFAULT_USER_LEARNING_PROFILE } from '../config/learningCertifications';
 
 const PILLAR_CONFIG = {
   study4Test: { label: 'Làm & Chữa Đề Study4', color: 'bg-rose-500 text-white border-rose-600', lightBg: 'bg-rose-50 border-rose-200 text-rose-800', icon: 'fa-bullseye' },
@@ -204,6 +204,7 @@ export default function GoogleCalendarScheduleHub({
   // Persistent storage for calendar state so navigating away and returning preserves exact position
   const [savedDateKey, setSavedDateKey] = useUserStorage('calendar_last_date_key_v2', '');
   const [savedViewMode, setSavedViewMode] = useUserStorage('calendar_view_mode_v2', 'day');
+  const [learningProfile] = useUserStorage('user_learning_profile_v1', DEFAULT_USER_LEARNING_PROFILE);
 
   // Current Calendar Focus: Day / Week / Month
   const [viewMode, setViewModeState] = useState(() => initialViewMode || savedViewMode || 'day');
@@ -843,97 +844,106 @@ export default function GoogleCalendarScheduleHub({
 
     const UNIFIED_TAG_STYLE = 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/60';
 
-    return [
-      // 1. TUYẾN LÀM ĐỀ & CHỮA ĐỀ THỰC CHIẾN (CHỈ HIỂN THỊ TỪ NGÀY 11 TRỞ ĐI)
-      currentTestSession
-        ? {
-            id: 'study4_test',
-            tag: `1. STUDY4 LÀM & CHỮA ĐỀ (${currentTestSession.skill.toUpperCase()}) • TEST ${currentTestSession.testNum} • BUỔI ${(currentTestSession.trackIndex || 1)}/${currentTestSession.totalTrackSessions || 32}`,
-            tagColor: UNIFIED_TAG_STYLE,
-            duration: `${currentTestSession.duration} phút`,
-            title: `Luyện Đề TOEIC: ${currentTestSession.activity}`,
-            desc: `${currentTestSession.note} • ${currentTestSession.testNum === 2 ? 'Đang thực chiến Test 2 (Đã hoàn thành Test 1 ✓)' : `Mục tiêu Test ${currentTestSession.testNum}`}`,
-            nextLessonNote: `Mục tiêu Test ${currentTestSession.testNum} • ${currentTestSession.category === 'test' ? 'Bấm giờ áp lực phòng thi thật & ghi nhận điểm' : 'Phân tích chữa chi tiết từng câu sai & bẫy đề'}`,
-            btnText: currentTestSession.category === 'test'
-              ? 'Vào phòng thi ➔'
-              : 'Chữa đề chi tiết ➔',
-            action: () => {
-              onNavigateTab && onNavigateTab('study4-toeic', { subView: 'tests' });
-            },
-            secondaryBtnText: `Đang học: Test ${activeTestNum || 2} ⚡`,
-            secondaryAction: () => {
-              onNavigateTab && onNavigateTab('study4-toeic', { subView: 'exams-grid' });
-            },
-            image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&auto=format&fit=crop&q=80',
-            icon: 'fa-solid fa-bullseye',
-            completed: Boolean(
-              isTaskKeyCompleted(currentDateKey, 'study4_test', currentDayPlan) ||
-              isTaskKeyCompleted(currentDateKey, 'study4', currentDayPlan) ||
-              currentTestSession.testNum < (activeTestNum || 2) ||
-              (study4StatusMap && study4StatusMap[currentTestSession.trackIndex] === 'Hoàn thành') ||
-              currentTestSession.status === 'Hoàn thành' ||
-              currentTestSession.isCompleted
-            ),
-          }
-        : null,
-
-      // 2. TUYẾN HỌC TỪ VỰNG STUDY4 CHUYÊN SÂU (TÁCH RIÊNG ĐỘC LẬP)
-      {
-        id: 'study4_vocab',
-        tag: `2. TỪ VỰNG STUDY4 CHUYÊN SÂU (${currentVocabSession.skill.toUpperCase()}) • BUỔI ${(currentVocabSession.trackIndex || 1)}/${currentVocabSession.totalTrackSessions || 75}`,
+    const certType = learningProfile?.certification || 'ielts';
+    let task1;
+    if (certType === 'toeic') {
+      task1 = {
+        id: 'study4_test',
+        tag: '1. LUYỆN ĐỀ THỰC CHIẾN TOEIC STUDY4 (ETS)',
         tagColor: UNIFIED_TAG_STYLE,
-        duration: `${currentVocabSession.duration} phút`,
-        title: `Học Từ Vựng Đề Thi: ${currentVocabSession.activity}`,
-        desc: `${currentVocabSession.note} • Tuyến ${currentVocabSession.totalTrackSessions || 75} buổi học từ vựng Study4 trọn vẹn 100% đề thi (50 từ/buổi)`,
-        nextLessonNote: isStudy4VocabDone
-          ? '🎉 Bạn đã hoàn thành mục tiêu từ vựng buổi này! Task tự động hoàn thành.'
-          : `Mục tiêu Test ${currentVocabSession.testNum} • Học và ghi nhớ ${currentVocabSession.wordCount || 50} từ vựng (Từ ${currentVocabSession.startWord || 1} - ${currentVocabSession.endWord || 50}) kèm Flashcard & Trắc nghiệm`,
-        btnText: `Học từ vựng (${currentVocabSession.skill}) ➔`,
+        duration: '60 phút',
+        title: 'TOEIC Thực Chiến: ETS Study4 - Luyện Đề & Chữa Chi Tiết',
+        desc: 'Luyện 10 đề thi thật ETS, phân tích bẫy câu hỏi Part 1-7 và bổ sung từ vựng công sở',
+        nextLessonNote: 'Mục tiêu 650 - 850+ chuẩn bị cho môi trường làm việc doanh nghiệp',
+        btnText: 'Mở Đề Thi TOEIC ➔',
         action: () => {
-          const chunkIdx = currentVocabSession?.chunkIndex || 1;
-          const partFilter = currentVocabSession?.partFilter || (`day-${chunkIdx}`);
-          const isReading = currentVocabSession?.skill === 'Reading';
-          onNavigateTab && onNavigateTab('vocabulary', {
-            section: 'study4',
-            tabId: isReading ? 'toeic-reading' : 'toeic-listening',
-            day: chunkIdx,
-            partFilter: partFilter,
-            dateKey: currentDateKey,
-          });
+          onNavigateTab && onNavigateTab('study4-toeic');
         },
-        secondaryBtnText: 'Kho Từ Vựng Study4 ↗',
-        secondaryAction: () => {
-          onNavigateTab && onNavigateTab('study4-toeic', { subView: 'vocab' });
+        image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&auto=format&fit=crop&q=80',
+        icon: 'fa-solid fa-bullseye',
+        completed: Boolean(
+          completedTasks[`${currentDateKey}_study4_test`] ||
+          completedTasks[`${currentDateKey}_study4`] ||
+          roadmapTasks[`day_${currentDayPlan?.day}_study4`]
+        ),
+      };
+    } else if (certType === 'none') {
+      task1 = {
+        id: 'foundation_focus',
+        tag: '1. CỦNG CỐ NỀN TẢNG TIẾNG ANH (LẤY GỐC)',
+        tagColor: UNIFIED_TAG_STYLE,
+        duration: '30 phút',
+        title: 'Lấy Gốc & Phản Xạ: Từ Vựng Thông Dụng & Ngữ Pháp',
+        desc: 'Tập trung rèn luyện vốn từ cốt lõi, phát âm chuẩn và tự tin giao tiếp hàng ngày',
+        nextLessonNote: 'Học tiếng Anh tự nhiên, không áp lực luyện đề thi',
+        btnText: 'Vào Học Ngay ➔',
+        action: () => {
+          onNavigateTab && onNavigateTab('my-plan');
         },
-        image: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400&auto=format&fit=crop&q=80',
-        icon: 'fa-solid fa-book-open',
-        completed: isStudy4VocabDone,
-      },
+        image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&auto=format&fit=crop&q=80',
+        icon: 'fa-solid fa-compass',
+        completed: Boolean(
+          completedTasks[`${currentDateKey}_foundation`] ||
+          completedTasks[`${currentDateKey}_grammar`]
+        ),
+      };
+    } else {
+      task1 = {
+        id: 'ielts_academic',
+        tag: '1. LỘ TRÌNH IELTS ACADEMIC (MỤC TIÊU 7.0+)',
+        tagColor: UNIFIED_TAG_STYLE,
+        duration: '60 phút',
+        title: 'Lộ Trình IELTS Academic: Luyện Đề & Kỹ Năng Trọng Tâm',
+        desc: 'Luyện bộ Cambridge IELTS 12 - 19, Writing Task 1 & 2, Speaking Cue Cards & 33 Chủ Đề Từ Vựng (4,050 từ)',
+        nextLessonNote: 'Tập trung bứt phá band điểm 5.5 → 7.0+ phục vụ mục tiêu du học',
+        btnText: 'Mở Lộ Trình IELTS ➔',
+        action: () => {
+          onNavigateTab && onNavigateTab('ielts-roadmap');
+        },
+        image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400&auto=format&fit=crop&q=80',
+        icon: 'fa-solid fa-graduation-cap',
+        completed: Boolean(
+          completedTasks[`${currentDateKey}_ielts`] ||
+          roadmapTasks[`day_${currentDayPlan?.day}_ielts`]
+        ),
+      };
+    }
 
-      // 3. DAILY DICTATION (3 TRACKS COMBO)
+    return [
+      task1,
+
+      // 2. DAILY DICTATION (NGHE CHÉP CHÍNH TẢ PHẢN XẠ)
       {
         id: 'dd',
-        tag: '3. DAILY DICTATION (3 TRACKS COMBO)',
+        tag: '2. DAILY DICTATION (NGHE CHÉP CHÍNH TẢ)',
         tagColor: UNIFIED_TAG_STYLE,
         duration: currentDayPlan.dailyDictation.duration,
-        title: 'Nghe Chép Chính Tả: Bộ 3 Track DailyDictation Đồng Thời',
-        desc: 'Luyện bắt âm & phản xạ trọn vẹn cả 3 chuyên mục trong 1 buổi học',
-        tracks: currentDdStatus.tracks,
-        ddStatus: currentDdStatus,
-        nextLessonNote: currentDdStatus.isAllDone
-          ? '🎉 Bạn đã nghe xong đủ cả 3 bài DailyDictation! Task tự động hoàn thành.'
-          : `Tiến độ: ${currentDdStatus.doneCount}/3 bài đã xong • Bấm vào từng bài để đánh dấu hoàn thành nhanh hoặc bấm "Mở bài nghe"`,
-        btnText: currentDdStatus.isAllDone ? 'Xem lại bài nghe ↗' : 'Mở bài nghe ↗',
+        title: 'Nghe Chép Chính Tả: Luyện Phản Xạ Bắt Âm',
+        desc: 'Luyện bắt âm & phản xạ ngữ điệu tự nhiên qua Truyện ngắn & Hội thoại giao tiếp',
+        tracks: (currentDdStatus.tracks || []).filter(t => t.type !== 'toeic-listening'),
+        ddStatus: {
+          ...currentDdStatus,
+          tracks: (currentDdStatus.tracks || []).filter(t => t.type !== 'toeic-listening'),
+          doneCount: (currentDdStatus.tracks || []).filter(t => t.type !== 'toeic-listening' && t.isDone).length,
+          isAllDone: (currentDdStatus.tracks || []).filter(t => t.type !== 'toeic-listening').every(t => t.isDone),
+        },
+        nextLessonNote: (currentDdStatus.tracks || []).filter(t => t.type !== 'toeic-listening').every(t => t.isDone)
+          ? '🎉 Bạn đã nghe xong các bài DailyDictation! Task tự động hoàn thành.'
+          : 'Luyện nghe & chép chính tả để hoàn thiện phản xạ bắt âm',
+        btnText: (currentDdStatus.tracks || []).filter(t => t.type !== 'toeic-listening').every(t => t.isDone) ? 'Xem lại bài nghe ↗' : 'Mở bài nghe ↗',
         action: () => onNavigateTab && onNavigateTab('dailydictation'),
         image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&auto=format&fit=crop&q=80',
         icon: 'fa-solid fa-headphones',
-        completed: Boolean(isTaskKeyCompleted(currentDateKey, 'dd', currentDayPlan) || currentDdStatus.isAllDone),
+        completed: Boolean(
+          isTaskKeyCompleted(currentDateKey, 'dd', currentDayPlan) ||
+          (currentDdStatus.tracks || []).filter(t => t.type !== 'toeic-listening').every(t => t.isDone)
+        ),
       },
 
-      // 4. NGỮ PHÁP (GRAMMAR)
+      // 3. NGỮ PHÁP (GRAMMAR)
       {
         id: 'grammar',
-        tag: '4. NGỮ PHÁP (GRAMMAR)',
+        tag: '3. NGỮ PHÁP (GRAMMAR)',
         tagColor: UNIFIED_TAG_STYLE,
         duration: currentDayPlan.grammar?.duration || '20 phút',
         title: `Học Ngữ Pháp: ${currentDayPlan.grammar?.topic}`,
@@ -948,14 +958,14 @@ export default function GoogleCalendarScheduleHub({
         completed: isGrammarTaskDone,
       },
 
-      // 5. TỪ VỰNG XEN KẼ
+      // 4. TỪ VỰNG XEN KẼ
       {
         id: 'vocab',
-        tag: `5. TỪ VỰNG XEN KẼ (${currentDayPlan.vocabAlternating?.type || 'Xen kẽ'}) • ${currentDayPlan.vocabAlternating?.targetWordsCount === 'Toàn bộ' ? 'Ôn tập' : `${currentDayPlan.vocabAlternating?.targetWordsCount || 50} từ`}`,
+        tag: `4. TỪ VỰNG XEN KẼ (${currentDayPlan.vocabAlternating?.type || 'Xen kẽ'}) • ${currentDayPlan.vocabAlternating?.targetWordsCount === 'Toàn bộ' ? 'Ôn tập' : `${currentDayPlan.vocabAlternating?.targetWordsCount || 50} từ`}`,
         tagColor: UNIFIED_TAG_STYLE,
         duration: currentDayPlan.vocabAlternating?.duration || '45 phút',
-        title: `Ghi Nhớ Từ Vựng: ${currentDayPlan.vocabAlternating?.topic}`,
-        desc: `${currentDayPlan.vocabAlternating?.note} • Nguồn: ${currentDayPlan.vocabAlternating?.source || 'Kho Từ Vựng'}`,
+        title: `Ghi Nhớ Từ Vựng: ${currentDayPlan.vocabAlternating?.category === 'study4' ? '33 Chủ Đề Từ Vựng IELTS' : currentDayPlan.vocabAlternating?.topic}`,
+        desc: `${currentDayPlan.vocabAlternating?.note} • Nguồn: ${currentDayPlan.vocabAlternating?.category === 'study4' ? '33 Chủ Đề IELTS Academic' : (currentDayPlan.vocabAlternating?.source || 'Kho Từ Vựng')}`,
         nextLessonNote: isVocabAlternatingDone
           ? '🎉 Bạn đã hoàn thành thử thách từ vựng này! Task tự động hoàn thành.'
           : currentDayPlan.vocabAlternating?.category === 'notebook'
@@ -966,7 +976,7 @@ export default function GoogleCalendarScheduleHub({
           : currentDayPlan.vocabAlternating?.category === 'notebook'
           ? 'Ôn sổ từ vựng đã lưu ➔'
           : currentDayPlan.vocabAlternating?.category === 'study4'
-          ? 'Luyện từ vựng Study4 ➔'
+          ? 'Học từ vựng IELTS ➔'
           : `Luyện 50 từ Part ${currentDayPlan.vocabAlternating?.partNum || 1} ➔`,
         action: () => {
           const v = currentDayPlan.vocabAlternating;
@@ -987,10 +997,7 @@ export default function GoogleCalendarScheduleHub({
             });
           } else if (v?.category === 'study4') {
             onNavigateTab && onNavigateTab('vocabulary', {
-              section: 'study4',
-              tabId: v.tabId || 'toeic-listening',
-              day: studyDay,
-              partFilter: `day-${studyDay}`,
+              section: 'ielts-33-topics',
               dateKey: currentDateKey,
             });
           } else {
@@ -1012,10 +1019,10 @@ export default function GoogleCalendarScheduleHub({
         completed: isVocabAlternatingDone,
       },
 
-      // 6. LUYỆN ĐỌC (READING)
+      // 5. LUYỆN ĐỌC (READING)
       {
         id: 'reading',
-        tag: '6. LUYỆN ĐỌC (READING)',
+        tag: '5. LUYỆN ĐỌC (READING)',
         tagColor: UNIFIED_TAG_STYLE,
         duration: currentDayPlan.reading?.duration || '15 phút',
         title: `Đọc Hiểu CEFR: ${currentDayPlan.reading?.topic}`,
@@ -1059,10 +1066,10 @@ export default function GoogleCalendarScheduleHub({
         completed: isReadingTaskDone,
       },
 
-      // 7. LUYỆN VIẾT (WRITING)
+      // 6. LUYỆN VIẾT (WRITING)
       {
         id: 'writing',
-        tag: '7. LUYỆN VIẾT (WRITING)',
+        tag: '6. LUYỆN VIẾT (WRITING)',
         tagColor: UNIFIED_TAG_STYLE,
         duration: currentDayPlan.writing?.duration || '15 phút',
         title: currentDayPlan.writing?.topic?.includes('Dịch câu phản xạ:')
@@ -1113,7 +1120,7 @@ export default function GoogleCalendarScheduleHub({
         ),
       },
 
-      // 8. SHADOWING (SPEAKING)
+      // 7. SHADOWING (SPEAKING)
       (() => {
         const targetVideo =
           VIDEO_LESSONS_DATABASE[((currentDayPlan.day || 1) - 1) % VIDEO_LESSONS_DATABASE.length] ||
@@ -1126,7 +1133,7 @@ export default function GoogleCalendarScheduleHub({
 
         return {
           id: 'shadowing',
-          tag: '8. LUYỆN NÓI (SHADOWING AI)',
+          tag: '7. LUYỆN NÓI (SHADOWING AI)',
           tagColor: UNIFIED_TAG_STYLE,
           duration: `${targetVideo.duration || '19:04'} (Video) • Mục tiêu nói: 15p`,
           title: `Luyện Nói & Nhại Giọng: ${targetVideo.title}`,
@@ -1225,24 +1232,15 @@ export default function GoogleCalendarScheduleHub({
           </div>
         </div>
 
-        {/* Right: Quick 2 Track Buttons + Side Roadmap Toggle */}
+        {/* Right: Quick IELTS Roadmap Button + Side Roadmap Toggle */}
         <div className="flex items-center gap-2 flex-wrap">
           <button
-            onClick={() => onNavigateTab && onNavigateTab('study4-toeic', { subView: 'tests' })}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition border bg-rose-50 hover:bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 shadow-xs"
-            title="Mở Tuyến Thực Chiến Làm & Chữa Đề (28 Buổi)"
+            onClick={() => onNavigateTab && onNavigateTab('ielts-roadmap')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition border bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800 shadow-xs cursor-pointer"
+            title="Mở Lộ Trình IELTS Academic 7.0+ Du Học"
           >
-            <i className="fa-solid fa-bullseye text-xs text-rose-500" />
-            <span>Tuyến Làm & Chữa Đề (28 Buổi)</span>
-          </button>
-
-          <button
-            onClick={() => onNavigateTab && onNavigateTab('study4-toeic', { subView: 'vocab' })}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition border bg-purple-50 hover:bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-950/40 dark:text-purple-300 dark:border-purple-800 shadow-xs"
-            title="Mở Tuyến Kho Từ Vựng Study4 (20 Buổi)"
-          >
-            <i className="fa-solid fa-book-open text-xs text-purple-500" />
-            <span>Tuyến Từ Vựng (20 Buổi)</span>
+            <i className="fa-solid fa-graduation-cap text-xs text-blue-600 dark:text-blue-400" />
+            <span>Lộ Trình IELTS 7.0+ (24 Tuần)</span>
           </button>
 
           {/* Side Roadmap Toggle Button */}
@@ -1358,12 +1356,12 @@ export default function GoogleCalendarScheduleHub({
                           )}
                         </h2>
                         <p className="text-xs text-slate-300 leading-relaxed font-medium">
-                          Luyện song song cả 2 tuyến Study4 (Làm/Chữa đề & Học từ vựng) kết hợp Nghe DailyDictation, Ngữ pháp chuyên sâu, Luyện đọc, Viết câu phản xạ và Nhại giọng Shadowing AI.
+                          Lộ trình trọng tâm IELTS Academic kết hợp Nghe chép chính tả phản xạ, Ngữ pháp chuyên sâu (115 chuyên đề), Luyện đọc CEFR, Dịch câu phản xạ và Nhại giọng Shadowing AI.
                         </p>
                       </div>
 
                       {/* Progress Radial / Bar Card */}
-                      <div className="shrink-0 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10 min-w-[220px] space-y-2.5">
+                      <div className="shrink-0 bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/10 min-w-[220px] space-y-2.5">
                         <div className="flex items-center justify-between text-xs">
                           <span className="text-slate-300 font-bold flex items-center gap-1.5">
                             <i className="fa-solid fa-chart-pie text-blue-400" />
@@ -1374,9 +1372,9 @@ export default function GoogleCalendarScheduleHub({
                           </span>
                         </div>
                         {/* Progress Bar */}
-                        <div className="w-full h-3 bg-white/10 rounded-full overflow-hidden p-0.5">
+                        <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
                           <div
-                            className="h-full rounded-full bg-gradient-to-r from-blue-400 via-indigo-400 to-emerald-400 transition-all duration-700 shadow-sm"
+                            className="h-full rounded-full bg-blue-500 transition-all duration-700"
                             style={{ width: `${percentDone}%` }}
                           />
                         </div>
@@ -1388,10 +1386,6 @@ export default function GoogleCalendarScheduleHub({
                         </div>
                       </div>
                     </div>
-
-                    {/* Ambient decorative glowing blobs */}
-                    <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
-                    <div className="absolute left-1/3 -top-10 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl pointer-events-none" />
                   </div>
                 );
               })()}
@@ -1656,84 +1650,42 @@ export default function GoogleCalendarScheduleHub({
 
                       {/* Kỹ năng */}
                       <td className="py-4 px-3">
-                        <span className="px-3 py-1 rounded-xl text-[11px] font-extrabold font-mono inline-block bg-rose-500/15 text-rose-600 dark:text-rose-400">
-                          Study4 & 6 Kỹ Năng
+                        <span className="px-3 py-1 rounded-xl text-[11px] font-extrabold font-mono inline-block bg-blue-500/15 text-blue-600 dark:text-blue-400">
+                          {learningProfile?.certification === 'toeic' ? 'TOEIC & 5 Kỹ Năng' : learningProfile?.certification === 'none' ? '5 Kỹ Năng Nền Tảng' : 'IELTS & 5 Kỹ Năng'}
                         </span>
                       </td>
 
                       {/* Hoạt động & Bài tập */}
                       <td className="py-4 px-3 min-w-[280px]">
-                        {/* Tuyến 1 & Tuyến 2 Study4 (Tách biệt làm đề & từ vựng) */}
-                        {(() => {
-                          const tSession = getStudy4TestSession(wDay.dateObj, activeTestNum);
-                          const isTestDone = Boolean(
-                            completedTasks[`${wDay.dateKey}_study4_test`] ||
-                            completedTasks[`${wDay.dateKey}_study4`] ||
-                            (tSession && tSession.testNum < (activeTestNum || 2)) ||
-                            (tSession && (study4StatusMap[tSession.trackIndex] === 'Hoàn thành' || tSession.status === 'Hoàn thành' || tSession.isCompleted))
-                          );
-
-                          const vocabStart = new Date(2026, 8, 1);
-                          const vocabDiff = Math.round((wDay.dateObj - vocabStart) / (1000 * 60 * 60 * 24));
-                          const vSession = vocabDiff >= 0 ? STUDY4_VOCAB_TRACK[vocabDiff % STUDY4_VOCAB_TRACK.length] : null;
-                          return (
-                            <div className="space-y-1 mb-1.5">
-                              {tSession && (
-                                <div
-                                  onClick={() => onNavigateTab && onNavigateTab('study4-toeic', { subView: 'tests' })}
-                                  className={`font-bold text-xs flex items-center gap-1.5 cursor-pointer hover:underline ${
-                                    isTestDone
-                                      ? 'text-emerald-600 dark:text-emerald-400 line-through opacity-80'
-                                      : 'text-rose-600 dark:text-rose-400'
-                                  }`}
-                                  title={isTestDone ? `[Đã xong] ${tSession.activity}` : `[Luyện Đề] ${tSession.activity}`}
-                                >
-                                  <i className={`text-xs shrink-0 ${isTestDone ? 'fa-solid fa-circle-check text-emerald-500' : 'fa-solid fa-bullseye text-rose-500'}`} />
-                                  <span>[Đề {tSession.testNum}] {tSession.activity} ({tSession.duration}p)</span>
-                                </div>
-                              )}
-                              {vSession && (
-                                <div
-                                  onClick={() => {
-                                    const chunkIdx = vSession?.chunkIndex || 1;
-                                    const partFilter = vSession?.partFilter || (`day-${chunkIdx}`);
-                                    const isReading = vSession?.skill === 'Reading';
-                                    onNavigateTab && onNavigateTab('vocabulary', {
-                                      section: 'study4',
-                                      tabId: isReading ? 'toeic-reading' : 'toeic-listening',
-                                      day: chunkIdx,
-                                      partFilter: partFilter,
-                                      dateKey: wDay.dateKey,
-                                    });
-                                  }}
-                                  className="font-bold text-xs text-purple-600 dark:text-purple-400 flex items-center gap-1.5 cursor-pointer hover:underline"
-                                  title="Mở trực tiếp kho từ vựng Study4"
-                                >
-                                  <i className="fa-solid fa-book-open text-purple-500 text-xs shrink-0" />
-                                  <span>[Từ Vựng] {vSession.activity} ({vSession.duration}p)</span>
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })()}
+                        {/* Certificate / Foundation Track */}
+                        {learningProfile?.certification === 'toeic' ? (
+                          <div
+                            onClick={() => onNavigateTab && onNavigateTab('study4-toeic')}
+                            className="font-bold text-xs text-rose-600 dark:text-rose-400 flex items-center gap-1.5 cursor-pointer hover:underline mb-1.5"
+                            title="Luyện Đề TOEIC Thực Chiến Study4"
+                          >
+                            <i className="fa-solid fa-bullseye text-rose-500 text-xs shrink-0" />
+                            <span>[TOEIC 750+] Luyện Đề Thi Thật ETS Study4 & Từ Vựng (60p)</span>
+                          </div>
+                        ) : learningProfile?.certification === 'none' ? null : (
+                          <div
+                            onClick={() => onNavigateTab && onNavigateTab('ielts-roadmap')}
+                            className="font-bold text-xs text-blue-600 dark:text-blue-400 flex items-center gap-1.5 cursor-pointer hover:underline mb-1.5"
+                            title="Lộ Trình IELTS Academic 7.0+"
+                          >
+                            <i className="fa-solid fa-graduation-cap text-blue-500 text-xs shrink-0" />
+                            <span>[IELTS 7.0+] Cambridge & 33 Chủ Đề Từ Vựng (60p)</span>
+                          </div>
+                        )}
                         <div className="font-bold text-sm text-slate-900 dark:text-white leading-snug flex items-center gap-2">
                           <i className="fa-solid fa-headphones text-sky-500 text-xs shrink-0" />
-                          <span>DailyDictation: {plan.dailyDictation?.shortStories || '3 Track Combo'}</span>
+                          <span>DailyDictation: {plan.dailyDictation?.shortStories || 'Nghe chép chính tả'}</span>
                         </div>
                         <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-2.5 flex-wrap">
                           {plan.dailyDictation?.conversations && (
                             <span className="inline-flex items-center gap-1.5">
                               <i className="fa-solid fa-comments text-indigo-400 text-[11px]" />
                               <span>{plan.dailyDictation.conversations}</span>
-                            </span>
-                          )}
-                          {plan.dailyDictation?.conversations && plan.dailyDictation?.toeicListening && (
-                            <span className="text-slate-400">•</span>
-                          )}
-                          {plan.dailyDictation?.toeicListening && (
-                            <span className="inline-flex items-center gap-1.5">
-                              <i className="fa-solid fa-bullseye text-rose-400 text-[11px]" />
-                              <span>{plan.dailyDictation.toeicListening}</span>
                             </span>
                           )}
                         </div>
@@ -1881,54 +1833,41 @@ export default function GoogleCalendarScheduleHub({
 
                   {plan && cell.isCurrentMonth ? (
                     <div className="space-y-1 overflow-hidden">
-                      {/* Hiển thị cả 2 tuyến Study4 tách biệt trong từng ô lịch */}
+                      {/* Lộ trình Mục Tiêu (IELTS / TOEIC / Foundation) */}
                       {(() => {
-                        const tSession = getStudy4TestSession(cell.dateObj, activeTestNum);
-                        const isTestDone = Boolean(
-                          isTaskKeyCompleted(cell.dateKey, 'study4_test', plan) ||
-                          isTaskKeyCompleted(cell.dateKey, 'study4', plan) ||
-                          (tSession && tSession.testNum < (activeTestNum || 2)) ||
-                          (tSession && (study4StatusMap[tSession.trackIndex] === 'Hoàn thành' || tSession.status === 'Hoàn thành' || tSession.isCompleted))
-                        );
-
-                        const vocabStart = new Date(2026, 8, 1);
-                        const vocabDiff = Math.round((cell.dateObj - vocabStart) / (1000 * 60 * 60 * 24));
-                        const vSession = vocabDiff >= 0 ? STUDY4_VOCAB_TRACK[vocabDiff % STUDY4_VOCAB_TRACK.length] : null;
-                        const isVocabDone = Boolean(
-                          isTaskKeyCompleted(cell.dateKey, 'study4_vocab', plan) ||
-                          (vSession && isVocabTrackDone(vSession, cell.dateKey))
-                        );
-
+                        const cert = learningProfile?.certification || 'ielts';
+                        if (cert === 'toeic') {
+                          const isDone = Boolean(isTaskKeyCompleted(cell.dateKey, 'study4_test', plan));
+                          return (
+                            <div
+                              className={`px-1.5 py-0.5 rounded text-[9px] font-black truncate border flex items-center gap-1 ${
+                                isDone
+                                  ? 'bg-emerald-500/20 text-emerald-500 border-emerald-500/30 line-through'
+                                  : 'bg-rose-500/20 text-rose-600 dark:text-rose-400 border-rose-500/30'
+                              }`}
+                              title="Luyện Đề TOEIC ETS Study4"
+                            >
+                              <i className="fa-solid fa-bullseye text-[8px] shrink-0" />
+                              <span className="truncate">TOEIC ETS</span>
+                            </div>
+                          );
+                        }
+                        if (cert === 'none') {
+                          return null;
+                        }
+                        const isIeltsDone = Boolean(isTaskKeyCompleted(cell.dateKey, 'ielts_academic', plan));
                         return (
-                          <>
-                            {tSession && (
-                              <div
-                                className={`px-1.5 py-0.5 rounded text-[9px] font-black truncate border flex items-center gap-1 ${
-                                  isTestDone
-                                    ? 'bg-emerald-500/20 text-emerald-500 border-emerald-500/30 line-through'
-                                    : 'bg-rose-500/20 text-rose-600 dark:text-rose-400 border-rose-500/30'
-                                }`}
-                                title={`[Làm/Chữa Đề] ${tSession.activity}`}
-                              >
-                                <i className="fa-solid fa-bullseye text-[8px] shrink-0" />
-                                <span className="truncate">{tSession.activity}</span>
-                              </div>
-                            )}
-
-                            {vSession && (
-                              <div
-                                className={`px-1.5 py-0.5 rounded text-[9px] font-black truncate border flex items-center gap-1 ${
-                                  isVocabDone
-                                    ? 'bg-emerald-500/20 text-emerald-500 border-emerald-500/30 line-through'
-                                    : 'bg-purple-500/20 text-purple-600 dark:text-purple-400 border-purple-500/30'
-                                }`}
-                                title={`[Từ Vựng Study4] ${vSession.activity}`}
-                              >
-                                <i className="fa-solid fa-book-open text-[8px] shrink-0" />
-                                <span className="truncate">{vSession.activity}</span>
-                              </div>
-                            )}
-                          </>
+                          <div
+                            className={`px-1.5 py-0.5 rounded text-[9px] font-black truncate border flex items-center gap-1 ${
+                              isIeltsDone
+                                ? 'bg-emerald-500/20 text-emerald-500 border-emerald-500/30 line-through'
+                                : 'bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border-indigo-500/30'
+                            }`}
+                            title="Lộ Trình IELTS 7.0+ (Mục tiêu học thuật)"
+                          >
+                            <i className="fa-solid fa-graduation-cap text-[8px] shrink-0" />
+                            <span className="truncate">IELTS 7.0+ Focus</span>
+                          </div>
                         );
                       })()}
 

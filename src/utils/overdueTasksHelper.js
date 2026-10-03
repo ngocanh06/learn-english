@@ -1,13 +1,6 @@
 import { UNIFIED_MASTER_DAYS } from '../data/unifiedMasterRoadmap';
-import {
-  STUDY4_VOCAB_TRACK,
-  getStudy4TestSession,
-  DEFAULT_ACTIVE_TEST_NUM,
-} from '../data/toeicScheduleStudy4';
 import { READING_DATABASE } from '../data/readingData';
 import { getDayDictationStatus } from './dictationProgress';
-import study4ListeningData from '../data/study4ListeningTest1.json';
-import study4ReadingData from '../data/study4ReadingTest1.json';
 
 const DOW_LABELS = ['Chủ Nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
 
@@ -63,7 +56,7 @@ export function calculateOverdueTasks({
   speakingSecondsMap = {},
   shadowedSentencesMap = {},
   completedWriting = {},
-  activeTestNum = DEFAULT_ACTIVE_TEST_NUM,
+  activeTestNum = 1,
   study4StatusMap = {},
 } = {}) {
   const today = new Date();
@@ -160,71 +153,7 @@ export function calculateOverdueTasks({
         });
       }
 
-      // ─── 3. TỪ VỰNG STUDY4 CHUYÊN SÂU ───
-      const diffDays = Math.round((dateObj - start) / (1000 * 60 * 60 * 24));
-      const vocabTrackIdx = diffDays % STUDY4_VOCAB_TRACK.length;
-      const vocabSession = STUDY4_VOCAB_TRACK[vocabTrackIdx] || STUDY4_VOCAB_TRACK[0];
-      const skill = (vocabSession?.skill || 'Listening').toLowerCase();
-      const trackIndex = vocabSession?.trackIndex || 1;
-      const chunkIndex = vocabSession?.chunkIndex || 1;
-      const partFilter = vocabSession?.partFilter || `day-${chunkIndex}`;
 
-      // Check vocab track completion
-      let isStudy4VocabDone = Boolean(isPillarCompleted('study4_vocab'));
-      if (!isStudy4VocabDone) {
-        if (
-          vocabDayCompleted[`study4_${skill}_day_${chunkIndex}`] ||
-          vocabDayCompleted[`study4_day_${chunkIndex}`] ||
-          vocabDayCompleted[`study4_${skill}_day_${trackIndex}`] ||
-          vocabDayCompleted[`study4_day_${trackIndex}`] ||
-          vocabDayCompleted[`day_${chunkIndex}`] ||
-          vocabDayCompleted[`${dateKey}_study4_vocab`]
-        ) {
-          isStudy4VocabDone = true;
-        } else {
-          const WORDS_PER_DAY = 50;
-          const startIdx = (chunkIndex - 1) * WORDS_PER_DAY;
-          const sourceData = vocabSession?.skill === 'Reading' ? study4ReadingData : study4ListeningData;
-          const dayWords = Array.isArray(sourceData) ? sourceData.slice(startIdx, startIdx + WORDS_PER_DAY) : [];
-          if (dayWords.length > 0) {
-            let knownCount = 0;
-            for (const item of dayWords) {
-              if (item && item.word && knownWordsMap[item.word.trim().toLowerCase()]) {
-                knownCount++;
-              }
-            }
-            if (knownCount >= Math.min(dayWords.length, 10) || knownCount >= dayWords.length * 0.25) {
-              isStudy4VocabDone = true;
-            }
-          }
-        }
-      }
-
-      if (!isStudy4VocabDone && vocabSession) {
-        dayOverdueTasks.push({
-          id: 'study4_vocab',
-          pillarKey: 'study4_vocab',
-          dateKey,
-          dateObj,
-          dayNum,
-          dowLabel,
-          isYesterday,
-          category: 'Từ Vựng Study4',
-          title: `Từ Vựng Đề Thi (${vocabSession.skill}) • Buổi ${trackIndex}/${vocabSession.totalTrackSessions || 75}`,
-          detail: vocabSession.note || 'Flashcard Spaced Repetition & Quiz phản xạ từ vựng',
-          icon: 'fa-solid fa-book-open',
-          badgeColor: 'bg-purple-500/15 text-purple-600 dark:text-purple-400 border-purple-300 dark:border-purple-800',
-          actionNav: {
-            tab: 'vocabulary',
-            params: {
-              section: 'study4',
-              tabId: vocabSession.skill === 'Reading' ? 'toeic-reading' : 'toeic-listening',
-              day: chunkIndex,
-              partFilter: partFilter,
-            },
-          },
-        });
-      }
 
       // ─── 4. LUYỆN ĐỌC CEFR (READING) ───
       const rTestId = getReadingTestIdForDay(dayNum);
@@ -298,36 +227,6 @@ export function calculateOverdueTasks({
           badgeColor: 'bg-rose-500/15 text-rose-600 dark:text-rose-400 border-rose-300 dark:border-rose-800',
           actionNav: { tab: 'video-hub' },
         });
-      }
-
-      // ─── 7. STUDY4 TEST (LÀM & CHỮA ĐỀ THỰC CHIẾN) ───
-      const testSession = getStudy4TestSession(dateObj, activeTestNum);
-      if (testSession) {
-        // Test 1 (hoặc các Test trước Test đang học) đã hoàn thành -> Không bao giờ báo quá hạn!
-        const isPastCompletedTest = testSession.testNum < (activeTestNum || 2);
-        const isMarkedDoneInStatus = (study4StatusMap && study4StatusMap[testSession.trackIndex] === 'Hoàn thành') ||
-          testSession.status === 'Hoàn thành' ||
-          Boolean(testSession.isCompleted);
-        const isCalendarDone = Boolean(isPillarCompleted('study4_test') || isPillarCompleted('study4'));
-        const isTestDone = isPastCompletedTest || isMarkedDoneInStatus || isCalendarDone;
-
-        if (!isTestDone) {
-          dayOverdueTasks.push({
-            id: 'study4_test',
-            pillarKey: 'study4_test',
-            dateKey,
-            dateObj,
-            dayNum,
-            dowLabel,
-            isYesterday,
-            category: 'Luyện & Chữa Đề Study4',
-            title: `Luyện Đề TOEIC: ${testSession.activity}`,
-            detail: testSession.note || 'Luyện đề bấm giờ áp lực phòng thi thật & phân tích chữa đề',
-            icon: 'fa-solid fa-bullseye',
-            badgeColor: 'bg-rose-500/15 text-rose-600 dark:text-rose-400 border-rose-300 dark:border-rose-800',
-            actionNav: { tab: 'study4-toeic', params: { subView: 'tests' } },
-          });
-        }
       }
 
       // If this past day has any incomplete tasks, record them

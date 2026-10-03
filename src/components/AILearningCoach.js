@@ -19,6 +19,9 @@ import WritingStudio from './WritingStudio';
 import UnifiedMasterRoadmapHub from './UnifiedMasterRoadmapHub';
 import GoogleCalendarScheduleHub from './GoogleCalendarScheduleHub';
 import IELTSRoadmapHub from './IELTSRoadmapHub';
+import PersonalizedPlanDashboard from './PersonalizedPlanDashboard';
+import PersonalizedOnboardingModal from './PersonalizedOnboardingModal';
+import { DEFAULT_USER_LEARNING_PROFILE, CERTIFICATIONS } from '../config/learningCertifications';
 import { useAuth } from '../context/AuthContext';
 import {
   DEFAULT_DICTATION_STARS,
@@ -38,6 +41,10 @@ export default function AILearningCoach({
   const { currentUser, isAuthenticated, openLogin } = useAuth();
 
   // Persistent User Goal Configuration
+  const [learningProfile, setLearningProfile] = useUserStorage('user_learning_profile_v1', DEFAULT_USER_LEARNING_PROFILE);
+  const [onboardingModalOpen, setOnboardingModalOpen] = useState(false);
+  const activeCertObj = CERTIFICATIONS.find((c) => c.id === learningProfile?.certification) || CERTIFICATIONS[1];
+
   const [userGoal] = useUserStorage('ai_coach_goal_v1', {
     targetLevel: '650-800',
     dailyMinutes: 45,
@@ -91,7 +98,7 @@ export default function AILearningCoach({
   const [rememberedGrammar] = useUserStorage('grammar_remembered_v2', {});
   const [knownVocab] = useUserStorage('vocab_mastery_v2', {});
 
-  // Active Hub Tab: 'calendar-view' | 'master-roadmap' | 'writing-studio' | 'cefr-hub' | 'today-plan' | 'dailydictation' | 'study4-toeic' | 'roadmap-45days'
+  // Active Hub Tab: 'my-plan' | 'calendar-view' | 'master-roadmap' | 'writing-studio' | 'cefr-hub' | 'dailydictation' | 'study4-toeic'
   const [savedActiveTab, setSavedActiveTab] = useUserStorage('ai_coach_active_tab_v2', 'calendar-view');
   const [activeTab, setActiveTabState] = useState(() => initialTab || savedActiveTab || 'calendar-view');
 
@@ -347,9 +354,19 @@ export default function AILearningCoach({
                     <strong>{readinessMetrics.ddStarsCount}</strong> bài nghe đã xong
                   </span>
                   <span className="text-slate-300 dark:text-slate-600">•</span>
-                  <span className="text-blue-600 dark:text-blue-400 font-semibold">
-                    Mục tiêu: {currentUser?.targetScore ? `TOEIC ${currentUser.targetScore}+` : 'Thành thạo 4 kỹ năng & Ngữ pháp'}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-blue-600 dark:text-blue-400 font-semibold">
+                      Mục tiêu: {activeCertObj.name} ({learningProfile.targetScore || activeCertObj.defaultScore})
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setOnboardingModalOpen(true)}
+                      className="px-2 py-0.5 rounded-lg text-[10px] font-bold border border-blue-500/30 bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500 hover:text-white transition cursor-pointer"
+                      title="Bấm để thay đổi mục tiêu chứng chỉ hoặc điều chỉnh thời gian học"
+                    >
+                      Đổi mục tiêu
+                    </button>
+                  </div>
                 </>
               ) : (
                 <>
@@ -468,8 +485,8 @@ export default function AILearningCoach({
                   isLight ? 'bg-slate-50 border-slate-200 text-slate-700' : 'bg-slate-800/60 border-slate-700 text-slate-300'
                 }`}
               >
-                <i className="fa-solid fa-file-signature text-rose-500" />
-                <strong className="text-slate-900 dark:text-white font-mono">{readinessMetrics.study4DoneCount}/10</strong> Đề Thi Đã Luyện
+                <i className="fa-solid fa-graduation-cap text-indigo-500" />
+                <strong className="text-slate-900 dark:text-white font-mono">24 Tuần</strong> Lộ Trình IELTS 7.0+
               </span>
             </div>
 
@@ -488,14 +505,16 @@ export default function AILearningCoach({
         </div>
       </div>
 
-      {/* ─── 5 TABS NAVIGATION (Clean Segmented Pills like ReadingHub) ─── */}
+      {/* ─── TABS NAVIGATION (Clean Segmented Pills) ─── */}
       <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 w-fit overflow-x-auto scrollbar-hide">
         {[
+          { id: 'my-plan', label: 'Kế Hoạch Cá Nhân Hóa 🎯', icon: 'fa-bullseye', badge: 'Mục Tiêu' },
           { id: 'calendar-view', label: 'Lịch Học (Tháng / Tuần / Ngày)', icon: 'fa-calendar-days' },
-          { id: 'ielts-roadmap', label: 'Lộ Trình IELTS 7.0+ Du Học ✈️', icon: 'fa-plane-departure', badge: '7.0+ Du Học' },
-          { id: 'master-roadmap', label: 'Lộ Trình Toàn Diện 4 Kỹ Năng', icon: 'fa-layer-group' },
-          { id: 'dailydictation', label: 'DailyDictation (3 Tracks)', icon: 'fa-headphones' },
-          { id: 'study4-toeic', label: 'Luyện Đề Thực Chiến (Study4)', icon: 'fa-table-list' },
+          learningProfile.certification === 'toeic'
+            ? { id: 'study4-toeic', label: 'Lộ Trình TOEIC (Study4 ETS)', icon: 'fa-table-list', badge: 'TOEIC' }
+            : { id: 'ielts-roadmap', label: 'Lộ Trình IELTS 7.0+ Du Học ✈️', icon: 'fa-plane-departure', badge: '7.0+ Du Học' },
+          { id: 'master-roadmap', label: 'Lộ Trình Toàn Diện 5 Trụ Cột', icon: 'fa-layer-group' },
+          { id: 'dailydictation', label: 'DailyDictation (Luyện Nghe)', icon: 'fa-headphones' },
         ].map((tab) => {
           const active = activeTab === tab.id;
           return (
@@ -522,6 +541,34 @@ export default function AILearningCoach({
 
       {/* ─── 2. MAIN WORKSPACE (FULL WIDTH FOR CALENDAR & ROADMAP) ─── */}
       <div className="w-full space-y-6">
+          {/* ═════════════════════════════════════════════════════════════════ */}
+          {/* ─── TAB: KẾ HOẠCH CÁ NHÂN HÓA (MY PERSONALIZED PLAN) ────────────── */}
+          {/* ═════════════════════════════════════════════════════════════════ */}
+          {activeTab === 'my-plan' && (
+            <PersonalizedPlanDashboard
+              profile={learningProfile}
+              onOpenSettings={() => setOnboardingModalOpen(true)}
+              onNavigate={(nav, params) => {
+                if (['vocab', 'vocabulary', 'reading', 'writing', 'video-hub', 'grammar'].includes(nav)) {
+                  onNavigate && onNavigate(nav, params);
+                } else {
+                  setActiveTab(nav);
+                }
+              }}
+              calendarTasks={calendarCompletedTasks}
+              completedTasksMap={completedMissions}
+              onToggleTask={(dayNum, taskKey) => {
+                const dateKey = todayKey;
+                const key = `${dateKey}_${taskKey}`;
+                setCalendarCompletedTasks((prev) => ({
+                  ...prev,
+                  [key]: !prev[key],
+                }));
+              }}
+              theme={theme}
+            />
+          )}
+
           {/* ═════════════════════════════════════════════════════════════════ */}
           {/* ─── TAB: LỊCH GOOGLE CALENDAR (THÁNG / TUẦN / NGÀY) ────────────── */}
           {/* ═════════════════════════════════════════════════════════════════ */}
@@ -1781,6 +1828,17 @@ export default function AILearningCoach({
             </div>
           )}
       </div>
+
+      <PersonalizedOnboardingModal
+        isOpen={onboardingModalOpen}
+        onClose={() => setOnboardingModalOpen(false)}
+        initialProfile={learningProfile}
+        onSaveProfile={setLearningProfile}
+        onTakePlacementTest={() => {
+          setActiveTab('ielts-roadmap');
+        }}
+        theme={theme}
+      />
     </div>
   );
 }

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { ROADMAP_STAGES, UNIFIED_MASTER_DAYS } from '../data/unifiedMasterRoadmap';
-import { STUDY4_TOEIC_SCHEDULE } from '../data/toeicScheduleStudy4';
 import { useUserStorage } from '../hooks/useUserStorage';
 import { DEFAULT_DICTATION_STARS, getDayDictationStatus } from '../utils/dictationProgress';
 
@@ -29,6 +28,7 @@ export default function UnifiedMasterRoadmapHub({ onNavigate, onOpenWriting, the
       completedTasksMap[key] ||
       calendarTasks[`${dateKey}_${taskKey}`] ||
       calendarTasks[key] ||
+      (taskKey === 'ielts' && (calendarTasks[`${dateKey}_ielts_academic`] || calendarTasks[`${dateKey}_ielts`])) ||
       (taskKey === 'study4' && (calendarTasks[`${dateKey}_study4_vocab`] || calendarTasks[`${dateKey}_study4_test`])) ||
       (taskKey === 'speaking' && (calendarTasks[`${dateKey}_shadowing`] || calendarTasks[`${dateKey}_speaking`])) ||
       (taskKey === 'dd' && ddStatus?.isAllDone)
@@ -46,9 +46,9 @@ export default function UnifiedMasterRoadmapHub({ onNavigate, onOpenWriting, the
         [`${dateKey}_${taskKey}`]: nextVal,
         [key]: nextVal,
       };
-      if (taskKey === 'study4') {
-        updated[`${dateKey}_study4_vocab`] = nextVal;
-        updated[`${dateKey}_study4`] = nextVal;
+      if (taskKey === 'ielts' || taskKey === 'study4') {
+        updated[`${dateKey}_ielts_academic`] = nextVal;
+        updated[`${dateKey}_ielts`] = nextVal;
       }
       if (taskKey === 'speaking') {
         updated[`${dateKey}_shadowing`] = nextVal;
@@ -125,12 +125,11 @@ export default function UnifiedMasterRoadmapHub({ onNavigate, onOpenWriting, the
         {filteredDays.map((dayItem) => {
           const ddStatus = getDayDictationStatus(dayItem.dailyDictation, dictationStars);
           const dateKey = getDateKeyForDay(dayItem.day);
-          const isStudy4Done = Boolean(
-            completedTasksMap[`day_${dayItem.day}_study4`] ||
-            calendarTasks[`${dateKey}_study4_vocab`] ||
-            calendarTasks[`${dateKey}_study4_test`] ||
-            calendarTasks[`${dateKey}_study4`] ||
-            calendarTasks[`day_${dayItem.day}_study4`]
+          const isIeltsDone = Boolean(
+            completedTasksMap[`day_${dayItem.day}_ielts`] ||
+            calendarTasks[`${dateKey}_ielts_academic`] ||
+            calendarTasks[`${dateKey}_ielts`] ||
+            calendarTasks[`day_${dayItem.day}_ielts`]
           );
           const isDdDone = Boolean(
             completedTasksMap[`day_${dayItem.day}_dd`] ||
@@ -155,16 +154,8 @@ export default function UnifiedMasterRoadmapHub({ onNavigate, onOpenWriting, the
             calendarTasks[`day_${dayItem.day}_speaking`]
           );
 
-          const completedCount = [isStudy4Done, isDdDone, isGrammarDone, isWritingDone, isSpeakingDone].filter(Boolean).length;
+          const completedCount = [isIeltsDone, isDdDone, isGrammarDone, isWritingDone, isSpeakingDone].filter(Boolean).length;
           const isAllDone = completedCount === 5;
-
-          // Find corresponding Study4 session safely
-          const study4Session = STUDY4_TOEIC_SCHEDULE.find((s) => s.day === dayItem.day) || {
-            skill: 'Listening',
-            activity: 'Luyện đề & Từ vựng TOEIC Study4',
-            duration: 60,
-            note: 'Ôn tập và kiểm tra chi tiết theo lịch',
-          };
 
           return (
             <div
@@ -206,34 +197,42 @@ export default function UnifiedMasterRoadmapHub({ onNavigate, onOpenWriting, the
 
               {/* 5 Integrated Pillars Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
-                {/* 1. Study4 TOEIC */}
+                {/* 1. IELTS Academic Focus */}
                 <div
                   className={`p-4 rounded-2xl border flex flex-col justify-between space-y-2 transition ${
-                    isStudy4Done
+                    isIeltsDone
                       ? isLight ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-emerald-950/30 border-emerald-800 text-emerald-300'
                       : isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-800/60 border-slate-700/60'
                   }`}
                 >
                   <div>
-                    <div className="flex items-center justify-between text-[10px] font-black uppercase text-rose-500 mb-1">
-                      <span className="flex items-center gap-1.5"><i className="fa-solid fa-bullseye text-xs" /> Study4 TOEIC</span>
-                      <span className="font-mono">{study4Session?.duration ? `${study4Session.duration}p` : '60p'}</span>
+                    <div className="flex items-center justify-between text-[10px] font-black uppercase text-indigo-500 mb-1">
+                      <span className="flex items-center gap-1.5"><i className="fa-solid fa-graduation-cap text-xs" /> IELTS 7.0+</span>
+                      <span className="font-mono">60-90p</span>
                     </div>
-                    <h4 className="text-xs font-extrabold line-clamp-2">{study4Session?.activity || 'Luyện Đề TOEIC'}</h4>
-                    <p className="text-[11px] text-slate-400 mt-1 line-clamp-2">{study4Session?.note || 'Chữa chi tiết & lọc từ vựng'}</p>
+                    <h4 className="text-xs font-extrabold line-clamp-2">Lộ Trình IELTS Academic Du Học</h4>
+                    <p className="text-[11px] text-slate-400 mt-1 line-clamp-2">Target 7.0+ Du học: Reading, Listening & Tư duy phản biện</p>
                   </div>
 
-                  <button
-                    onClick={() => toggleTask(dayItem.day, 'study4')}
-                    className={`w-full py-1.5 px-3 rounded-xl text-xs font-extrabold flex items-center justify-center gap-1.5 transition ${
-                      isStudy4Done
-                        ? 'bg-emerald-600 text-white'
-                        : 'bg-rose-500/15 text-rose-600 dark:text-rose-400 hover:bg-rose-500 hover:text-white'
-                    }`}
-                  >
-                    <i className={`fa-solid ${isStudy4Done ? 'fa-circle-check' : 'fa-check'}`} />
-                    <span>{isStudy4Done ? 'Đã xong' : 'Hoàn thành'}</span>
-                  </button>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={() => onNavigate && onNavigate('ielts-roadmap')}
+                      className="py-1.5 px-2.5 rounded-xl text-[11px] font-bold bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500 hover:text-white transition flex-1 text-center"
+                      title="Mở Lộ Trình IELTS 7.0+"
+                    >
+                      Mở Lộ Trình
+                    </button>
+                    <button
+                      onClick={() => toggleTask(dayItem.day, 'ielts')}
+                      className={`py-1.5 px-3 rounded-xl text-xs font-extrabold flex items-center justify-center gap-1 transition ${
+                        isIeltsDone
+                          ? 'bg-emerald-600 text-white'
+                          : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-emerald-500 hover:text-white'
+                      }`}
+                    >
+                      <i className={`fa-solid ${isIeltsDone ? 'fa-circle-check' : 'fa-check'}`} />
+                    </button>
+                  </div>
                 </div>
 
                 {/* 2. DailyDictation (3 Tracks) */}

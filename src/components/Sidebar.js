@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { NAV_ITEMS } from '../config/navigation';
 import { useAuth } from '../context/AuthContext';
+import { useUserStorage } from '../hooks/useUserStorage';
+import { DEFAULT_USER_LEARNING_PROFILE, CERTIFICATIONS } from '../config/learningCertifications';
 
 export default function Sidebar({
   activeNav,
@@ -26,6 +28,8 @@ export default function Sidebar({
 
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [hoveredItem, setHoveredItem] = useState(null);
+  const [learningProfile] = useUserStorage('user_learning_profile_v1', DEFAULT_USER_LEARNING_PROFILE);
+  const activeCert = CERTIFICATIONS.find((c) => c.id === learningProfile?.certification) || CERTIFICATIONS[1];
 
   const renderNav = (isDrawer = false) => {
     const isMini = !isDrawer && collapsed;
@@ -166,32 +170,55 @@ export default function Sidebar({
             })}
           </div>
 
-          {/* IELTS Study Abroad Track Card */}
+          {/* Dynamic Active Goal & Certificate Track Card */}
           {!isMini && (
             <div className={`mx-3 my-2 p-3 rounded-xl border ${
               isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-850/80 border-slate-800'
             }`}>
               <div className="flex items-center justify-between mb-1">
-                <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200">
-                  IELTS Academic
+                <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 truncate flex items-center gap-1.5">
+                  <i className={`fa-solid ${activeCert.icon} text-blue-500 text-xs`} />
+                  {activeCert.name}
                 </span>
-                <span className="text-[10px] font-semibold text-blue-600 dark:text-blue-400">
-                  Mục tiêu 7.0+
+                <span className="text-[10px] font-semibold text-blue-600 dark:text-blue-400 shrink-0 font-mono">
+                  {learningProfile?.targetScore || activeCert.defaultScore}
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 mb-2.5 leading-tight">
-                Lộ trình 24 tuần cấp tốc theo chuẩn Cambridge.
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 mb-2.5 leading-tight line-clamp-2">
+                {activeCert.description}
               </p>
-              <button
-                onClick={() => {
-                  onNavigate('ielts-roadmap');
-                  if (isDrawer) setMobileOpen(false);
-                }}
-                className="w-full py-1.5 px-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition text-center flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                <span>Xem lộ trình IELTS</span>
-                <i className="fa-solid fa-arrow-right text-[10px]" />
-              </button>
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => {
+                    if (learningProfile?.certification === 'toeic') {
+                      onNavigate('study4-toeic');
+                    } else if (learningProfile?.certification === 'ielts') {
+                      onNavigate('ielts-roadmap');
+                    } else {
+                      onNavigate('ai-coach', { tab: 'my-plan' });
+                    }
+                    if (isDrawer) setMobileOpen(false);
+                  }}
+                  className="flex-1 py-1.5 px-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition text-center flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                >
+                  <span>Xem Lộ Trình</span>
+                  <i className="fa-solid fa-arrow-right text-[10px]" />
+                </button>
+                <button
+                  onClick={() => {
+                    onNavigate('ai-coach', { tab: 'my-plan' });
+                    if (isDrawer) setMobileOpen(false);
+                  }}
+                  className={`p-1.5 rounded-lg border text-xs transition cursor-pointer ${
+                    isLight
+                      ? 'border-slate-200 text-slate-600 hover:bg-slate-100'
+                      : 'border-slate-700 text-slate-300 hover:bg-slate-800'
+                  }`}
+                  title="Tùy chỉnh Kế hoạch & Mục tiêu"
+                >
+                  <i className="fa-solid fa-sliders text-[11px]" />
+                </button>
+              </div>
             </div>
           )}
 
