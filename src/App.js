@@ -13,6 +13,8 @@ import ErrorBoundary from './components/ErrorBoundary';
 import AuthModal from './components/AuthModal';
 import UserProfileModal from './components/UserProfileModal';
 import GlobalAIAssistant from './components/GlobalAIAssistant';
+import PersonalizedOnboardingModal from './components/PersonalizedOnboardingModal';
+import { DEFAULT_USER_LEARNING_PROFILE } from './config/learningCertifications';
 
 import { AuthProvider } from './context/AuthContext';
 import { useLocalStorage } from './hooks/useLocalStorage';
@@ -83,6 +85,19 @@ function MainApp() {
   const [mobileMenuOpen, setMobileMenu] = useState(false);
   const [theme, setTheme] = useLocalStorage('app_theme', 'dark');
   const [sidebarCollapsed, setSidebarCollapsed] = useLocalStorage('sidebar_collapsed_v1', false);
+  const [learningProfile, setLearningProfile] = useUserStorage('user_learning_profile_v1', DEFAULT_USER_LEARNING_PROFILE);
+  const [hasChosenGoal, setHasChosenGoal] = useUserStorage('user_has_chosen_goal_v1', false);
+  const [onboardingModalOpen, setOnboardingModalOpen] = useState(false);
+
+  useEffect(() => {
+    // If user has not chosen their target certificate yet, prompt them with the welcome popup!
+    if (!hasChosenGoal) {
+      const timer = setTimeout(() => {
+        setOnboardingModalOpen(true);
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, [hasChosenGoal]);
 
   const isLight = theme === 'light';
 
@@ -343,6 +358,26 @@ function MainApp() {
       <AuthModal theme={theme} />
       <UserProfileModal theme={theme} />
       <GlobalAIAssistant activeNav={activeNav} navParams={navParams} theme={theme} />
+      <PersonalizedOnboardingModal
+        isOpen={onboardingModalOpen}
+        onClose={() => {
+          setOnboardingModalOpen(false);
+          setHasChosenGoal(true);
+        }}
+        initialProfile={learningProfile}
+        onSaveProfile={(updated) => {
+          setLearningProfile(updated);
+          setHasChosenGoal(true);
+          if (updated?.certification === 'toeic') {
+            navigate('ai-coach', { tab: 'study4-toeic' });
+          } else if (updated?.certification === 'none') {
+            navigate('ai-coach', { tab: 'master-roadmap' });
+          } else {
+            navigate('ai-coach', { tab: 'ielts-roadmap' });
+          }
+        }}
+        theme={theme}
+      />
     </div>
   );
 }

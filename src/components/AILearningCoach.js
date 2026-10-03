@@ -508,20 +508,21 @@ export default function AILearningCoach({
       {/* ─── TABS NAVIGATION (Clean Segmented Pills) ─── */}
       <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 w-fit overflow-x-auto scrollbar-hide">
         {[
-          { id: 'my-plan', label: 'Kế Hoạch Cá Nhân Hóa 🎯', icon: 'fa-bullseye', badge: 'Mục Tiêu' },
           { id: 'calendar-view', label: 'Lịch Học (Tháng / Tuần / Ngày)', icon: 'fa-calendar-days' },
-          learningProfile.certification === 'toeic'
-            ? { id: 'study4-toeic', label: 'Lộ Trình TOEIC (Study4 ETS)', icon: 'fa-table-list', badge: 'TOEIC' }
-            : { id: 'ielts-roadmap', label: 'Lộ Trình IELTS 7.0+ Du Học ✈️', icon: 'fa-plane-departure', badge: '7.0+ Du Học' },
-          { id: 'master-roadmap', label: 'Lộ Trình Toàn Diện 5 Trụ Cột', icon: 'fa-layer-group' },
+          learningProfile?.certification === 'toeic'
+            ? { id: 'study4-toeic', label: 'Lộ Trình TOEIC Thực Chiến (Study4) 🎯', icon: 'fa-table-list', badge: 'Mục Tiêu TOEIC' }
+            : learningProfile?.certification === 'none'
+            ? { id: 'master-roadmap', label: 'Lộ Trình Nền Tảng 5 Kỹ Năng 🌿', icon: 'fa-layer-group', badge: 'Mục Tiêu Nền Tảng' }
+            : { id: 'ielts-roadmap', label: 'Lộ Trình IELTS 7.0+ Du Học ✈️', icon: 'fa-plane-departure', badge: 'Mục Tiêu IELTS' },
           { id: 'dailydictation', label: 'DailyDictation (Luyện Nghe)', icon: 'fa-headphones' },
+          { id: 'writing-studio', label: 'Luyện Dịch Câu (Writing Studio)', icon: 'fa-pen-nib' },
         ].map((tab) => {
           const active = activeTab === tab.id;
           return (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap select-none ${
+              className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap select-none cursor-pointer ${
                 active
                   ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm border border-slate-200/60 dark:border-slate-700'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -530,7 +531,7 @@ export default function AILearningCoach({
               <i className={`fa-solid ${tab.icon} text-xs ${active ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}`} />
               <span>{tab.label}</span>
               {tab.badge && (
-                <span className="px-1.5 py-0.5 rounded-md text-[9px] font-black bg-gradient-to-r from-amber-500 to-rose-500 text-white leading-none">
+                <span className="px-1.5 py-0.5 rounded-md text-[9px] font-black bg-gradient-to-r from-blue-600 to-indigo-600 text-white leading-none">
                   {tab.badge}
                 </span>
               )}
@@ -1833,7 +1834,16 @@ export default function AILearningCoach({
         isOpen={onboardingModalOpen}
         onClose={() => setOnboardingModalOpen(false)}
         initialProfile={learningProfile}
-        onSaveProfile={setLearningProfile}
+        onSaveProfile={(updated) => {
+          setLearningProfile(updated);
+          if (updated?.certification === 'toeic') {
+            setActiveTab('study4-toeic');
+          } else if (updated?.certification === 'none') {
+            setActiveTab('master-roadmap');
+          } else {
+            setActiveTab('ielts-roadmap');
+          }
+        }}
         onTakePlacementTest={() => {
           setActiveTab('ielts-roadmap');
         }}
