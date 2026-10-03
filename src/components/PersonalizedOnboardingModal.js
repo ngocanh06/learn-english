@@ -20,8 +20,18 @@ export default function PersonalizedOnboardingModal({
   const [cert, setCert] = useState(initialProfile?.certification || 'ielts');
   const [score, setScore] = useState(initialProfile?.targetScore || '7.0');
   const [level, setLevel] = useState(initialProfile?.currentLevel || 'B1');
-  const [studyMin, setStudyMin] = useState(initialProfile?.dailyGoalMin || 45);
+  const [studyMin, setStudyMin] = useState(initialProfile?.dailyStudyMinutes || initialProfile?.dailyGoalMin || 45);
   const [examDate, setExamDate] = useState(initialProfile?.examDate || '');
+
+  const [showSkillDetail, setShowSkillDetail] = useState(false);
+  const [skillLevels, setSkillLevels] = useState({
+    listening: initialProfile?.skills?.listening || initialProfile?.currentLevel || 'B1',
+    reading: initialProfile?.skills?.reading || initialProfile?.currentLevel || 'B1',
+    grammar: initialProfile?.skills?.grammar || initialProfile?.currentLevel || 'B1',
+    vocabulary: initialProfile?.skills?.vocabulary || initialProfile?.currentLevel || 'B1',
+    writing: initialProfile?.skills?.writing || initialProfile?.currentLevel || 'B1',
+    speaking: initialProfile?.skills?.speaking || initialProfile?.currentLevel || 'B1',
+  });
 
   if (!isOpen) return null;
 
@@ -33,16 +43,33 @@ export default function PersonalizedOnboardingModal({
     examDate: examDate || null,
   });
 
+  const handleLevelChange = (newLevel) => {
+    setLevel(newLevel);
+    if (!showSkillDetail) {
+      setSkillLevels({
+        listening: newLevel,
+        reading: newLevel,
+        grammar: newLevel,
+        vocabulary: newLevel,
+        writing: newLevel,
+        speaking: newLevel,
+      });
+    }
+  };
+
   const handleFinish = () => {
     const updatedProfile = {
       ...initialProfile,
       learningGoal: cert === 'none' ? 'general' : 'certification',
       currentLevel: level,
+      overallLevel: level,
       certification: cert,
       targetScore: score,
       examDate: examDate || null,
+      dailyStudyMinutes: studyMin,
       dailyGoalMin: studyMin,
       studyDaysPerWeek: 6,
+      skills: skillLevels,
       onboardingCompleted: true,
       lastUpdated: new Date().toISOString(),
     };
@@ -204,7 +231,7 @@ export default function PersonalizedOnboardingModal({
                     return (
                       <div
                         key={lvl.code}
-                        onClick={() => setLevel(lvl.code)}
+                        onClick={() => handleLevelChange(lvl.code)}
                         className={`p-2.5 rounded-xl border flex items-center justify-between cursor-pointer transition ${
                           isSelected
                             ? 'border-blue-600 bg-blue-50/60 dark:bg-blue-950/30'
@@ -226,6 +253,46 @@ export default function PersonalizedOnboardingModal({
                       </div>
                     );
                   })}
+                </div>
+
+                {/* Per-skill fine-tuning */}
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowSkillDetail(!showSkillDetail)}
+                    className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <i className={`fa-solid ${showSkillDetail ? 'fa-chevron-up' : 'fa-chevron-down'} text-[10px]`} />
+                    <span>{showSkillDetail ? 'Thu gọn chi tiết kỹ năng' : 'Tùy chỉnh riêng từng kỹ năng (Nghe, Nói, Đọc, Ngữ pháp...)'}</span>
+                  </button>
+
+                  {showSkillDetail && (
+                    <div className="mt-2.5 p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-850/60 grid grid-cols-2 sm:grid-cols-3 gap-2.5 animate-fadeIn">
+                      {[
+                        { key: 'listening', label: 'Listening (Nghe)' },
+                        { key: 'reading', label: 'Reading (Đọc)' },
+                        { key: 'grammar', label: 'Grammar (Ngữ pháp)' },
+                        { key: 'vocabulary', label: 'Vocabulary (Từ vựng)' },
+                        { key: 'speaking', label: 'Speaking (Nói)' },
+                        { key: 'writing', label: 'Writing (Viết)' },
+                      ].map((item) => (
+                        <div key={item.key} className="space-y-1">
+                          <label className="text-[11px] font-bold text-slate-500 block truncate">{item.label}</label>
+                          <select
+                            value={skillLevels[item.key]}
+                            onChange={(e) => setSkillLevels({ ...skillLevels, [item.key]: e.target.value })}
+                            className={`w-full p-1.5 rounded-lg border text-xs font-bold focus:outline-none focus:ring-1 focus:ring-blue-500 ${
+                              isLight ? 'bg-white border-slate-200 text-slate-800' : 'bg-slate-800 border-slate-700 text-slate-200'
+                            }`}
+                          >
+                            {CEFR_LEVELS.map((c) => (
+                              <option key={c.code} value={c.code}>{c.code}</option>
+                            ))}
+                          </select>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
