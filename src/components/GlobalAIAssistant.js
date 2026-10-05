@@ -146,12 +146,12 @@ export default function GlobalAIAssistant({ activeNav = 'grammar', navParams = {
 
   return (
     <>
-      {/* ─── 1. FLOATING ACTION BUTTON (ALWAYS VISIBLE BOTTOM-RIGHT) ─── */}
-      <div className="fixed bottom-5 right-5 z-40 flex flex-col items-end font-sans select-none">
+      {/* ─── 1. FLOATING ACTION BUTTON (ALWAYS VISIBLE BOTTOM-RIGHT, CLEARS BOTTOM NAV ON MOBILE) ─── */}
+      <div className="fixed bottom-20 lg:bottom-6 right-4 sm:right-6 z-40 flex flex-col items-end font-sans select-none">
         {/* Main Floating Trigger Button */}
         <button
           onClick={() => setIsOpen((prev) => !prev)}
-          className={`h-11 w-11 sm:h-11 sm:w-auto sm:px-3.5 rounded-full shadow-md flex items-center justify-center gap-2 transition-colors cursor-pointer ${
+          className={`h-10 px-3.5 rounded-full shadow-md flex items-center justify-center gap-2 transition-colors cursor-pointer ${
             isOpen
               ? 'bg-slate-700 hover:bg-slate-800 text-white'
               : 'bg-blue-600 hover:bg-blue-700 text-white'
@@ -163,31 +163,31 @@ export default function GlobalAIAssistant({ activeNav = 'grammar', navParams = {
               isOpen ? 'fa-xmark text-sm' : 'fa-comment-dots text-sm'
             }`}
           />
-          <span className="font-semibold text-xs tracking-wide hidden sm:inline">
+          <span className="font-semibold text-xs tracking-wide">
             {isOpen ? 'Đóng' : 'Hỏi đáp'}
           </span>
         </button>
       </div>
 
-      {/* ─── 2. FLOATING CHAT MODAL / DIALOG (WHEN OPEN) ─── */}
+      {/* ─── 2. FLOATING TUTOR DIALOG (WHEN OPEN) ─── */}
       {isOpen && (
         <div
-          className={`fixed bottom-20 right-4 sm:right-6 z-50 w-[92vw] sm:w-[440px] max-h-[80vh] h-[600px] rounded-xl border shadow-lg flex flex-col overflow-hidden transition-all duration-200 font-sans ${
+          className={`fixed bottom-32 lg:bottom-20 right-4 sm:right-6 z-50 w-[92vw] sm:w-[420px] max-h-[75vh] h-[560px] rounded-lg border shadow-xl flex flex-col overflow-hidden transition-all duration-150 font-sans ${
             isLight
               ? 'bg-white border-slate-200 text-slate-900'
-              : 'bg-slate-900 border-slate-800 text-white'
+              : 'bg-[#111827] border-slate-800 text-white'
           }`}
         >
           {/* Modal Header */}
-          <div className="p-3.5 px-4 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-3 shrink-0 bg-slate-50 dark:bg-slate-850">
+          <div className="p-3 px-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3 shrink-0 bg-slate-50 dark:bg-slate-900">
             <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-md bg-blue-600 text-white flex items-center justify-center shrink-0">
                 <i className="fa-solid fa-graduation-cap text-xs" />
               </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
                   <h3 className="font-bold text-xs md:text-sm text-slate-900 dark:text-white truncate">
-                    Trợ lý học tập
+                    Hỏi đáp bài học
                   </h3>
                   <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
                     Sẵn sàng
@@ -200,17 +200,17 @@ export default function GlobalAIAssistant({ activeNav = 'grammar', navParams = {
             </div>
 
             {/* Header Actions */}
-            <div className="flex items-center gap-1.5 shrink-0">
+            <div className="flex items-center gap-1 shrink-0">
               <button
                 onClick={clearChat}
-                className="w-8 h-8 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                className="w-7 h-7 rounded-md flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
                 title="Làm mới cuộc trò chuyện"
               >
                 <i className="fa-solid fa-rotate-left text-xs" />
               </button>
               <button
                 onClick={() => setIsOpen(false)}
-                className="w-8 h-8 rounded-xl flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                className="w-7 h-7 rounded-md flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
                 title="Đóng"
               >
                 <i className="fa-solid fa-xmark text-sm font-bold" />
@@ -220,18 +220,18 @@ export default function GlobalAIAssistant({ activeNav = 'grammar', navParams = {
 
           {/* Quick Context Prompt Suggestions */}
           {suggestions && suggestions.length > 0 && (
-            <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-950/40 shrink-0 overflow-x-auto no-scrollbar flex items-center gap-2">
-              <span className="text-[10px] font-black uppercase text-slate-400 shrink-0 flex items-center gap-1">
-                <i className="fa-solid fa-bolt text-amber-500" /> Gợi ý:
+            <div className="px-3 py-1.5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/60 dark:bg-slate-950/40 shrink-0 overflow-x-auto no-scrollbar flex items-center gap-1.5">
+              <span className="text-[10px] font-bold uppercase text-slate-400 shrink-0">
+                Gợi ý:
               </span>
               {suggestions.map((s, idx) => (
                 <button
                   key={idx}
                   onClick={() => handleSend(s.query)}
-                  className={`px-3 py-1 rounded-xl text-[11px] font-bold shrink-0 border transition-all cursor-pointer whitespace-nowrap ${
+                  className={`px-2.5 py-1 rounded-md text-[11px] font-medium shrink-0 border transition-colors cursor-pointer whitespace-nowrap ${
                     isLight
-                      ? 'bg-white hover:bg-blue-50 border-slate-200 hover:border-blue-300 text-slate-700 hover:text-blue-700 shadow-2xs'
-                      : 'bg-slate-800 hover:bg-blue-950/50 border-slate-700 hover:border-blue-500/50 text-slate-300 hover:text-blue-300'
+                      ? 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700'
+                      : 'bg-slate-800 hover:bg-slate-750 border-slate-700 text-slate-300'
                   }`}
                 >
                   {s.label}
@@ -241,36 +241,36 @@ export default function GlobalAIAssistant({ activeNav = 'grammar', navParams = {
           )}
 
           {/* Chat Messages Body */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 text-xs leading-relaxed">
+          <div className="flex-1 overflow-y-auto p-4 space-y-3.5 text-xs leading-relaxed">
             {messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`flex gap-3 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                className={`flex gap-2.5 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 {msg.sender === 'ai' && (
-                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs mt-1">
-                    <i className="fa-solid fa-robot text-xs" />
+                  <div className="w-7 h-7 rounded-md bg-blue-600 text-white flex items-center justify-center shrink-0 mt-0.5">
+                    <i className="fa-solid fa-graduation-cap text-[11px]" />
                   </div>
                 )}
 
                 <div
-                  className={`max-w-[85%] rounded-2xl p-3.5 space-y-2 shadow-xs ${
+                  className={`max-w-[85%] rounded-lg p-3 space-y-1.5 ${
                     msg.sender === 'user'
-                      ? 'bg-blue-600 text-white rounded-tr-none'
+                      ? 'bg-blue-600 text-white'
                       : isLight
-                      ? 'bg-slate-100/90 border border-slate-200/80 text-slate-800 rounded-tl-none'
-                      : 'bg-slate-800/90 border border-slate-700/80 text-slate-200 rounded-tl-none'
+                      ? 'bg-slate-100 border border-slate-200 text-slate-800'
+                      : 'bg-slate-800 border border-slate-700 text-slate-200'
                   }`}
                 >
                   <div className="whitespace-pre-wrap leading-relaxed select-text">
                     {msg.text}
                   </div>
 
-                  {/* AI Response Tools: TTS & Copy */}
+                  {/* Tutor Response Tools: TTS & Copy */}
                   {msg.sender === 'ai' && (
-                    <div className="flex items-center justify-between gap-2 pt-1 border-t border-black/5 dark:border-white/5 text-[10px] text-slate-400">
+                    <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-200 dark:border-slate-700 text-[10px] text-slate-400">
                       <span>{msg.time}</span>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2.5">
                         <button
                           onClick={() => speakText(msg.text)}
                           className="hover:text-blue-500 flex items-center gap-1 transition cursor-pointer"
@@ -296,19 +296,17 @@ export default function GlobalAIAssistant({ activeNav = 'grammar', navParams = {
             ))}
 
             {isThinking && (
-              <div className="flex gap-3 justify-start items-center">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shrink-0">
-                  <i className="fa-solid fa-robot text-xs" />
+              <div className="flex gap-2.5 justify-start items-center">
+                <div className="w-7 h-7 rounded-md bg-blue-600 text-white flex items-center justify-center shrink-0">
+                  <i className="fa-solid fa-graduation-cap text-[11px]" />
                 </div>
                 <div
-                  className={`p-3 px-4 rounded-2xl rounded-tl-none border text-xs flex items-center gap-2 ${
-                    isLight ? 'bg-slate-100 border-slate-200' : 'bg-slate-800 border-slate-700'
+                  className={`p-2.5 px-3 rounded-lg border text-xs flex items-center gap-2 ${
+                    isLight ? 'bg-slate-100 border-slate-200 text-slate-600' : 'bg-slate-800 border-slate-700 text-slate-300'
                   }`}
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-bounce" />
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-bounce delay-75" />
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-bounce delay-150" />
-                  <span className="text-slate-400 font-medium ml-1">AI đang suy nghĩ và tra cứu...</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                  <span className="font-medium text-[11px]">Đang tìm câu trả lời...</span>
                 </div>
               </div>
             )}
@@ -316,7 +314,7 @@ export default function GlobalAIAssistant({ activeNav = 'grammar', navParams = {
           </div>
 
           {/* Chat Input Bar */}
-          <div className="p-3 px-4 border-t border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0">
+          <div className="p-2.5 px-3 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111827] shrink-0">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -329,24 +327,25 @@ export default function GlobalAIAssistant({ activeNav = 'grammar', navParams = {
                 type="text"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                placeholder={`Hỏi bất kỳ điều gì về ${contextLabel.split(':')[0]}...`}
-                className={`flex-1 px-4 py-2.5 rounded-2xl border text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
+                placeholder={`Đặt câu hỏi về ${contextLabel.split(':')[0]}...`}
+                className={`flex-1 px-3 py-2 rounded-md border text-xs font-medium focus:outline-none focus:border-blue-500 transition ${
                   isLight
                     ? 'bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400'
-                    : 'bg-slate-800/80 border-slate-700 text-white placeholder-slate-500'
+                    : 'bg-slate-800 border-slate-700 text-white placeholder-slate-500'
                 }`}
               />
               <button
                 type="submit"
                 disabled={!inputText.trim() || isThinking}
-                className="w-10 h-10 rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white flex items-center justify-center shadow-md transition hover:scale-105 active:scale-95 cursor-pointer shrink-0"
+                className="h-8 px-3 rounded-md bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white font-medium text-xs flex items-center justify-center gap-1 transition cursor-pointer shrink-0"
                 title="Gửi câu hỏi"
               >
-                <i className="fa-solid fa-paper-plane text-xs" />
+                <span>Gửi</span>
+                <i className="fa-solid fa-paper-plane text-[10px]" />
               </button>
             </form>
-            <p className="text-[10px] text-slate-400 text-center mt-1.5">
-              Hỗ trợ giải đáp ngữ pháp, tra cứu từ vựng, mẹo thi TOEIC & sửa lỗi câu 24/7
+            <p className="text-[10px] text-slate-400 text-center mt-1">
+              Giải đáp ngữ pháp, tra từ vựng, mẹo thi TOEIC &amp; phân tích câu
             </p>
           </div>
         </div>

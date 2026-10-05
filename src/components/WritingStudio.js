@@ -100,22 +100,28 @@ export default function WritingStudio({ theme = 'dark' }) {
     <div className="flex flex-col gap-6 font-sans">
       {/* ─── BANNER ─────────────────────────────────────────────── */}
       <div
-        className={`p-6 md:p-8 rounded-3xl border transition-all ${
+        className={`p-6 md:p-7 rounded-lg border transition-all ${
           isLight
-            ? 'bg-gradient-to-r from-rose-600 via-pink-600 to-indigo-700 text-white shadow-lg border-rose-500'
-            : 'bg-gradient-to-r from-slate-900 via-rose-950/60 to-slate-950 border-slate-800 text-white shadow-xl'
+            ? 'bg-white border-slate-200 shadow-xs text-slate-900'
+            : 'bg-slate-900 border-slate-800 text-white'
         }`}
       >
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-xs font-bold uppercase tracking-wider">
-              <i className="fa-solid fa-pen-nib" />
-              Luyện Viết & Dịch Câu Tương Tác (The IELTS Dictionary Style)
+            <div
+              className={`inline-flex items-center gap-2 px-2.5 py-0.5 rounded-md text-xs font-semibold uppercase tracking-wider border ${
+                isLight
+                  ? 'bg-blue-50 border-blue-200 text-blue-700'
+                  : 'bg-blue-950/40 border-blue-800 text-blue-300'
+              }`}
+            >
+              <i className="fa-solid fa-pen-nib text-blue-500" />
+              Luyện Viết & Dịch Câu Tương Tác
             </div>
-            <h1 className="text-2xl md:text-3xl font-black tracking-tight">
+            <h1 className="text-xl md:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
               Phòng Luyện Viết Dịch Câu Nâng Cao
             </h1>
-            <p className="text-rose-100/90 text-xs md:text-sm">
+            <p className="text-slate-600 dark:text-slate-400 text-xs md:text-sm leading-relaxed">
               Luyện dịch câu từ căn bản (12 thì) đến cấu trúc học thuật và bài luận IELTS Writing Task 2. Tự động chấm điểm, phân tích ngữ pháp và so sánh với câu chuẩn bản xứ.
             </p>
           </div>
@@ -188,25 +194,25 @@ export default function WritingStudio({ theme = 'dark' }) {
       {/* ─── ACTIVE LESSON WORKSPACE ────────────────────────────── */}
       {activeLesson && (
         <div
-          className={`p-6 md:p-8 rounded-3xl border space-y-6 ${
-            isLight ? 'bg-white border-slate-200 shadow-sm text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
+          className={`p-5 md:p-6 rounded-lg border space-y-6 ${
+            isLight ? 'bg-white border-slate-200 shadow-xs text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
           }`}
         >
           <div className="pb-4 border-b border-slate-200 dark:border-slate-800">
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-md text-[11px] font-black uppercase tracking-wider bg-rose-500/15 text-rose-600 dark:text-rose-400">
+              <span className="px-2 py-0.5 rounded-md text-[11px] font-bold uppercase tracking-wider bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50">
                 {activeLesson.level}
               </span>
-              <span className="text-xs text-slate-400 font-bold">
+              <span className="text-xs text-slate-400 font-medium">
                 {activeLesson.sentences.length} câu luyện tập
               </span>
             </div>
-            <h2 className="text-xl md:text-2xl font-black mt-1.5">{activeLesson.title}</h2>
+            <h2 className="text-lg md:text-xl font-bold mt-1.5">{activeLesson.title}</h2>
             <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-0.5">{activeLesson.desc}</p>
           </div>
 
           {/* Sentences List */}
-          <div className="space-y-5">
+          <div className="space-y-4">
             {activeLesson.sentences.map((st, sIdx) => {
               const evalRes = evaluations[st.id];
               const isDone = !!completedWritingMap[st.id];
@@ -214,7 +220,7 @@ export default function WritingStudio({ theme = 'dark' }) {
               return (
                 <div
                   key={st.id}
-                  className={`p-5 rounded-2xl border space-y-3.5 transition-all ${
+                  className={`p-4 md:p-5 rounded-lg border space-y-3.5 transition-all ${
                     isDone
                       ? isLight ? 'bg-emerald-50/40 border-emerald-200' : 'bg-emerald-950/20 border-emerald-800/40'
                       : isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-800/50 border-slate-800'

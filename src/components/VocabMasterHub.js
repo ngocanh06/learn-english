@@ -270,96 +270,96 @@ export default function VocabMasterHub({
         </div>
       )}
 
-      {/* ─── VOCABULARY PROGRESS & MEASUREMENT DASHBOARD BANNER (Soothing & Clean) ─── */}
+      {/* ─── VOCABULARY PROGRESS & MEASUREMENT DASHBOARD BANNER ─── */}
       <div
-        className={`p-6 md:p-7 rounded-xl border transition-all ${
+        className={`p-4 sm:p-5 rounded-lg border transition-colors ${
           isLight
-            ? 'bg-white border-slate-200 text-slate-900 shadow-xs'
-            : 'bg-slate-900 border-slate-800 text-white'
+            ? 'bg-white border-slate-200 text-slate-900'
+            : 'bg-[#111827] border-slate-800 text-slate-100'
         }`}
       >
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           {/* Left info */}
-          <div className="space-y-2 max-w-xl">
+          <div className="space-y-1 max-w-xl">
             <div
-              className={`inline-flex items-center gap-2 px-3 py-1 rounded-md text-xs font-semibold uppercase tracking-wider border ${
+              className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold uppercase tracking-wider border ${
                 isLight
                   ? 'bg-blue-50 border-blue-200 text-blue-700'
-                  : 'bg-blue-950/40 border-blue-800/60 text-blue-300'
+                  : 'bg-blue-950/40 border-blue-800 text-blue-300'
               }`}
             >
-              <i className="fa-solid fa-chart-line text-blue-500" />
+              <i className="fa-solid fa-chart-line text-blue-500 text-xs" />
               Đo Lường Tiến Độ Học Từ Vựng
             </div>
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
-              Kho Từ Vựng & Đo Lường Thành Thạo
+            <h1 className="text-lg sm:text-xl md:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+              Kho Từ Vựng &amp; Đo Lường Thành Thạo
             </h1>
             <p className="text-slate-600 dark:text-slate-400 text-xs md:text-sm leading-relaxed">
-              Theo dõi chính xác số từ đã thuộc, số từ chưa thuộc cần ôn tập, luyện phản xạ qua Flashcard và bài tập tương tác.
+              Theo dõi số từ đã thuộc, số từ chưa thuộc cần ôn tập và luyện phản xạ qua Flashcard.
             </p>
           </div>
 
           {/* Right: Key Metric Cards */}
-          <div className="grid grid-cols-3 gap-3 shrink-0">
+          <div className="grid grid-cols-3 gap-2 sm:gap-2.5 shrink-0">
             <div
-              className={`p-3.5 rounded-xl border text-center ${
+              className={`p-2.5 sm:p-3 rounded-lg border text-center ${
                 isLight
                   ? 'bg-slate-50 border-slate-200 text-slate-900'
-                  : 'bg-slate-800/60 border-slate-700 text-white'
+                  : 'bg-slate-900 border-slate-800 text-white'
               }`}
             >
-              <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 block uppercase">
+              <span className="text-[10px] sm:text-[11px] font-medium text-slate-500 dark:text-slate-400 block uppercase">
                 Đã Thuộc
               </span>
-              <span className="text-xl md:text-2xl font-bold font-mono text-emerald-600 dark:text-emerald-400">
+              <span className="text-base sm:text-xl font-bold font-mono text-emerald-600 dark:text-emerald-400">
                 {stats.known}
               </span>
-              <span className="text-[10px] text-slate-400 block">từ vựng</span>
+              <span className="text-[9px] sm:text-[10px] text-slate-400 block">từ vựng</span>
             </div>
 
             <div
-              className={`p-3.5 rounded-xl border text-center ${
+              className={`p-2.5 sm:p-3 rounded-lg border text-center ${
                 isLight
                   ? 'bg-slate-50 border-slate-200 text-slate-900'
-                  : 'bg-slate-800/60 border-slate-700 text-white'
+                  : 'bg-slate-900 border-slate-800 text-white'
               }`}
             >
-              <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 block uppercase">
+              <span className="text-[10px] sm:text-[11px] font-medium text-slate-500 dark:text-slate-400 block uppercase">
                 Chưa Học
               </span>
-              <span className="text-xl md:text-2xl font-bold font-mono text-amber-600 dark:text-amber-400">
+              <span className="text-base sm:text-xl font-bold font-mono text-amber-600 dark:text-amber-400">
                 {stats.unlearned}
               </span>
-              <span className="text-[10px] text-slate-400 block">cần ôn</span>
+              <span className="text-[9px] sm:text-[10px] text-slate-400 block">cần ôn</span>
             </div>
 
             <div
-              className={`p-3.5 rounded-xl border text-center ${
+              className={`p-2.5 sm:p-3 rounded-lg border text-center ${
                 isLight
                   ? 'bg-slate-50 border-slate-200 text-slate-900'
-                  : 'bg-slate-800/60 border-slate-700 text-white'
+                  : 'bg-slate-900 border-slate-800 text-white'
               }`}
             >
-              <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 block uppercase">
+              <span className="text-[10px] sm:text-[11px] font-medium text-slate-500 dark:text-slate-400 block uppercase">
                 Tiến Độ
               </span>
-              <span className="text-xl md:text-2xl font-bold font-mono text-blue-600 dark:text-blue-400">
+              <span className="text-base sm:text-xl font-bold font-mono text-blue-600 dark:text-blue-400">
                 {stats.percent}%
               </span>
-              <span className="text-[10px] text-slate-400 block">hoàn thành</span>
+              <span className="text-[9px] sm:text-[10px] text-slate-400 block">hoàn thành</span>
             </div>
           </div>
         </div>
 
         {/* Global Progress Bar */}
-        <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800">
-          <div className="flex items-center justify-between text-xs font-semibold text-slate-600 dark:text-slate-400 mb-2">
+        <div className="mt-3.5 pt-3 border-t border-slate-200 dark:border-slate-800">
+          <div className="flex items-center justify-between text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">
             <span>Tiến độ ghi nhớ toàn bộ kho từ vựng ({stats.known} / {stats.total} từ)</span>
             <span className="font-mono text-blue-600 dark:text-blue-400 font-bold">{stats.percent}%</span>
           </div>
-          <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+          <div className="w-full h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
             <div
-              className="h-full rounded-full bg-blue-600 transition-all duration-500"
+              className="h-full rounded-full bg-blue-600 transition-all duration-300"
               style={{ width: `${Math.max(4, stats.percent)}%` }}
             />
           </div>
@@ -369,7 +369,7 @@ export default function VocabMasterHub({
         {/* Offline Stale Cache Warning if fetch had error */}
         {(ddError || tvError || ieltsError) && (
           <div
-            className={`mt-4 p-3.5 px-4 rounded-xl border flex items-center justify-between gap-3 text-xs ${
+            className={`mt-3 p-3 px-4 rounded-lg border flex items-center justify-between gap-3 text-xs ${
               isLight ? 'bg-amber-50 border-amber-200 text-amber-900' : 'bg-amber-950/40 border-amber-800 text-amber-200'
             }`}
           >
@@ -385,105 +385,95 @@ export default function VocabMasterHub({
                 if (tvRefresh) tvRefresh();
                 if (ieltsRefresh) ieltsRefresh();
               }}
-              className="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-medium text-[11px] shrink-0 transition cursor-pointer"
+              className="px-2.5 py-1 rounded-md bg-amber-600 hover:bg-amber-700 text-white font-medium text-[11px] shrink-0 transition cursor-pointer"
             >
               Thử lại
             </button>
           </div>
         )}
 
-      {/* ─── VOCABULARY LEARNING WORKFLOW MODES (MASTER PROMPT V2.1) ─── */}
-      <div className="flex items-center justify-between gap-2 p-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 overflow-x-auto scrollbar-hide">
-        <div className="flex items-center gap-1.5">
+      {/* ─── VOCABULARY LEARNING WORKFLOW MODES ─── */}
+      <div className="p-1 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-1">
           <button
             onClick={() => setMainMode('entry')}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold transition shrink-0 cursor-pointer ${
+            className={`flex items-center justify-center gap-2 px-3 py-2 rounded-md text-xs font-semibold transition cursor-pointer ${
               mainMode === 'entry'
-                ? 'bg-blue-600 text-white shadow-xs'
+                ? 'bg-blue-600 text-white'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <i className="fa-solid fa-compass" />
-            <span>Mục Tiêu & Lộ Trình</span>
+            <i className="fa-solid fa-compass text-xs" />
+            <span className="truncate">Mục Tiêu &amp; Lộ Trình</span>
           </button>
 
           <button
             onClick={() => setMainMode('learn')}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold transition shrink-0 cursor-pointer ${
+            className={`flex items-center justify-center gap-2 px-3 py-2 rounded-md text-xs font-semibold transition cursor-pointer ${
               mainMode === 'learn'
-                ? 'bg-blue-600 text-white shadow-xs'
+                ? 'bg-blue-600 text-white'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <i className="fa-solid fa-graduation-cap" />
-            <span>Học Từ Mới ({unlearnedWords.length})</span>
+            <i className="fa-solid fa-graduation-cap text-xs" />
+            <span className="truncate">Học Từ Mới ({unlearnedWords.length})</span>
           </button>
 
           <button
             onClick={() => setMainMode('review')}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold transition shrink-0 cursor-pointer ${
+            className={`flex items-center justify-center gap-2 px-3 py-2 rounded-md text-xs font-semibold transition cursor-pointer ${
               mainMode === 'review'
-                ? 'bg-blue-600 text-white shadow-xs'
+                ? 'bg-blue-600 text-white'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <i className="fa-solid fa-repeat" />
-            <span>Ôn Tập Đến Hạn</span>
+            <i className="fa-solid fa-repeat text-xs" />
+            <span className="truncate">Ôn Tập Đến Hạn</span>
           </button>
 
           <button
             onClick={() => setMainMode('library')}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold transition shrink-0 cursor-pointer ${
+            className={`flex items-center justify-center gap-2 px-3 py-2 rounded-md text-xs font-semibold transition cursor-pointer ${
               mainMode === 'library'
-                ? 'bg-blue-600 text-white shadow-xs'
+                ? 'bg-blue-600 text-white'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <i className="fa-solid fa-book-open" />
-            <span>Thư Viện Từ Vựng</span>
+            <i className="fa-solid fa-book-open text-xs" />
+            <span className="truncate">Thư Viện Kho Từ</span>
           </button>
         </div>
-
-        {mainMode !== 'library' && (
-          <button
-            onClick={() => setMainMode('library')}
-            className="text-xs text-blue-600 dark:text-blue-400 font-bold px-3 py-1.5 hover:underline flex items-center gap-1.5 shrink-0"
-          >
-            <span>Mở kho từ</span>
-            <i className="fa-solid fa-arrow-right text-[10px]" />
-          </button>
-        )}
       </div>
 
       {/* ─── 1. ENTRY EXPERIENCE (LANDING ACTIONS) ─── */}
       {mainMode === 'entry' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
           {/* Card 1: Học Từ Mới */}
           <div
-            className={`p-6 rounded-3xl border flex flex-col justify-between transition-all ${
+            className={`p-5 rounded-lg border flex flex-col justify-between transition-colors ${
               isLight
-                ? 'bg-white border-slate-200/90 shadow-sm hover:border-emerald-300'
-                : 'bg-slate-900 border-slate-800 shadow-md hover:border-emerald-700/60'
+                ? 'bg-white border-slate-200'
+                : 'bg-[#111827] border-slate-800'
             }`}
           >
-            <div className="space-y-3">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-black uppercase tracking-wider">
-                  <i className="fa-solid fa-bolt" />
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 text-[11px] font-semibold uppercase tracking-wider">
+                  <i className="fa-solid fa-play text-[10px]" />
                   Tiếp Thu Từ Mới
                 </span>
-                <span className="font-mono text-xs font-bold text-slate-400">
+                <span className="font-mono text-xs font-medium text-slate-400">
                   {unlearnedWords.length} từ chờ học
                 </span>
               </div>
-              <h3 className="text-xl font-black text-slate-900 dark:text-white">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
                 1. Học Từ Mới (Learn New Words)
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                Nạp từ vựng có hướng dẫn chuẩn: Từ vựng &rarr; Phát âm bản ngữ &rarr; Từ loại &rarr; Nghĩa tiếng Việt &rarr; Câu ví dụ ngữ cảnh &rarr; Flashcard 3D kiểm tra phản xạ tức thì.
+                Nạp từ vựng có hướng dẫn chuẩn: Từ vựng &rarr; Phát âm bản ngữ &rarr; Từ loại &rarr; Nghĩa tiếng Việt &rarr; Câu ví dụ ngữ cảnh &rarr; Flashcard kiểm tra phản xạ tức thì.
               </p>
             </div>
-            <div className="pt-6">
+            <div className="pt-4">
               <button
                 onClick={() => {
                   setLastVocabSession({
@@ -493,9 +483,9 @@ export default function VocabMasterHub({
                   });
                   setMainMode('learn');
                 }}
-                className="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition shadow-sm flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                className="w-full py-2.5 px-3 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition flex items-center justify-center gap-2 cursor-pointer"
               >
-                <i className="fa-solid fa-play" />
+                <i className="fa-solid fa-play text-xs" />
                 <span>Bắt Đầu Học Ngay ({unlearnedWords.length > 0 ? unlearnedWords.length : stats.unlearned} từ)</span>
               </button>
             </div>
@@ -503,35 +493,35 @@ export default function VocabMasterHub({
 
           {/* Card 2: Ôn Tập Đến Hạn */}
           <div
-            className={`p-6 rounded-3xl border flex flex-col justify-between transition-all ${
+            className={`p-5 rounded-lg border flex flex-col justify-between transition-colors ${
               isLight
-                ? 'bg-white border-slate-200/90 shadow-sm hover:border-purple-300'
-                : 'bg-slate-900 border-slate-800 shadow-md hover:border-purple-700/60'
+                ? 'bg-white border-slate-200'
+                : 'bg-[#111827] border-slate-800'
             }`}
           >
-            <div className="space-y-3">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 text-xs font-black uppercase tracking-wider">
-                  <i className="fa-solid fa-brain" />
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-[11px] font-semibold uppercase tracking-wider">
+                  <i className="fa-solid fa-rotate-left text-[10px]" />
                   Spaced Repetition
                 </span>
-                <span className="font-mono text-xs font-bold text-slate-400">
+                <span className="font-mono text-xs font-medium text-slate-400">
                   {stats.unlearned} từ cần ôn
                 </span>
               </div>
-              <h3 className="text-xl font-black text-slate-900 dark:text-white">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
                 2. Ôn Tập Đến Hạn (Review Words)
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                 Áp dụng nguyên lý ngắt quãng Leitner 4 cấp độ ghi nhớ. Hệ thống tự động đẩy từ vựng hay quên vào vòng lặp ôn tập cho đến khi đạt mức thành thạo vĩnh viễn.
               </p>
             </div>
-            <div className="pt-6">
+            <div className="pt-4">
               <button
                 onClick={() => setMainMode('review')}
-                className="w-full py-3 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs transition shadow-sm flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                className="w-full py-2.5 px-3 rounded-md bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-semibold text-xs transition flex items-center justify-center gap-2 cursor-pointer"
               >
-                <i className="fa-solid fa-repeat" />
+                <i className="fa-solid fa-repeat text-xs" />
                 <span>Vào Ôn Tập Ngay (Leitner Review)</span>
               </button>
             </div>
@@ -539,72 +529,72 @@ export default function VocabMasterHub({
 
           {/* Card 3: Tiếp Tục Học Dở */}
           <div
-            className={`p-6 rounded-3xl border flex flex-col justify-between transition-all ${
+            className={`p-5 rounded-lg border flex flex-col justify-between transition-colors ${
               isLight
-                ? 'bg-white border-slate-200/90 shadow-sm hover:border-blue-300'
-                : 'bg-slate-900 border-slate-800 shadow-md hover:border-blue-700/60'
+                ? 'bg-white border-slate-200'
+                : 'bg-[#111827] border-slate-800'
             }`}
           >
-            <div className="space-y-3">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-wider">
-                  <i className="fa-solid fa-clock-rotate-left" />
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 text-[11px] font-semibold uppercase tracking-wider">
+                  <i className="fa-solid fa-clock-rotate-left text-[10px]" />
                   Gần Đây Nhất
                 </span>
-                <span className="font-mono text-xs font-bold text-slate-400">Đã lưu phiên</span>
+                <span className="font-mono text-xs font-medium text-slate-400">Đã lưu phiên</span>
               </div>
-              <h3 className="text-xl font-black text-slate-900 dark:text-white">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
                 3. Tiếp Tục Phiên Trước (Continue)
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                 Đang dừng ở kho từ: <strong>{lastVocabSession?.title || 'Từ Vựng Đề Thi Study4'}</strong>. Tiếp tục phiên học mà không cần tìm lại bài.
               </p>
             </div>
-            <div className="pt-6">
+            <div className="pt-4">
               <button
                 onClick={() => {
                   if (lastVocabSession?.section) setActiveSection(lastVocabSession.section);
                   setMainMode('library');
                 }}
-                className="w-full py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition shadow-sm flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                className="w-full py-2.5 px-3 rounded-md border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-750 text-slate-800 dark:text-slate-200 font-semibold text-xs transition flex items-center justify-center gap-2 cursor-pointer"
               >
-                <i className="fa-solid fa-forward-step" />
-                <span>Tiếp Tục Bài Trước: {lastVocabSession?.title || 'Đề Study4'}</span>
+                <i className="fa-solid fa-forward-step text-xs" />
+                <span>Tiếp Tục: {lastVocabSession?.title || 'Đề Study4'}</span>
               </button>
             </div>
           </div>
 
           {/* Card 4: Thư Viện Từ Vựng */}
           <div
-            className={`p-6 rounded-3xl border flex flex-col justify-between transition-all ${
+            className={`p-5 rounded-lg border flex flex-col justify-between transition-colors ${
               isLight
-                ? 'bg-white border-slate-200/90 shadow-sm hover:border-indigo-300'
-                : 'bg-slate-900 border-slate-800 shadow-md hover:border-indigo-700/60'
+                ? 'bg-white border-slate-200'
+                : 'bg-[#111827] border-slate-800'
             }`}
           >
-            <div className="space-y-3">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs font-black uppercase tracking-wider">
-                  <i className="fa-solid fa-layer-group" />
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-[11px] font-semibold uppercase tracking-wider">
+                  <i className="fa-solid fa-layer-group text-[10px]" />
                   5 Kho Dữ Liệu
                 </span>
-                <span className="font-mono text-xs font-bold text-slate-400">
+                <span className="font-mono text-xs font-medium text-slate-400">
                   {stats.total} từ vựng
                 </span>
               </div>
-              <h3 className="text-xl font-black text-slate-900 dark:text-white">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
                 4. Thư Viện Từ Vựng (Library)
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                 Tra cứu, tìm kiếm và lọc danh sách từ vựng theo cấu trúc Đề thi TOEIC thật, Từ vựng IELTS Du học, Phân loại theo Part 1-7, Daily Dictation và Sổ tay cá nhân.
               </p>
             </div>
-            <div className="pt-6">
+            <div className="pt-4">
               <button
                 onClick={() => setMainMode('library')}
-                className="w-full py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition shadow-sm flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                className="w-full py-2.5 px-3 rounded-md border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-750 text-slate-800 dark:text-slate-200 font-semibold text-xs transition flex items-center justify-center gap-2 cursor-pointer"
               >
-                <i className="fa-solid fa-book-open" />
+                <i className="fa-solid fa-book-open text-xs" />
                 <span>Mở Thư Viện Tra Cứu Toàn Diện</span>
               </button>
             </div>
@@ -676,10 +666,11 @@ export default function VocabMasterHub({
       {/* ─── 4. VOCABULARY LIBRARY (PRESERVES 100% EXISTING WORD LIST & SECTIONS) ─── */}
       {mainMode === 'library' && (
         <div className="space-y-6">
-          {/* Sub-section Tabs */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
-            {SECTIONS.map((sec) => {
+          {/* Sub-section Tabs (Kho Từ Vựng Đa Năng) */}
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-2.5 sm:gap-3">
+            {SECTIONS.map((sec, idx) => {
               const active = activeSection === sec.id;
+              const isLast = idx === SECTIONS.length - 1; // 5th card: Sổ từ vựng
               return (
                 <button
                   key={sec.id}
@@ -691,23 +682,60 @@ export default function VocabMasterHub({
                       day: 1,
                     });
                   }}
-                  className={`flex flex-col text-left p-3.5 md:p-4 rounded-2xl border transition-all duration-200 cursor-pointer ${
+                  className={`flex flex-col justify-between text-left p-3 sm:p-4 rounded-lg border transition-all duration-200 cursor-pointer ${
+                    isLast ? 'col-span-2 lg:col-span-1' : ''
+                  } ${
                     active
                       ? isLight
-                        ? 'bg-blue-50/90 border-blue-400 text-blue-950 shadow-sm ring-2 ring-blue-500/20'
-                        : 'bg-blue-950/40 border-blue-600 text-blue-100 shadow-sm ring-1 ring-blue-500/30'
+                        ? 'bg-blue-50/90 border-blue-400 text-blue-950 shadow-sm ring-1 ring-blue-500/30'
+                        : 'bg-blue-950/50 border-blue-500 text-blue-100 shadow-xs ring-1 ring-blue-500/40'
                       : isLight
-                      ? 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 shadow-xs'
-                      : 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800'
+                      ? 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+                      : 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-850 hover:border-slate-700'
                   }`}
                 >
-                  <div className="flex items-center gap-2 mb-1">
-                    <i className={`fa-solid ${sec.icon} text-sm ${active ? (isLight ? 'text-blue-600' : 'text-blue-400') : 'text-blue-500'}`} />
-                    <span className="font-extrabold text-xs md:text-sm truncate">{sec.label}</span>
+                  <div>
+                    <div className="flex items-center justify-between gap-1 mb-2">
+                      <div
+                        className={`w-7 h-7 rounded-md flex items-center justify-center text-xs shrink-0 ${
+                          active
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                        }`}
+                      >
+                        <i className={`fa-solid ${sec.icon}`} />
+                      </div>
+                      {sec.badge && (
+                        <span
+                          className={`text-[9px] font-bold uppercase px-1.5 py-0.5 rounded border ${
+                            active
+                              ? isLight
+                                ? 'bg-blue-100 border-blue-300 text-blue-800'
+                                : 'bg-blue-900/60 border-blue-600 text-blue-200'
+                              : isLight
+                              ? 'bg-slate-100 border-slate-200 text-slate-600'
+                              : 'bg-slate-800 border-slate-700 text-slate-400'
+                          }`}
+                        >
+                          {sec.badge}
+                        </span>
+                      )}
+                    </div>
+                    <h4 className="font-bold text-xs sm:text-sm leading-snug line-clamp-1 mb-1">
+                      {sec.label}
+                    </h4>
+                    <p
+                      className={`text-[11px] leading-relaxed line-clamp-2 ${
+                        active
+                          ? isLight
+                            ? 'text-blue-900 font-medium'
+                            : 'text-blue-200'
+                          : 'text-slate-500 dark:text-slate-400'
+                      }`}
+                    >
+                      {sec.desc}
+                    </p>
                   </div>
-                  <span className={`text-[11px] leading-tight truncate ${active ? (isLight ? 'text-blue-700' : 'text-blue-300') : 'text-slate-400'}`}>
-                    {sec.desc}
-                  </span>
                 </button>
               );
             })}
@@ -719,11 +747,11 @@ export default function VocabMasterHub({
             {activeSection === 'ielts' && (
               <div className="space-y-4">
                 {/* IELTS Sub-mode Switcher */}
-                <div className="flex items-center justify-between gap-3 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 overflow-x-auto scrollbar-hide">
-                  <div className="flex items-center gap-1.5">
+                <div className="flex items-center justify-between gap-3 p-1 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 overflow-x-auto scrollbar-hide">
+                  <div className="flex items-center gap-1">
                     <button
                       onClick={() => setIeltsSubViewMode('33-topics')}
-                      className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition shrink-0 cursor-pointer ${
+                      className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-semibold transition shrink-0 cursor-pointer ${
                         ieltsSubViewMode === '33-topics'
                           ? 'bg-blue-600 text-white shadow-xs'
                           : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -735,7 +763,7 @@ export default function VocabMasterHub({
 
                     <button
                       onClick={() => setIeltsSubViewMode('sheet')}
-                      className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition shrink-0 cursor-pointer ${
+                      className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-semibold transition shrink-0 cursor-pointer ${
                         ieltsSubViewMode === 'sheet'
                           ? 'bg-blue-600 text-white shadow-xs'
                           : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'

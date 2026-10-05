@@ -71,15 +71,15 @@ export default function PersonalizedPlanDashboard({
   return (
     <div className="space-y-6 animate-fadeIn font-sans">
       {/* ─── 0. INTERACTIVE REAL-TIME ROADMAP RECONFIGURATION TUNER ─── */}
-      <div className={`p-5 rounded-3xl border transition-all space-y-4 ${
-        isLight ? 'bg-gradient-to-br from-slate-50 to-blue-50/40 border-blue-200/80 shadow-sm' : 'bg-slate-850/90 border-slate-800 shadow-md'
+      <div className={`p-4 md:p-5 rounded-lg border transition-all space-y-4 ${
+        isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-slate-900 border-slate-800'
       }`}>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <span className="w-7 h-7 rounded-xl bg-blue-600 text-white flex items-center justify-center text-xs font-bold shadow-xs">
-              <i className="fa-solid fa-wand-magic-sparkles" />
+            <span className="w-7 h-7 rounded-md bg-blue-600 text-white flex items-center justify-center text-xs font-bold shadow-xs">
+              <i className="fa-solid fa-sliders" />
             </span>
-            <span className="text-xs font-extrabold text-slate-900 dark:text-white uppercase tracking-wider">
+            <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
               Bộ Tái Thiết Lập Lộ Trình Động (Live Engine Tuner)
             </span>
           </div>
@@ -90,7 +90,7 @@ export default function PersonalizedPlanDashboard({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
           {/* Row 1: Certification & Band */}
-          <div className="space-y-1.5 p-3 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800">
+          <div className="space-y-1.5 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
                 1. Chứng Chỉ & Điểm

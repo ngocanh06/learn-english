@@ -319,18 +319,18 @@ export default function WordLookupModal({ word, onClose, theme = 'dark' }) {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`w-full max-w-md rounded-3xl p-6 border shadow-2xl animate-scaleUp transition-all ${
+        className={`w-full max-w-md rounded-xl p-5 border shadow-lg animate-scaleUp transition-all ${
           isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
         }`}
       >
         {/* Top bar */}
         <div className="flex items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
-          <span className="text-xs font-black text-blue-500 uppercase tracking-wider flex items-center gap-1.5">
+          <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider flex items-center gap-1.5">
             <i className="fa-solid fa-book-bookmark" /> Tra từ điển Anh - Việt
           </span>
           <button
             onClick={onClose}
-            className="w-7 h-7 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-white transition cursor-pointer"
+            className="w-7 h-7 rounded-md flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-white transition cursor-pointer"
           >
             <i className="fa-solid fa-xmark text-sm" />
           </button>

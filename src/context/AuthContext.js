@@ -7,6 +7,11 @@ import {
   logoutUser,
   migrateGuestData,
 } from '../services/authService';
+import {
+  pullAllUserDataFromSupabase,
+  subscribeToUserRealtimeSync,
+  isSupabaseConfigured,
+} from '../services/supabaseClient';
 
 const AuthContext = createContext(null);
 
@@ -29,6 +34,27 @@ export function AuthProvider({ children }) {
     }
     setLoading(false);
   }, []);
+
+  // Realtime Cloud Synchronization with Supabase (Multi-device instant sync)
+  useEffect(() => {
+    if (!currentUser || currentUser.id === 'guest' || !isSupabaseConfigured()) return;
+
+    // 1. Pull latest progress from cloud to sync devices
+    pullAllUserDataFromSupabase(currentUser.id);
+
+    // 2. Subscribe to realtime changes (< 100ms latency)
+    const unsubscribe = subscribeToUserRealtimeSync(currentUser.id);
+
+    const handleConfigChange = () => {
+      pullAllUserDataFromSupabase(currentUser.id);
+    };
+    window.addEventListener('supabase-config-changed', handleConfigChange);
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+      window.removeEventListener('supabase-config-changed', handleConfigChange);
+    };
+  }, [currentUser?.id]);
 
   const login = async (email, password) => {
     const user = await loginUser(email, password);

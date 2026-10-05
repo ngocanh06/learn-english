@@ -687,25 +687,25 @@ export default function WritingHub({
     <div className="space-y-6 max-w-7xl mx-auto pb-16 font-sans">
       {/* ─── SLEEK LUXURY HEADER ──────────────────────────────────── */}
       <div
-        className={`p-6 md:p-8 rounded-3xl border transition-all duration-300 relative overflow-hidden ${
+        className={`p-6 md:p-7 rounded-lg border transition-all duration-300 relative overflow-hidden ${
           isLight
-            ? 'bg-slate-900 border-slate-800 text-white shadow-md'
-            : 'bg-slate-900/90 border-slate-800 text-white shadow-xl'
+            ? 'bg-slate-900 border-slate-800 text-white shadow-xs'
+            : 'bg-slate-900/90 border-slate-800 text-white'
         }`}
       >
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
           <div className="space-y-2">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider font-mono bg-blue-500/20 text-blue-300 border border-blue-400/30 flex items-center gap-1.5">
+              <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold uppercase tracking-wider font-mono bg-blue-500/20 text-blue-300 border border-blue-400/30 flex items-center gap-1.5">
                 <i className="fa-solid fa-pen-nib text-xs" />
                 THE IELTS DICTIONARY • TẬP DỊCH IELTS
               </span>
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">
+              <span className="px-2.5 py-0.5 rounded-md text-[11px] font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">
                 100% Phản Xạ Dịch Câu Bản Ngữ
               </span>
             </div>
 
-            <h1 className="text-2xl md:text-3xl font-black tracking-tight leading-tight">
+            <h1 className="text-xl md:text-2xl font-bold tracking-tight leading-tight">
               Phòng Luyện Dịch & Viết Chuẩn IELTS
             </h1>
 
@@ -992,8 +992,8 @@ export default function WritingHub({
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
                 {/* ─── LEFT COLUMN: PROMPT & MASKED HINTS & REMAINING ─── */}
                 <div
-                  className={`lg:col-span-6 p-6 md:p-8 rounded-3xl border space-y-6 ${
-                    isLight ? 'bg-white border-slate-200 shadow-sm text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
+                  className={`lg:col-span-6 p-5 md:p-6 rounded-lg border space-y-6 ${
+                    isLight ? 'bg-white border-slate-200 shadow-xs text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
                   }`}
                 >
                   <div className="space-y-1">
@@ -1169,8 +1169,8 @@ export default function WritingHub({
 
                 {/* ─── RIGHT COLUMN: USER TRANSLATION & SUBMISSION ──── */}
                 <div
-                  className={`lg:col-span-6 p-6 md:p-8 rounded-3xl border space-y-5 ${
-                    isLight ? 'bg-white border-slate-200 shadow-sm text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
+                  className={`lg:col-span-6 p-5 md:p-6 rounded-lg border space-y-5 ${
+                    isLight ? 'bg-white border-slate-200 shadow-xs text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
                   }`}
                 >
                   <div className="flex items-center justify-between text-xs">

@@ -86,13 +86,25 @@ function playAudioFallback(text) {
 }
 
 /**
+ * Clean text for natural speech (stripping parenthesized notes like (CV), (v), (adj), (sb/sth))
+ */
+export function sanitizeTextForSpeech(text) {
+  if (!text || typeof text !== 'string') return '';
+  // Remove parenthesized content: e.g. "Curriculum vitae (CV)" -> "Curriculum vitae"
+  const stripped = text.replace(/\s*\([^)]*\)/g, '').replace(/\[[^\]]*\]/g, '').trim();
+  // Fallback to text without bracket chars if stripping emptied the string
+  return (stripped || text.replace(/[()[\]]/g, '')).replace(/\s+/g, ' ').trim();
+}
+
+/**
  * Universal speech player with iOS Safari PWA support & fallback
  */
 export function speakEnglish(text, options = {}) {
   const { rate = 0.88, pitch = 1.0, accent = 'us', onEnd, onError } = options;
 
   if (!text || typeof text !== 'string' || !text.trim()) return;
-  const cleanText = text.trim();
+  const cleanText = sanitizeTextForSpeech(text);
+  if (!cleanText) return;
 
   if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
     playAudioFallback(cleanText).then(() => onEnd && onEnd());

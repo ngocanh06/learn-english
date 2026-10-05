@@ -435,39 +435,45 @@ export default function ShadowingStudio({ theme = 'dark' }) {
     <div className="flex flex-col gap-6 max-w-7xl mx-auto pb-16 font-sans">
       {/* ─── HEADER BANNER ─────────────────────────────────────────── */}
       <div
-        className={`relative overflow-hidden rounded-3xl p-6 md:p-8 border transition-all ${
+        className={`relative overflow-hidden rounded-lg p-6 md:p-7 border transition-all ${
           isLight
-            ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white shadow-lg border-blue-500'
-            : 'bg-gradient-to-r from-blue-950/70 via-indigo-950/60 to-slate-900 border-indigo-900/50 text-white shadow-xl'
+            ? 'bg-white border-slate-200 text-slate-900 shadow-xs'
+            : 'bg-slate-900 border-slate-800 text-white'
         }`}
       >
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-xs font-bold uppercase tracking-wider">
-              <i className="fa-solid fa-microphone-lines text-amber-300 animate-pulse" />
+            <div
+              className={`inline-flex items-center gap-2 px-2.5 py-0.5 rounded-md text-xs font-semibold uppercase tracking-wider border ${
+                isLight
+                  ? 'bg-blue-50 border-blue-200 text-blue-700'
+                  : 'bg-blue-950/40 border-blue-800 text-blue-300'
+              }`}
+            >
+              <i className="fa-solid fa-microphone-lines text-blue-500" />
               Kỹ Thuật Nhại Giọng Bản Xứ
             </div>
-            <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight">
+            <h1 className="text-xl md:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
               Shadowing Practice Studio
             </h1>
-            <p className="text-blue-100/90 text-sm md:text-base max-w-2xl leading-relaxed">
+            <p className="text-slate-600 dark:text-slate-400 text-xs md:text-sm max-w-2xl leading-relaxed">
               Luyện phát âm chuẩn, bắt kịp ngữ điệu tự nhiên, phản xạ nối âm và tốc độ nói của người bản ngữ qua 4 chế độ tương tác cao.
             </p>
           </div>
 
           {/* Quick Stats Widget */}
-          <div className="flex items-center gap-3 self-start md:self-auto bg-black/20 backdrop-blur-md p-3.5 px-5 rounded-2xl border border-white/10 shrink-0">
-            <div className="text-center border-r border-white/15 pr-4">
-              <div className="text-2xl font-black text-amber-300">
+          <div className="flex items-center gap-3 self-start md:self-auto bg-slate-50 dark:bg-slate-800 p-3 px-4 rounded-lg border border-slate-200 dark:border-slate-700 shrink-0">
+            <div className="text-center border-r border-slate-200 dark:border-slate-700 pr-3.5">
+              <div className="text-xl font-bold text-slate-900 dark:text-white">
                 {Object.keys(shadowStats.completedSentences || {}).length}
               </div>
-              <div className="text-[11px] text-blue-200 uppercase font-bold">Câu Đã Luyện</div>
+              <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-semibold">Câu Đã Luyện</div>
             </div>
-            <div className="text-center pl-2">
-              <div className="text-2xl font-black text-emerald-300">
+            <div className="text-center pl-1.5">
+              <div className="text-xl font-bold text-blue-600 dark:text-blue-400">
                 {filteredLessons.length}
               </div>
-              <div className="text-[11px] text-blue-200 uppercase font-bold">Bài Học Có Sẵn</div>
+              <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-semibold">Bài Học Có Sẵn</div>
             </div>
           </div>
         </div>
@@ -512,14 +518,14 @@ export default function ShadowingStudio({ theme = 'dark' }) {
       {/* ─── CUSTOM TEXT INPUT PANEL (IF MODE === 'custom') ────────── */}
       {practiceMode === 'custom' && (
         <div
-          className={`p-5 rounded-3xl border transition-all ${
-            isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-slate-900 border-slate-800'
+          className={`p-5 rounded-lg border transition-all ${
+            isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-slate-900 border-slate-800'
           }`}
         >
           <div className="flex items-center justify-between gap-3 mb-3">
             <div className="flex items-center gap-2">
-              <i className="fa-solid fa-file-lines text-indigo-500" />
-              <h3 className="font-extrabold text-sm text-slate-900 dark:text-white">
+              <i className="fa-solid fa-file-lines text-blue-500" />
+              <h3 className="font-bold text-sm text-slate-900 dark:text-white">
                 Dán văn bản tiếng Anh để tự động tạo bài Shadowing
               </h3>
             </div>
@@ -528,8 +534,8 @@ export default function ShadowingStudio({ theme = 'dark' }) {
             rows={4}
             value={customTextInput}
             onChange={(e) => setCustomTextInput(e.target.value)}
-            placeholder="Ví dụ: Good morning everyone. Today I'd like to present our quarterly sales performance. We achieved a fifteen percent increase in revenue compared to last year..."
-            className={`w-full p-3.5 rounded-2xl border text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
+            placeholder="Ví dụ: Good morning everyone. Today I'd like to present our quarterly sales performance..."
+            className={`w-full p-3 rounded-lg border text-sm focus:outline-none focus:border-blue-500 transition ${
               isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-800 border-slate-700 text-white'
             }`}
           />
@@ -537,7 +543,7 @@ export default function ShadowingStudio({ theme = 'dark' }) {
             <button
               onClick={handleProcessCustomText}
               disabled={!customTextInput.trim()}
-              className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-xs font-bold shadow transition flex items-center gap-2"
+              className="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-xs font-semibold shadow-xs transition flex items-center gap-2 cursor-pointer"
             >
               <i className="fa-solid fa-wand-magic-sparkles" />
               Tách câu & Bắt đầu Luyện tập
@@ -552,8 +558,8 @@ export default function ShadowingStudio({ theme = 'dark' }) {
         <div className="lg:col-span-4 flex flex-col gap-4">
           {/* Category Filter Chips */}
           <div
-            className={`p-4 rounded-3xl border ${
-              isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-slate-900 border-slate-800'
+            className={`p-4 rounded-lg border ${
+              isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-slate-900 border-slate-800'
             }`}
           >
             <div className="text-xs font-black uppercase tracking-wider text-slate-400 mb-3 flex items-center justify-between">
@@ -651,8 +657,8 @@ export default function ShadowingStudio({ theme = 'dark' }) {
 
           {/* Studio Audio Settings Control Panel */}
           <div
-            className={`p-4 rounded-3xl border ${
-              isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-slate-900 border-slate-800'
+            className={`p-4 rounded-lg border ${
+              isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-slate-900 border-slate-800'
             }`}
           >
             <div className="text-xs font-black uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
@@ -744,8 +750,8 @@ export default function ShadowingStudio({ theme = 'dark' }) {
         <div className="lg:col-span-8 flex flex-col gap-4">
           {/* Active Lesson Header & Step Navigator */}
           <div
-            className={`p-5 rounded-3xl border transition-all ${
-              isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-slate-900 border-slate-800'
+            className={`p-5 rounded-lg border transition-all ${
+              isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-slate-900 border-slate-800'
             }`}
           >
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b border-slate-200 dark:border-slate-800">
@@ -821,18 +827,18 @@ export default function ShadowingStudio({ theme = 'dark' }) {
 
             {/* ─── FOCAL SENTENCE DISPLAY CARD ─── */}
             <div
-              className={`mt-2 p-6 md:p-8 rounded-3xl border relative transition-all duration-300 ${
+              className={`mt-2 p-5 md:p-6 rounded-lg border relative transition-all duration-300 ${
                 isPlayingNative
-                  ? 'ring-2 ring-blue-500 shadow-lg bg-blue-50/20 dark:bg-blue-950/20 border-blue-400'
+                  ? 'border-blue-500 bg-blue-50/30 dark:bg-blue-950/30'
                   : isLight
-                  ? 'bg-slate-50/90 border-slate-200'
+                  ? 'bg-slate-50 border-slate-200'
                   : 'bg-slate-800/70 border-slate-700/80'
               }`}
             >
               {/* Speaker Badge */}
               {currentSentence?.speaker && (
                 <div className="flex items-center justify-between mb-3">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/20 text-xs font-bold">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800 text-xs font-semibold">
                     <i className="fa-solid fa-user-circle" /> {currentSentence.speaker}
                   </span>
 
@@ -1007,7 +1013,7 @@ export default function ShadowingStudio({ theme = 'dark' }) {
             {/* ─── LIVE RECOGNITION & WORD ACCURACY RESULT ─── */}
             {recognitionScore !== null && (
               <div
-                className={`mt-6 p-5 rounded-3xl border transition-all ${
+                className={`mt-4 p-4 md:p-5 rounded-lg border transition-all ${
                   recognitionScore >= 85
                     ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-900 dark:text-emerald-300'
                     : recognitionScore >= 60

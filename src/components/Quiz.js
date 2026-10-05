@@ -126,21 +126,21 @@ const Quiz = ({
 
   return (
     <div
-      className={`mt-10 rounded-3xl border p-5 md:p-8 transition-all shadow-sm ${
+      className={`mt-8 rounded-lg border p-5 md:p-6 transition-all shadow-xs ${
         isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
       }`}
     >
       {/* ─── QUIZ HEADER ──────────────────────────────────────────────────────── */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 pb-5 border-b border-slate-200/80 dark:border-slate-800">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200 dark:border-slate-800">
         <div>
           <div className="flex items-center gap-2 flex-wrap mb-1">
-            <span className="w-8 h-8 rounded-xl bg-blue-600/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm font-bold">
+            <span className="w-7 h-7 rounded-md bg-blue-600/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs font-bold">
               <i className="fa-solid fa-graduation-cap" />
             </span>
-            <h3 className="text-lg md:text-xl font-black text-slate-900 dark:text-white">
+            <h3 className="text-base md:text-lg font-bold text-slate-900 dark:text-white">
               Luyện Tập Toàn Diện & Ghi Nhớ Sâu
             </h3>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-blue-500/15 text-blue-600 dark:text-blue-400 font-mono border border-blue-500/30">
+            <span className="px-2 py-0.5 rounded-md text-xs font-semibold bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 font-mono border border-blue-200 dark:border-blue-800">
               {allQuestions.length} câu hỏi • 4 dạng bài
             </span>
           </div>

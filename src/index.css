@@ -129,39 +129,58 @@ body {
 }
 
 /* ─── EDUCATIONAL PRODUCT DESIGN SYSTEM (CALM, CLEAN & FOCUSED) ─── */
-.glass-panel {
-  background: rgba(15, 23, 42, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.light .glass-panel {
-  background: rgba(255, 255, 255, 0.98);
-  border: 1px solid rgba(226, 232, 240, 0.9);
+.surface-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
 }
 
 .subtle-border {
   border: 1px solid var(--border-color);
 }
 
-.glow-amber-subtle,
-.glow-indigo-subtle,
-.glow-emerald-subtle,
-.glow-purple-subtle {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+.divider {
+  height: 1px;
+  background-color: var(--border-color);
+  width: 100%;
+}
+
+/* Safe area padding utilities for mobile phones */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 /* Custom subtle scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.25);
-  border-radius: 9999px;
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.45);
+  background: rgba(148, 163, 184, 0.5);
+}
+
+/* ─── HIDE SCROLLBAR UTILITY (Cross-browser for iOS, Safari, Chrome & Firefox) ─── */
+.scrollbar-hide,
+.no-scrollbar {
+  -ms-overflow-style: none !important; /* IE and Edge */
+  scrollbar-width: none !important; /* Firefox */
+  -webkit-overflow-scrolling: touch;
+}
+.scrollbar-hide::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
 }

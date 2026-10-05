@@ -751,15 +751,15 @@ export default function VideoPlayerStudio({ video, onBack, theme = 'dark', dateK
           {/* YouTube Video Player Responsive Container */}
           <div
             ref={iframeContainerRef}
-            className="relative w-full aspect-video rounded-3xl overflow-hidden shadow-2xl bg-black border border-slate-800 ring-1 ring-white/10"
+            className="relative w-full aspect-video rounded-lg overflow-hidden bg-black border border-slate-800"
           >
             <div id="youtube-player-embed" className="w-full h-full" />
           </div>
 
           {/* Video Info Header */}
           <div
-            className={`p-5 rounded-3xl border ${
-              isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-slate-900 border-slate-800'
+            className={`p-4 md:p-5 rounded-lg border ${
+              isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-slate-900 border-slate-800'
             }`}
           >
             <div className="flex items-center gap-2 mb-1.5">
@@ -809,8 +809,8 @@ export default function VideoPlayerStudio({ video, onBack, theme = 'dark', dateK
           {/* ─── 1. SYNCHRONIZED INTERACTIVE SUBTITLES VIEWER ─── */}
           {activeMode === 'subtitles' && (
             <div
-              className={`p-5 rounded-3xl border transition-all space-y-4 ${
-                isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-slate-900 border-slate-800'
+              className={`p-4 md:p-5 rounded-lg border transition-all space-y-4 ${
+                isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-slate-900 border-slate-800'
               }`}
             >
               <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
@@ -907,8 +907,8 @@ export default function VideoPlayerStudio({ video, onBack, theme = 'dark', dateK
           {/* ─── EXACT AI SPEECH SCORING & SHADOWING STUDIO (MATCHING SCREENSHOT) ─── */}
           {activeMode === 'shadowing' && (
             <div
-              className={`p-5 rounded-3xl border transition-all ${
-                isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#0f172a] border-slate-800'
+              className={`p-4 md:p-5 rounded-lg border transition-all ${
+                isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-slate-900 border-slate-800'
               }`}
             >
               {/* Top Sub-tabs: 'Câu' (Sentence) vs 'Liên tục' (Continuous) */}
@@ -939,10 +939,10 @@ export default function VideoPlayerStudio({ video, onBack, theme = 'dark', dateK
               {detailedScore ? (
                 <div className="space-y-4 animate-fadeIn">
                   <div
-                    className={`p-4 md:p-5 rounded-3xl border flex flex-col sm:flex-row items-center gap-5 ${
+                    className={`p-4 md:p-5 rounded-lg border flex flex-col sm:flex-row items-center gap-5 ${
                       isLight
                         ? 'bg-slate-50 border-slate-200'
-                        : 'bg-[#0b1322] border-slate-800/80 ring-1 ring-white/5'
+                        : 'bg-slate-800/50 border-slate-700'
                     }`}
                   >
                     {/* Circular Score Gauge Ring */}
@@ -1219,8 +1219,8 @@ export default function VideoPlayerStudio({ video, onBack, theme = 'dark', dateK
 
           {activeMode === 'dictation' && (
             <div
-              className={`p-5 rounded-3xl border ${
-                isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-slate-900 border-slate-800'
+              className={`p-4 md:p-5 rounded-lg border ${
+                isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-slate-900 border-slate-800'
               }`}
             >
               <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 mb-3">
@@ -1276,8 +1276,8 @@ export default function VideoPlayerStudio({ video, onBack, theme = 'dark', dateK
 
           {activeMode === 'fill' && (
             <div
-              className={`p-5 rounded-3xl border ${
-                isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-slate-900 border-slate-800'
+              className={`p-4 md:p-5 rounded-lg border ${
+                isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-slate-900 border-slate-800'
               }`}
             >
               <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 mb-3">
@@ -1451,8 +1451,8 @@ export default function VideoPlayerStudio({ video, onBack, theme = 'dark', dateK
 
           {/* Subtitles Scrollable List Container */}
           <div
-            className={`p-3 rounded-3xl border max-h-[520px] overflow-y-auto space-y-2 scrollbar-hide ${
-              isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-slate-900 border-slate-800'
+            className={`p-3 rounded-lg border max-h-[520px] overflow-y-auto space-y-2 scrollbar-hide ${
+              isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-slate-900 border-slate-800'
             }`}
           >
             {subtitles.map((sub, idx) => {

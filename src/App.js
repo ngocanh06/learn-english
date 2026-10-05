@@ -20,6 +20,7 @@ import { AuthProvider } from './context/AuthContext';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { useUserStorage } from './hooks/useUserStorage';
 import { DEFAULT_SCHEDULE_DATA } from './config/schedule';
+import BottomNav from './components/BottomNav';
 import { calculateOverdueTasks } from './utils/overdueTasksHelper';
 
 function parseHash() {
@@ -199,6 +200,10 @@ function MainApp() {
       params = { tab: 'ielts-roadmap', ...params };
     }
     if (id === 'schedule' || id === 'coach') target = 'ai-coach';
+    if (id === 'dailydictation' || id === 'dictation') {
+      target = 'ai-coach';
+      params = { tab: 'dailydictation', ...params };
+    }
     if (id === 'videos' || id === 'shadowing' || id === 'video') target = 'video-hub';
 
     setActiveNav(target);
@@ -228,28 +233,10 @@ function MainApp() {
 
   return (
     <div
-      className={`min-h-screen font-sans flex flex-col lg:flex-row transition-colors duration-300 relative overflow-x-hidden ${
-        isLight ? 'bg-[#f8fafc] text-slate-900' : 'bg-[#0a0e1a] text-white'
+      className={`min-h-screen font-sans flex flex-col lg:flex-row transition-colors duration-200 relative overflow-x-hidden ${
+        isLight ? 'bg-slate-50 text-slate-900' : 'bg-[#0b0f19] text-slate-100'
       }`}
     >
-      {/* ─── AMBIENT GLOWING MESH ORBS (BACKGROUND ATMOSPHERE) ─── */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-        <div
-          className={`absolute -top-[12%] -left-[8%] w-[550px] h-[550px] rounded-full blur-[140px] transition-opacity duration-700 ${
-            isLight ? 'bg-indigo-300/30' : 'bg-indigo-600/15'
-          }`}
-        />
-        <div
-          className={`absolute top-[25%] -right-[10%] w-[500px] h-[500px] rounded-full blur-[150px] transition-opacity duration-700 ${
-            isLight ? 'bg-blue-300/25' : 'bg-blue-600/12'
-          }`}
-        />
-        <div
-          className={`absolute bottom-[10%] left-[20%] w-[600px] h-[600px] rounded-full blur-[160px] transition-opacity duration-700 ${
-            isLight ? 'bg-purple-200/30' : 'bg-purple-900/12'
-          }`}
-        />
-      </div>
 
       {/* ─── LEFT SIDEBAR (DESKTOP + MOBILE DRAWER) ───────── */}
       <Sidebar
@@ -282,7 +269,7 @@ function MainApp() {
         />
 
         {/* Page Content */}
-        <main className={`flex-1 ${activeNav === 'grammar' ? '' : 'max-w-7xl w-full mx-auto px-4 md:px-8 py-6'}`}>
+        <main className={`flex-1 pb-20 lg:pb-8 ${activeNav === 'grammar' ? '' : 'max-w-7xl w-full mx-auto px-4 md:px-8 py-6'}`}>
           {activeNav === 'dashboard' && (
             <Dashboard
               onNavigate={navigate}
@@ -343,6 +330,7 @@ function MainApp() {
           {(activeNav === 'ai-coach' || activeNav === 'schedule') && (
             <AILearningCoach
               initialTab={navParams.tab}
+              initialTrack={navParams.track || navParams.subTrack}
               initialDateKey={navParams.dateKey || navParams.date}
               initialDay={navParams.day}
               initialViewMode={navParams.viewMode}
@@ -353,6 +341,15 @@ function MainApp() {
           {activeNav === 'scores' && <ScoreManager theme={theme} />}
         </main>
       </div>
+
+      {/* ─── MOBILE BOTTOM NAVIGATION (THUMB-FRIENDLY & SAFE-AREA READY) ─── */}
+      <BottomNav
+        activeNav={activeNav}
+        onNavigate={navigate}
+        setMobileOpen={setMobileMenu}
+        theme={theme}
+        overdueCount={overdueCount}
+      />
 
       {/* ─── MODALS & GLOBAL AI TUTOR ASSISTANT ──────── */}
       <AuthModal theme={theme} />

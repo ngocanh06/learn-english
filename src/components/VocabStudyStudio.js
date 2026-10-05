@@ -271,6 +271,12 @@ export default function VocabStudyStudio({
   const [fcFlipped, setFcFlipped] = useState(false);
   const [fcDirection, setFcDirection] = useState(null);
 
+  // Auto-speak & Hands-Free Auto-Play States
+  const [autoSpeak, setAutoSpeak] = useUserStorage('vocab_auto_speak_v1', true);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(false);
+  const [autoPlaySpeed, setAutoPlaySpeed] = useState(4); // seconds per card (3s, 4s, 5s, 7s)
+  const [autoPlayElapsed, setAutoPlayElapsed] = useState(0); // in ms
+
   useEffect(() => {
     if (studyMode === 'flashcard') {
       let source = [...safeWords];
@@ -289,15 +295,63 @@ export default function VocabStudyStudio({
       setFcWords(source);
       setFcIndex(0);
       setFcFlipped(false);
+      setAutoPlayElapsed(0);
+    } else {
+      setIsAutoPlaying(false);
+      setAutoPlayElapsed(0);
     }
   }, [studyMode, levelFilter, safeWords.length, searchTerm]); // Do NOT include getWordLevel/vocabMastery
 
   const activeFcCard = fcWords[fcIndex] || null;
 
+  // Auto pronounce English word whenever current card changes in Flashcard mode
+  useEffect(() => {
+    if (studyMode === 'flashcard' && autoSpeak && activeFcCard?.word && !fcFlipped) {
+      const timer = setTimeout(() => {
+        speak(activeFcCard.word);
+      }, 180);
+      return () => clearTimeout(timer);
+    }
+  }, [fcIndex, activeFcCard?.word, studyMode, autoSpeak, speak]);
+
+  // Hands-free Auto-Play Timer: Auto flips after 50% time, advances after 100% time
+  useEffect(() => {
+    if (!isAutoPlaying || studyMode !== 'flashcard' || fcWords.length === 0) {
+      setAutoPlayElapsed(0);
+      return;
+    }
+
+    const intervalMs = 100;
+    const totalMs = autoPlaySpeed * 1000;
+    const flipMs = totalMs / 2;
+
+    const timer = setInterval(() => {
+      setAutoPlayElapsed((prev) => {
+        const next = prev + intervalMs;
+        // Half-way: flip to back side to show meaning
+        if (next >= flipMs && prev < flipMs) {
+          setFcFlipped(true);
+        }
+        // Full duration reached: advance to next card and flip back to front
+        if (next >= totalMs) {
+          setFcDirection(1);
+          setFcFlipped(false);
+          setFcIndex((idx) => (idx < fcWords.length - 1 ? idx + 1 : 0));
+          setTimeout(() => setFcDirection(null), 180);
+          return 0;
+        }
+        return next;
+      });
+    }, intervalMs);
+
+    return () => clearInterval(timer);
+  }, [isAutoPlaying, studyMode, autoPlaySpeed, fcWords.length]);
+
   const handleFcNext = (isCorrect) => {
     if (activeFcCard) {
       updateMastery(activeFcCard.word, isCorrect);
     }
+    setAutoPlayElapsed(0);
     setFcDirection(1);
     setFcFlipped(false);
     setTimeout(() => {
@@ -307,6 +361,7 @@ export default function VocabStudyStudio({
   };
 
   const handleFcPrev = () => {
+    setAutoPlayElapsed(0);
     setFcDirection(-1);
     setFcFlipped(false);
     setTimeout(() => {
@@ -314,6 +369,38 @@ export default function VocabStudyStudio({
       setFcDirection(null);
     }, 180);
   };
+
+  // Keyboard navigation support for Desktop
+  useEffect(() => {
+    if (studyMode !== 'flashcard') return;
+
+    const handleKeyDown = (e) => {
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+
+      if (e.code === 'Space') {
+        e.preventDefault();
+        setFcFlipped((f) => !f);
+        setAutoPlayElapsed(0);
+      } else if (e.code === 'ArrowRight' || e.code === 'ArrowDown') {
+        e.preventDefault();
+        handleFcNext(true);
+      } else if (e.code === 'ArrowLeft' || e.code === 'ArrowUp') {
+        e.preventDefault();
+        handleFcPrev();
+      } else if (e.key === 'a' || e.key === 'A') {
+        setIsAutoPlaying((p) => !p);
+      } else if (e.key === 's' || e.key === 'S') {
+        if (activeFcCard?.word) speak(activeFcCard.word);
+      } else if (e.key === '1') {
+        handleFcNext(false);
+      } else if (e.key === '2') {
+        handleFcNext(true);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [studyMode, activeFcCard, speak]);
 
   // ═════════════════════════════════════════════════════════════════════════════
   // ─── QUIZ MODE (Multiple Choice 4 Options) ──────────────────────────────────
@@ -573,20 +660,20 @@ export default function VocabStudyStudio({
         {/* Level 1: Mới lưu / Chưa thuộc */}
         <div
           onClick={() => setLevelFilter(levelFilter === '1' ? 'all' : '1')}
-          className={`p-3.5 rounded-2xl border transition cursor-pointer ${
+          className={`p-3 rounded-lg border transition cursor-pointer ${
             levelFilter === '1'
-              ? 'bg-blue-600 text-white border-blue-500 shadow-md ring-2 ring-blue-400/30'
+              ? 'bg-blue-600 text-white border-blue-500 shadow-sm'
               : isLight
               ? 'bg-blue-50/50 border-blue-100 hover:bg-blue-50'
               : 'bg-blue-950/20 border-blue-900/40 hover:bg-blue-950/40'
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold flex items-center gap-1.5">
-              <span>🌱 Mới lưu</span>
-              <span className="text-[10px] opacity-70">(Level 1)</span>
+            <span className="text-xs font-semibold flex items-center gap-1.5">
+              <span>Mới lưu</span>
+              <span className="text-[10px] opacity-70 font-mono">(L1)</span>
             </span>
-            <span className="text-base font-black">{stats.l1}</span>
+            <span className="text-sm font-bold">{stats.l1}</span>
           </div>
           <div className="w-full bg-blue-200 dark:bg-blue-900/50 h-1.5 rounded-full mt-2 overflow-hidden">
             <div className="bg-blue-500 h-full rounded-full" style={{ width: `${stats.total > 0 ? (stats.l1 / stats.total) * 100 : 0}%` }} />
@@ -596,20 +683,20 @@ export default function VocabStudyStudio({
         {/* Level 2: Đang học */}
         <div
           onClick={() => setLevelFilter(levelFilter === '2' ? 'all' : '2')}
-          className={`p-3.5 rounded-2xl border transition cursor-pointer ${
+          className={`p-3 rounded-lg border transition cursor-pointer ${
             levelFilter === '2'
-              ? 'bg-indigo-600 text-white border-indigo-500 shadow-md ring-2 ring-indigo-400/30'
+              ? 'bg-indigo-600 text-white border-indigo-500 shadow-sm'
               : isLight
               ? 'bg-indigo-50/50 border-indigo-100 hover:bg-indigo-50'
               : 'bg-indigo-950/20 border-indigo-900/40 hover:bg-indigo-950/40'
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold flex items-center gap-1.5">
-              <span>⚡ Đang học</span>
-              <span className="text-[10px] opacity-70">(Level 2)</span>
+            <span className="text-xs font-semibold flex items-center gap-1.5">
+              <span>Đang học</span>
+              <span className="text-[10px] opacity-70 font-mono">(L2)</span>
             </span>
-            <span className="text-base font-black">{stats.l2}</span>
+            <span className="text-sm font-bold">{stats.l2}</span>
           </div>
           <div className="w-full bg-indigo-200 dark:bg-indigo-900/50 h-1.5 rounded-full mt-2 overflow-hidden">
             <div className="bg-indigo-500 h-full rounded-full" style={{ width: `${stats.total > 0 ? (stats.l2 / stats.total) * 100 : 0}%` }} />
@@ -619,20 +706,20 @@ export default function VocabStudyStudio({
         {/* Level 3: Ghi nhớ tốt */}
         <div
           onClick={() => setLevelFilter(levelFilter === '3' ? 'all' : '3')}
-          className={`p-3.5 rounded-2xl border transition cursor-pointer ${
+          className={`p-3 rounded-lg border transition cursor-pointer ${
             levelFilter === '3'
-              ? 'bg-purple-600 text-white border-purple-500 shadow-md ring-2 ring-purple-400/30'
+              ? 'bg-purple-600 text-white border-purple-500 shadow-sm'
               : isLight
               ? 'bg-purple-50/50 border-purple-100 hover:bg-purple-50'
               : 'bg-purple-950/20 border-purple-900/40 hover:bg-purple-950/40'
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold flex items-center gap-1.5">
-              <span>🧠 Ghi nhớ tốt</span>
-              <span className="text-[10px] opacity-70">(Level 3)</span>
+            <span className="text-xs font-semibold flex items-center gap-1.5">
+              <span>Ghi nhớ tốt</span>
+              <span className="text-[10px] opacity-70 font-mono">(L3)</span>
             </span>
-            <span className="text-base font-black">{stats.l3}</span>
+            <span className="text-sm font-bold">{stats.l3}</span>
           </div>
           <div className="w-full bg-purple-200 dark:bg-purple-900/50 h-1.5 rounded-full mt-2 overflow-hidden">
             <div className="bg-purple-500 h-full rounded-full" style={{ width: `${stats.total > 0 ? (stats.l3 / stats.total) * 100 : 0}%` }} />
@@ -642,20 +729,20 @@ export default function VocabStudyStudio({
         {/* Level 4: Thành thạo */}
         <div
           onClick={() => setLevelFilter(levelFilter === '4' ? 'all' : '4')}
-          className={`p-3.5 rounded-2xl border transition cursor-pointer ${
+          className={`p-3 rounded-lg border transition cursor-pointer ${
             levelFilter === '4'
-              ? 'bg-emerald-600 text-white border-emerald-500 shadow-md ring-2 ring-emerald-400/30'
+              ? 'bg-emerald-600 text-white border-emerald-500 shadow-sm'
               : isLight
               ? 'bg-emerald-50/50 border-emerald-100 hover:bg-emerald-50'
               : 'bg-emerald-950/20 border-emerald-900/40 hover:bg-emerald-950/40'
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold flex items-center gap-1.5">
-              <span>⭐ Thành thạo</span>
-              <span className="text-[10px] opacity-70">(Level 4)</span>
+            <span className="text-xs font-semibold flex items-center gap-1.5">
+              <span>Thành thạo</span>
+              <span className="text-[10px] opacity-70 font-mono">(L4)</span>
             </span>
-            <span className="text-base font-black">{stats.l4}</span>
+            <span className="text-sm font-bold">{stats.l4}</span>
           </div>
           <div className="w-full bg-emerald-200 dark:bg-emerald-900/50 h-1.5 rounded-full mt-2 overflow-hidden">
             <div className="bg-emerald-500 h-full rounded-full" style={{ width: `${stats.total > 0 ? (stats.l4 / stats.total) * 100 : 0}%` }} />
@@ -664,8 +751,8 @@ export default function VocabStudyStudio({
       </div>
 
       {/* ─── 5 STUDY MODE SELECTOR TABS ──────────────────────────────────────── */}
-      <div className={`p-1.5 rounded-2xl border flex items-center gap-1 overflow-x-auto scrollbar-hide ${
-        isLight ? 'bg-slate-100/80 border-slate-200' : 'bg-slate-850 border-slate-800'
+      <div className={`p-1 rounded-lg border flex items-center gap-1 overflow-x-auto scrollbar-hide ${
+        isLight ? 'bg-slate-100 border-slate-200' : 'bg-slate-850 border-slate-800'
       }`}>
         {[
           { id: 'list', label: 'Danh Sách Từ', icon: 'fa-list-ul', badge: filteredWords.length },
@@ -680,11 +767,11 @@ export default function VocabStudyStudio({
               key={tab.id}
               type="button"
               onClick={() => setStudyMode(tab.id)}
-              className={`flex-1 min-w-[125px] py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+              className={`flex-1 min-w-[120px] py-2 px-3 rounded-md text-xs font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer ${
                 active
-                  ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20'
+                  ? 'bg-blue-600 text-white shadow-xs'
                   : isLight
-                  ? 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+                  ? 'text-slate-600 hover:text-slate-900 hover:bg-white'
                   : 'text-slate-400 hover:text-white hover:bg-slate-800'
               }`}
             >
@@ -799,8 +886,8 @@ export default function VocabStudyStudio({
                 return (
                   <div
                     key={idx}
-                    className={`p-4 rounded-2xl border transition-all hover:shadow-md flex flex-col justify-between ${
-                      isLight ? 'bg-slate-50 border-slate-200 hover:border-blue-300' : 'bg-slate-800/80 border-slate-700 hover:border-blue-700'
+                    className={`p-3.5 rounded-lg border transition-all flex flex-col justify-between ${
+                      isLight ? 'bg-white border-slate-200 hover:border-slate-300' : 'bg-slate-900 border-slate-800 hover:border-slate-700'
                     }`}
                   >
                     <div>
@@ -808,26 +895,26 @@ export default function VocabStudyStudio({
                       <div className="flex items-start justify-between gap-2 mb-2">
                         <div>
                           <div className="flex items-center gap-2 flex-wrap">
-                            <h4 className="text-base font-black text-blue-600 dark:text-blue-400">
+                            <h4 className="text-sm font-bold text-slate-900 dark:text-white">
                               {item.word}
                             </h4>
                             {posObj && (
-                              <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded border ${posObj.color}`}>
+                              <span className={`text-[9px] font-semibold uppercase px-1.5 py-0.5 rounded border ${posObj.color}`}>
                                 {posObj.text}
                               </span>
                             )}
                           </div>
-                          <span className="text-xs font-mono text-slate-400 font-bold">
+                          <span className="text-xs font-mono text-slate-400">
                             {getDisplayIpa(item.word, item.ipa || item.pron)}
                           </span>
                         </div>
 
                         {/* Actions: Speak & Save/Delete */}
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1">
                           <button
                             type="button"
                             onClick={() => speak(item.word)}
-                            className="w-8 h-8 rounded-xl bg-blue-600/15 text-blue-500 hover:bg-blue-600 hover:text-white flex items-center justify-center text-xs transition cursor-pointer"
+                            className="w-7 h-7 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-300 flex items-center justify-center text-xs transition cursor-pointer"
                             title="Nghe phát âm"
                           >
                             <i className="fa-solid fa-volume-high" />
@@ -837,10 +924,10 @@ export default function VocabStudyStudio({
                           <button
                             type="button"
                             onClick={() => toggleSaveWord(item)}
-                            className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs transition cursor-pointer ${
+                            className={`w-7 h-7 rounded-md flex items-center justify-center text-xs transition cursor-pointer ${
                               saved
-                                ? 'bg-amber-500/20 text-amber-500 hover:bg-amber-500/30'
-                                : 'text-slate-400 hover:text-amber-500 hover:bg-amber-500/10'
+                                ? 'bg-amber-500/15 text-amber-500 hover:bg-amber-500/25'
+                                : 'text-slate-400 hover:text-amber-500 hover:bg-slate-100 dark:hover:bg-slate-800'
                             }`}
                             title={saved ? 'Đã lưu vào Sổ từ vựng (Bấm để bỏ lưu)' : 'Lưu từ này vào Sổ tay từ vựng'}
                           >
@@ -942,21 +1029,89 @@ export default function VocabStudyStudio({
             </div>
           ) : (
             <>
-              {/* Progress */}
-              <div className="w-full">
-                <div className="flex justify-between text-xs font-bold text-slate-400 mb-1.5">
-                  <span>Thẻ {fcIndex + 1} / {fcWords.length}</span>
-                  <span className="text-amber-500 flex items-center gap-1">
-                    <i className="fa-solid fa-star text-xs" />
-                    Level {getWordLevel(activeFcCard?.word)}/4
-                  </span>
+              {/* Progress & Controls Bar */}
+              <div className="w-full space-y-2">
+                <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-bold text-slate-400">
+                  <div className="flex items-center gap-2">
+                    <span>Thẻ {fcIndex + 1} / {fcWords.length}</span>
+                    <span className="text-amber-500 flex items-center gap-1">
+                      <i className="fa-solid fa-star text-xs" />
+                      Level {getWordLevel(activeFcCard?.word)}/4
+                    </span>
+                  </div>
+
+                  {/* Auto Controls: Pronounce Toggle & Auto Play Hands-Free */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setAutoSpeak(!autoSpeak)}
+                      className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs ${
+                        autoSpeak
+                          ? 'bg-blue-600/15 text-blue-600 dark:text-blue-400 border border-blue-500/30'
+                          : isLight ? 'bg-slate-100 text-slate-400 border border-slate-200' : 'bg-slate-800 text-slate-500 border border-slate-700'
+                      }`}
+                      title={autoSpeak ? 'Tự động phát âm khi chuyển từ (Đang BẬT)' : 'Bấm để BẬT tự động phát âm'}
+                    >
+                      <i className={`fa-solid ${autoSpeak ? 'fa-volume-high' : 'fa-volume-xmark'} text-[11px]`} />
+                      <span className="hidden sm:inline">Tự phát âm:</span>
+                      <span>{autoSpeak ? 'BẬT' : 'TẮT'}</span>
+                    </button>
+
+                    <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800/80 p-0.5 rounded-xl border border-slate-200 dark:border-slate-700">
+                      <button
+                        type="button"
+                        onClick={() => setIsAutoPlaying(!isAutoPlaying)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-black transition flex items-center gap-1.5 cursor-pointer shadow-xs ${
+                          isAutoPlaying
+                            ? 'bg-amber-500 text-white animate-pulse ring-2 ring-amber-400/40'
+                            : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                        }`}
+                        title={isAutoPlaying ? 'Tạm dừng tự động chuyển thẻ' : 'Bật chế độ tự động lật & chuyển từ rảnh tay'}
+                      >
+                        <i className={`fa-solid ${isAutoPlaying ? 'fa-pause' : 'fa-play'} text-[10px]`} />
+                        <span>{isAutoPlaying ? 'Tạm dừng' : 'Tự động chạy'}</span>
+                      </button>
+
+                      <select
+                        value={autoPlaySpeed}
+                        onChange={(e) => setAutoPlaySpeed(Number(e.target.value))}
+                        disabled={isAutoPlaying}
+                        className={`px-1.5 py-1 rounded-lg text-xs font-bold outline-none cursor-pointer ${
+                          isLight ? 'bg-transparent text-slate-700' : 'bg-transparent text-slate-300'
+                        }`}
+                        title="Tốc độ tự động chuyển từ"
+                      >
+                        <option value={3} className={isLight ? 'bg-white' : 'bg-slate-900'}>3s</option>
+                        <option value={4} className={isLight ? 'bg-white' : 'bg-slate-900'}>4s</option>
+                        <option value={5} className={isLight ? 'bg-white' : 'bg-slate-900'}>5s</option>
+                        <option value={7} className={isLight ? 'bg-white' : 'bg-slate-900'}>7s</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
-                <div className={`w-full h-2 rounded-full overflow-hidden ${isLight ? 'bg-slate-200' : 'bg-slate-800'}`}>
+
+                {/* Overall Deck Progress Bar */}
+                <div className={`w-full h-1.5 rounded-full overflow-hidden ${isLight ? 'bg-slate-200' : 'bg-slate-800'}`}>
                   <div
                     className="h-full bg-gradient-to-r from-blue-600 to-indigo-600 transition-all duration-300 rounded-full"
                     style={{ width: `${((fcIndex + 1) / fcWords.length) * 100}%` }}
                   />
                 </div>
+
+                {/* Auto Play Live Countdown Bar */}
+                {isAutoPlaying && (
+                  <div className="p-2 px-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between text-xs animate-fadeIn shadow-xs">
+                    <span className="text-amber-600 dark:text-amber-400 font-bold flex items-center gap-2">
+                      <i className="fa-solid fa-circle-notch animate-spin text-[11px]" />
+                      {autoPlayElapsed < (autoPlaySpeed * 1000) / 2
+                        ? `Đang đọc từ... Sẽ lật xem nghĩa sau ${Math.max(1, Math.ceil((autoPlaySpeed / 2) - (autoPlayElapsed / 1000)))}s`
+                        : `Đang xem nghĩa... Sẽ chuyển từ tiếp theo sau ${Math.max(1, Math.ceil(autoPlaySpeed - (autoPlayElapsed / 1000)))}s`}
+                    </span>
+                    <span className="font-mono font-black text-amber-600 dark:text-amber-400 text-[11px] bg-amber-500/20 px-2 py-0.5 rounded-md">
+                      {autoPlaySpeed}s / từ
+                    </span>
+                  </div>
+                )}
               </div>
 
               {/* 3D Flip Card Container */}
@@ -973,15 +1128,15 @@ export default function VocabStudyStudio({
                 >
                   {/* Front Side */}
                   <div
-                    className={`absolute inset-0 rounded-3xl border flex flex-col items-center justify-between p-6 shadow-xl transition-all ${
+                    className={`absolute inset-0 rounded-xl border flex flex-col items-center justify-between p-6 shadow-sm transition-all ${
                       isLight
-                        ? 'bg-gradient-to-br from-white via-slate-50 to-blue-50/30 border-slate-200 text-slate-900 shadow-slate-200/50'
-                        : 'bg-gradient-to-br from-slate-900 via-slate-850 to-slate-800 border-slate-700/80 text-white shadow-black/40'
+                        ? 'bg-white border-slate-200 text-slate-900'
+                        : 'bg-slate-900 border-slate-800 text-white'
                     }`}
                     style={{ backfaceVisibility: 'hidden' }}
                   >
                     <div className="flex items-center justify-between w-full">
-                      <span className="text-[11px] font-mono uppercase font-black px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                      <span className="text-[11px] font-mono uppercase font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
                         {activeFcCard?.pos ? formatPosBadge(activeFcCard.pos)?.text : deckBadge}
                       </span>
                       <span className="text-xs text-slate-400 font-mono">
@@ -990,10 +1145,10 @@ export default function VocabStudyStudio({
                     </div>
 
                     <div className="text-center my-auto space-y-2">
-                      <h3 className="text-3xl md:text-4xl font-black text-blue-600 dark:text-blue-400 tracking-tight">
+                      <h3 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">
                         {activeFcCard?.word}
                       </h3>
-                      <p className="text-sm md:text-base font-mono font-bold text-slate-400">
+                      <p className="text-sm md:text-base font-mono font-medium text-slate-500 dark:text-slate-400">
                         {getDisplayIpa(activeFcCard?.word, activeFcCard?.ipa || activeFcCard?.pron)}
                       </p>
 
@@ -1004,7 +1159,7 @@ export default function VocabStudyStudio({
                             e.stopPropagation();
                             speak(activeFcCard?.word);
                           }}
-                          className="px-4 py-2 rounded-xl bg-blue-600/15 hover:bg-blue-600 hover:text-white text-blue-500 text-xs font-bold transition flex items-center gap-2 cursor-pointer"
+                          className="px-3.5 py-1.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 text-xs font-semibold transition flex items-center gap-2 cursor-pointer"
                         >
                           <i className="fa-solid fa-volume-high text-xs" />
                           <span>Nghe phát âm</span>
@@ -1020,15 +1175,15 @@ export default function VocabStudyStudio({
 
                   {/* Back Side */}
                   <div
-                    className={`absolute inset-0 rounded-3xl border flex flex-col items-center justify-between p-6 shadow-xl transition-all ${
+                    className={`absolute inset-0 rounded-xl border flex flex-col items-center justify-between p-6 shadow-sm transition-all ${
                       isLight
-                        ? 'bg-gradient-to-br from-indigo-50/40 via-white to-amber-50/30 border-slate-200 text-slate-900 shadow-slate-200/50'
-                        : 'bg-gradient-to-br from-slate-900 via-slate-850 to-indigo-950/40 border-slate-700/80 text-white shadow-black/40'
+                        ? 'bg-slate-50/80 border-slate-200 text-slate-900'
+                        : 'bg-slate-900 border-slate-800 text-white'
                     }`}
                     style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
                   >
                     <div className="flex items-center justify-between w-full">
-                      <span className="text-[11px] font-mono uppercase font-black px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                      <span className="text-[11px] font-mono uppercase font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
                         NGHĨA TIẾNG VIỆT
                       </span>
                       <span className="text-xs text-slate-400 font-mono">
@@ -1218,13 +1373,13 @@ export default function VocabStudyStudio({
                   </div>
 
                   {/* Question Box */}
-                  <div className={`p-6 rounded-3xl border text-center space-y-2 shadow-xs ${
-                    isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-800/60 border-slate-700'
+                  <div className={`p-6 rounded-xl border text-center space-y-2 ${
+                    isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
                   }`}>
-                    <span className="text-[10px] font-black uppercase tracking-wider text-blue-500">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
                       TỪ NÀY CÓ NGHĨA LÀ GÌ?
                     </span>
-                    <h3 className="text-3xl font-black text-slate-900 dark:text-white">
+                    <h3 className="text-3xl font-bold text-slate-900 dark:text-white">
                       {currentQ.card.word}
                     </h3>
                     <p className="text-xs font-mono text-slate-400 font-bold">
@@ -1415,10 +1570,10 @@ export default function VocabStudyStudio({
               </div>
 
               {/* Card prompt */}
-              <div className={`p-6 rounded-3xl border text-center space-y-3 shadow-xs ${
-                isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-800/60 border-slate-700'
+              <div className={`p-6 rounded-xl border text-center space-y-3 ${
+                isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
               }`}>
-                <span className="text-[10px] font-black uppercase tracking-wider text-indigo-500">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
                   NGHE PHÁT ÂM & GÕ CHÍNH XÁC TỪ TIẾNG ANH
                 </span>
 
@@ -1426,7 +1581,7 @@ export default function VocabStudyStudio({
                   <button
                     type="button"
                     onClick={() => speak(activeSpellCard.word)}
-                    className="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-lg shadow-md hover:bg-indigo-700 transition cursor-pointer hover:scale-105 active:scale-95"
+                    className="w-11 h-11 rounded-lg bg-blue-600 text-white flex items-center justify-center text-base hover:bg-blue-700 transition cursor-pointer"
                     title="Nghe phát âm"
                   >
                     <i className="fa-solid fa-volume-high" />

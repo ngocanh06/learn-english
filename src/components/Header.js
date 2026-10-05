@@ -20,70 +20,56 @@ export default function Header({
 
   return (
     <header
-      className={`lg:hidden sticky top-0 z-20 backdrop-blur-xl border-b transition-colors duration-300 ${
+      style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
+      className={`lg:hidden sticky top-0 z-30 border-b select-none transition-colors duration-200 ${
         isLight
-          ? 'bg-white/90 border-slate-200/90 shadow-sm'
-          : 'bg-[#0b0f19]/95 border-slate-800/80'
+          ? 'bg-white border-slate-200'
+          : 'bg-[#0b0f19] border-slate-800'
       }`}
     >
       <div className="flex items-center justify-between h-14 px-4 gap-2">
-        {/* Hamburger Menu & Current Tab Title */}
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setMobileOpen(true)}
-            className={`p-2 rounded-xl border flex items-center justify-center ${
-              isLight
-                ? 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200'
-                : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
-            }`}
-            title="Mở Menu"
-          >
-            <i className="fa-solid fa-bars text-sm" />
-          </button>
-
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center">
-              <i className={`fa-solid ${currentItem.icon} text-white text-xs`} />
-            </div>
-            <div>
-              <h2 className="text-sm font-extrabold leading-none">{currentItem.label}</h2>
-              <span className="text-[10px] text-slate-400 font-semibold leading-none">
-                Language Hub
-              </span>
-            </div>
+        {/* Left: Tab Icon & Page Title */}
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white shrink-0">
+            <i className={`fa-solid ${currentItem.icon} text-xs`} />
+          </div>
+          <div className="min-w-0">
+            <h1 className="text-sm font-bold truncate leading-tight">
+              {currentItem.label}
+            </h1>
+            <p className="text-[11px] text-slate-400 font-medium truncate leading-tight">
+              Language Hub
+            </p>
           </div>
         </div>
 
-        {/* Right actions: Goal Badge, Overdue Bell, Theme & User */}
-        <div className="flex items-center gap-2">
+        {/* Right actions: Goal Badge, Overdue Reminder, Theme & User */}
+        <div className="flex items-center gap-1.5 shrink-0">
           <button
             onClick={() => onNavigate('ai-coach', { tab: 'my-plan' })}
-            className={`px-2 py-1 rounded-lg border text-[10px] font-bold flex items-center gap-1.5 transition ${activeCert.badgeColor}`}
-            title="Xem kế hoạch cá nhân hóa"
+            className="px-2 py-1 rounded-md text-[11px] font-semibold border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition cursor-pointer"
+            title="Kế hoạch học tập"
           >
-            <i className={`fa-solid ${activeCert.icon} text-[10px]`} />
-            <span className="truncate max-w-[85px]">{activeCert.shortName}</span>
+            <span className="truncate max-w-[70px]">{activeCert.shortName}</span>
           </button>
 
           {overdueCount > 0 && (
             <button
               onClick={() => onNavigate('ai-coach', { tab: 'calendar-view' })}
-              className="relative p-2 rounded-xl border text-xs bg-amber-500/15 border-amber-500/40 text-amber-600 dark:text-amber-400 hover:bg-amber-500/25 transition cursor-pointer"
-              title={`Bạn còn ${overdueCount} nhiệm vụ học bù từ các ngày trước! Bấm để mở Lịch học.`}
+              className="px-2 py-1 rounded-md text-[11px] font-bold border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 flex items-center gap-1 transition cursor-pointer"
+              title={`Bạn còn ${overdueCount} nhiệm vụ học bù! Bấm để mở Lịch học.`}
             >
-              <i className="fa-solid fa-bell text-xs animate-bounce" />
-              <span className="absolute -top-1.5 -right-1.5 px-1.5 py-0.2 rounded-full bg-amber-500 text-slate-950 font-black text-[9px] font-mono shadow-xs">
-                {overdueCount}
-              </span>
+              <i className="fa-solid fa-clock-rotate-left text-[10px]" />
+              <span>{overdueCount} nợ</span>
             </button>
           )}
 
           <button
             onClick={toggleTheme}
-            className={`p-2 rounded-xl border text-xs ${
+            className={`p-2 rounded-lg border text-xs cursor-pointer transition ${
               isLight
-                ? 'bg-slate-100 border-slate-200 text-indigo-600'
-                : 'bg-slate-800 border-slate-700 text-amber-400'
+                ? 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200'
+                : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-750'
             }`}
             title={isLight ? 'Chế độ Tối' : 'Chế độ Sáng'}
           >
@@ -93,18 +79,19 @@ export default function Header({
           {isAuthenticated && currentUser ? (
             <button
               onClick={() => setMobileOpen(true)}
-              className="relative p-0.5 rounded-full ring-2 ring-indigo-500/50"
+              className="w-8 h-8 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 cursor-pointer"
+              title="Tài khoản"
             >
               <img
                 src={currentUser.avatar}
                 alt={currentUser.name}
-                className="w-7 h-7 rounded-full object-cover"
+                className="w-full h-full object-cover"
               />
             </button>
           ) : (
             <button
               onClick={openLogin}
-              className="px-2.5 py-1.5 rounded-xl bg-indigo-600 text-white text-xs font-black shadow-sm"
+              className="px-2.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold cursor-pointer"
             >
               Đăng nhập
             </button>

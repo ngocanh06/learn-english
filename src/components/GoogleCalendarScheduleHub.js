@@ -555,7 +555,7 @@ export default function GoogleCalendarScheduleHub({
   }, [currentDate]);
 
   const currentDdStatus = useMemo(() => {
-    return getDayDictationStatus(currentDayPlan?.dailyDictation, dictationStars);
+    return getDayDictationStatus(currentDayPlan?.dailyDictation, dictationStars, currentDayPlan?.day);
   }, [currentDayPlan, dictationStars]);
 
   // Auto-sync completed status when all 3 DailyDictation tracks are completed
@@ -913,14 +913,14 @@ export default function GoogleCalendarScheduleHub({
     return [
       task1,
 
-      // 2. DAILY DICTATION (NGHE CHÉP CHÍNH TẢ PHẢN XẠ)
+      // 2. DAILY DICTATION (NGHE CHÉP CHÍNH TẢ PHẢN XẠ - 3 BÀI)
       {
         id: 'dd',
         tag: '2. DAILY DICTATION (NGHE CHÉP CHÍNH TẢ)',
         tagColor: UNIFIED_TAG_STYLE,
-        duration: currentDayPlan.dailyDictation.duration,
+        duration: currentDayPlan.dailyDictation.duration || '30 phút',
         title: 'Nghe Chép Chính Tả: Luyện Phản Xạ Bắt Âm',
-        desc: 'Luyện bắt âm & phản xạ ngữ điệu tự nhiên qua Truyện ngắn & Hội thoại giao tiếp',
+        desc: 'Luyện bắt âm & phản xạ ngữ điệu tự nhiên qua Truyện ngắn, Hội thoại & IELTS Listening',
         tracks: (currentDdStatus.tracks || []).filter(t => t.type !== 'toeic-listening'),
         ddStatus: {
           ...currentDdStatus,
@@ -929,10 +929,10 @@ export default function GoogleCalendarScheduleHub({
           isAllDone: (currentDdStatus.tracks || []).filter(t => t.type !== 'toeic-listening').every(t => t.isDone),
         },
         nextLessonNote: (currentDdStatus.tracks || []).filter(t => t.type !== 'toeic-listening').every(t => t.isDone)
-          ? '🎉 Bạn đã nghe xong các bài DailyDictation! Task tự động hoàn thành.'
-          : 'Luyện nghe & chép chính tả để hoàn thiện phản xạ bắt âm',
+          ? '🎉 Bạn đã nghe xong 3 bài DailyDictation! Task tự động hoàn thành.'
+          : 'Luyện nghe & chép chính tả 3 bài để hoàn thiện phản xạ bắt âm',
         btnText: (currentDdStatus.tracks || []).filter(t => t.type !== 'toeic-listening').every(t => t.isDone) ? 'Xem lại bài nghe ↗' : 'Mở bài nghe ↗',
-        action: () => onNavigateTab && onNavigateTab('dailydictation'),
+        action: () => onNavigateTab && onNavigateTab('dailydictation', { track: 'ielts-listening' }),
         image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&auto=format&fit=crop&q=80',
         icon: 'fa-solid fa-headphones',
         completed: Boolean(

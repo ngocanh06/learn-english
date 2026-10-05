@@ -268,16 +268,16 @@ export default function ReadingHub({
     <div className="flex flex-col gap-6 max-w-7xl mx-auto pb-16 font-sans">
       {/* ─── BANNER (Clean, Elegant & Soothing) ───────────────────── */}
       <div
-        className={`p-6 md:p-8 rounded-3xl border transition-all ${
+        className={`p-6 md:p-7 rounded-lg border transition-all ${
           isLight
-            ? 'bg-white border-slate-200 shadow-sm text-slate-900'
-            : 'bg-slate-900 border-slate-800 text-white shadow-xl'
+            ? 'bg-white border-slate-200 shadow-xs text-slate-900'
+            : 'bg-slate-900 border-slate-800 text-white'
         }`}
       >
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-2 max-w-2xl">
             <div
-              className={`inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider border ${
+              className={`inline-flex items-center gap-2 px-2.5 py-0.5 rounded-md text-xs font-semibold uppercase tracking-wider border ${
                 isLight
                   ? 'bg-blue-50 border-blue-200 text-blue-700'
                   : 'bg-blue-950/40 border-blue-800/60 text-blue-300'
@@ -286,7 +286,7 @@ export default function ReadingHub({
               <i className="fa-solid fa-book-open-reader text-blue-500" />
               Luyện Đọc Hiểu Chuẩn CEFR (A1 ➔ C1)
             </div>
-            <h1 className="text-2xl md:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
+            <h1 className="text-xl md:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
               Phòng Luyện Đọc Hiểu (Reading Comprehension)
             </h1>
             <p className="text-slate-600 dark:text-slate-400 text-xs md:text-sm leading-relaxed">
@@ -396,14 +396,14 @@ export default function ReadingHub({
             </h3>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {testsInLevel.map((t) => {
               const isDone = !!completedReading[t.id];
               return (
                 <div
                   key={t.id}
                   onClick={() => handleSelectTest(t)}
-                  className={`rounded-3xl border overflow-hidden transition-all duration-200 cursor-pointer flex flex-col justify-between group hover:shadow-lg ${
+                  className={`rounded-lg border overflow-hidden transition-all duration-200 cursor-pointer flex flex-col justify-between group hover:border-slate-300 dark:hover:border-slate-700 ${
                     isDone
                       ? isLight ? 'bg-emerald-50/40 border-emerald-200' : 'bg-emerald-950/20 border-emerald-800/40'
                       : isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
@@ -415,30 +415,30 @@ export default function ReadingHub({
                       <img
                         src={t.img}
                         alt={t.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                        className="w-full h-full object-cover group-hover:scale-102 transition duration-300"
                         onError={(e) => {
                           e.target.src = 'https://test-english.com/staging11/wp-content/uploads/Guess-who_A1-Reading-test.webp';
                         }}
                       />
-                      <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full bg-blue-600 text-white text-[10px] font-black uppercase shadow-sm">
+                      <span className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md bg-blue-600 text-white text-[10px] font-bold uppercase shadow-xs">
                         Level {t.level}
                       </span>
                       {isDone && (
-                        <span className="absolute top-3 right-3 px-2.5 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-bold shadow-sm flex items-center gap-1">
+                        <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-emerald-600 text-white text-[10px] font-bold shadow-xs flex items-center gap-1">
                           <i className="fa-solid fa-check" /> Đã xong
                         </span>
                       )}
                     </div>
 
                     {/* Card Body */}
-                    <div className="p-5 space-y-2">
+                    <div className="p-4 space-y-1.5">
                       <div className="flex items-center gap-2 text-xs text-slate-400 font-mono">
                         <span className="flex items-center gap-1"><i className="fa-regular fa-clock text-[10px]" /> {t.duration}</span>
                         <span>•</span>
-                        <span>{t.questions.length} câu hỏi trắc nghiệm</span>
+                        <span>{t.questions.length} câu trắc nghiệm</span>
                       </div>
 
-                      <h4 className="text-base font-extrabold text-slate-900 dark:text-white leading-snug group-hover:text-blue-600 transition">
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white leading-snug group-hover:text-blue-600 transition">
                         {t.title}
                       </h4>
 
@@ -448,8 +448,8 @@ export default function ReadingHub({
                     </div>
                   </div>
 
-                  <div className="p-5 pt-0">
-                    <button className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs uppercase tracking-wider transition shadow-sm cursor-pointer">
+                  <div className="p-4 pt-0">
+                    <button className="w-full py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs uppercase tracking-wider transition shadow-xs cursor-pointer">
                       Làm Bài Đọc Này ➔
                     </button>
                   </div>
@@ -461,8 +461,8 @@ export default function ReadingHub({
       ) : (
         /* ─── ACTIVE READING TEST WORKSPACE ──────────────────────── */
         <div
-          className={`p-6 md:p-8 rounded-3xl border space-y-6 ${
-            isLight ? 'bg-white border-slate-200 shadow-sm text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
+          className={`p-5 md:p-6 rounded-lg border space-y-6 ${
+            isLight ? 'bg-white border-slate-200 shadow-xs text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
           }`}
         >
           {/* Top Bar */}
@@ -729,7 +729,7 @@ export default function ReadingHub({
                     onMouseUp={handlePassageMouseUp}
                     onDoubleClick={handlePassageMouseUp}
                     onTouchEnd={handlePassageMouseUp}
-                    className={`p-6 md:p-7 rounded-3xl border font-sans select-text cursor-text shadow-xs transition-all ${fontClass} ${
+                    className={`p-5 md:p-6 rounded-lg border font-sans select-text cursor-text shadow-xs transition-all ${fontClass} ${
                       isSplit
                         ? 'lg:overflow-y-auto lg:max-h-[calc(100vh-210px)] pr-2'
                         : ''
@@ -848,7 +848,7 @@ export default function ReadingHub({
                 ) : leftTab === 'translation' ? (
                   /* Dedicated Full Translation Tab */
                   <div
-                    className={`p-6 md:p-7 rounded-3xl border select-text cursor-text shadow-xs transition-all ${fontClass} ${
+                    className={`p-5 md:p-6 rounded-lg border select-text cursor-text shadow-xs transition-all ${fontClass} ${
                       isSplit
                         ? 'lg:overflow-y-auto lg:max-h-[calc(100vh-210px)] pr-2'
                         : ''
@@ -874,7 +874,7 @@ export default function ReadingHub({
                         <button
                           type="button"
                           onClick={handleCopyTranslation}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition flex items-center gap-1.5 cursor-pointer ${
+                          className={`px-3 py-1.5 rounded-md text-xs font-semibold border transition flex items-center gap-1.5 cursor-pointer ${
                             copiedTranslation
                               ? 'bg-emerald-600 text-white border-emerald-500'
                               : isLight
@@ -893,7 +893,7 @@ export default function ReadingHub({
                             setLeftTab('passage');
                             setShowBilingual(true);
                           }}
-                          className="px-3 py-1.5 rounded-xl text-xs font-bold border border-emerald-500 bg-emerald-600 text-white hover:bg-emerald-700 transition flex items-center gap-1.5 cursor-pointer shadow-xs"
+                          className="px-3 py-1.5 rounded-md text-xs font-semibold border border-emerald-500 bg-emerald-600 text-white hover:bg-emerald-700 transition flex items-center gap-1.5 cursor-pointer shadow-xs"
                           title="Xem bài đọc ở chế độ song ngữ từng đoạn"
                         >
                           <i className="fa-solid fa-table-columns text-xs" />
@@ -933,7 +933,7 @@ export default function ReadingHub({
                 ) : (
                   /* Dedicated Vocabulary Tab */
                   <div
-                    className={`p-5 md:p-6 rounded-3xl border space-y-3.5 shadow-xs ${
+                    className={`p-5 md:p-6 rounded-lg border space-y-3.5 shadow-xs ${
                       isSplit
                         ? 'lg:overflow-y-auto lg:max-h-[calc(100vh-210px)] pr-2'
                         : ''

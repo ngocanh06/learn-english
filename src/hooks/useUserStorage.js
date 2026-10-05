@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { syncKeyToSupabase } from '../services/supabaseClient';
 
 /**
  * Cache for candidate keys so we do not recompute on every render
@@ -244,6 +245,11 @@ export function useUserStorage(baseKey, initialValue) {
               detail: { scopedKey, baseKey, value: valueToStore },
             })
           );
+
+          // Realtime Cloud Database Sync to Supabase
+          try {
+            syncKeyToSupabase(userId, baseKey, valueToStore);
+          } catch (e) {}
         } catch (err) {
           console.error(`localStorage error for key ${scopedKey}:`, err);
         }

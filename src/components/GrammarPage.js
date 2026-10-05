@@ -254,7 +254,7 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
           {/* Return to Calendar Banner if opened from Calendar */}
           {dateKey && onNavigate && (
             <div
-              className={`p-3 px-4 rounded-2xl border flex items-center justify-between gap-3 text-xs animate-fadeIn ${
+              className={`p-3 px-4 rounded-lg border flex items-center justify-between gap-3 text-xs animate-fadeIn ${
                 isLight
                   ? 'bg-blue-50/90 border-blue-200 text-blue-900 shadow-xs'
                   : 'bg-blue-950/40 border-blue-800 text-blue-200 shadow-xs'
@@ -273,7 +273,7 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
                     tab: 'calendar-view',
                   })
                 }
-                className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black shrink-0 transition flex items-center gap-1.5 shadow-xs cursor-pointer"
+                className="px-3 py-1.5 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-bold shrink-0 transition flex items-center gap-1.5 shadow-xs cursor-pointer"
               >
                 <i className="fa-solid fa-arrow-left text-[11px]" />
                 <span>Quay lại Lịch học {dateKey}</span>
@@ -283,31 +283,31 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
 
           {/* Top Header Bar */}
           <div
-            className={`p-4 md:p-5 rounded-3xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 ${
-              isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-slate-900 border-slate-800'
+            className={`p-4 md:p-5 rounded-lg border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 ${
+              isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-slate-900 border-slate-800'
             }`}
           >
             <div className="flex items-center gap-3">
-              <span className="w-9 h-9 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-sm font-black shadow-sm">
+              <span className="w-8 h-8 rounded-md bg-blue-600 text-white flex items-center justify-center text-sm font-bold shadow-xs">
                 <i className="fa-solid fa-book-open" />
               </span>
               <div>
-                <h1 className="text-base md:text-xl font-extrabold text-slate-900 dark:text-white">
+                <h1 className="text-base md:text-lg font-bold text-slate-900 dark:text-white">
                   Ngữ Pháp Tổng Hợp (115 Bài Học)
                 </h1>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                  Đã nhớ: <strong className="text-emerald-500">{Object.values(rememberedIds).filter(Boolean).length}</strong> / {fullIndex.length} bài • Yêu thích: <strong className="text-amber-400">{Object.values(favoriteIds).filter(Boolean).length}</strong> bài
+                  Đã nhớ: <strong className="text-emerald-500">{Object.values(rememberedIds).filter(Boolean).length}</strong> / {fullIndex.length} bài • Yêu thích: <strong className="text-amber-500">{Object.values(favoriteIds).filter(Boolean).length}</strong> bài
                 </p>
               </div>
             </div>
 
             {/* Layout Mode Switcher: Gom nhóm vs Tuần tự */}
-            <div className="flex items-center gap-1.5 self-end sm:self-center p-1 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60">
+            <div className="flex items-center gap-1 self-end sm:self-center p-1 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
               <button
                 onClick={() => setLayoutMode('clusters')}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-md text-xs font-semibold transition flex items-center gap-1.5 ${
                   layoutMode === 'clusters'
-                    ? 'bg-blue-600 text-white shadow-sm'
+                    ? 'bg-blue-600 text-white shadow-xs'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
                 title="Gom các bài cùng chủ đề vào 1 nhóm lớn"
@@ -318,9 +318,9 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
 
               <button
                 onClick={() => setLayoutMode('flat')}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-md text-xs font-semibold transition flex items-center gap-1.5 ${
                   layoutMode === 'flat'
-                    ? 'bg-blue-600 text-white shadow-sm'
+                    ? 'bg-blue-600 text-white shadow-xs'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
                 title="Xem tuần tự bài 1 đến 115"
@@ -333,8 +333,8 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
 
           {/* ─── 4 FILTER RADIO OPTIONS & SEARCH BAR ─── */}
           <div
-            className={`p-3.5 px-4 rounded-2xl border flex items-center gap-3 sm:gap-6 overflow-x-auto scrollbar-hide select-none ${
-              isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-slate-900 border-slate-800'
+            className={`p-3 px-4 rounded-lg border flex items-center gap-2 sm:gap-4 overflow-x-auto scrollbar-hide select-none ${
+              isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-slate-900 border-slate-800'
             }`}
           >
             {[
@@ -349,15 +349,15 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
                   type="button"
                   key={tab.id}
                   onClick={() => setFilterMode(tab.id)}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl whitespace-nowrap text-xs md:text-sm font-extrabold transition-all border ${
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-md whitespace-nowrap text-xs font-semibold transition-all border ${
                     checked
-                      ? 'bg-blue-600 border-blue-500 text-white shadow-sm'
+                      ? 'bg-blue-600 border-blue-600 text-white shadow-xs'
                       : isLight
-                      ? 'bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-800'
-                      : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-200'
+                      ? 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700'
+                      : 'bg-slate-800 hover:bg-slate-750 border-slate-700 text-slate-300'
                   }`}
                 >
-                  <span className={`w-2 h-2 rounded-full ${checked ? 'bg-white' : 'bg-blue-500'}`} />
+                  <span className={`w-1.5 h-1.5 rounded-full ${checked ? 'bg-white' : 'bg-blue-500'}`} />
                   <span>{tab.label}</span>
                 </button>
               );
@@ -371,7 +371,7 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Tìm bài học..."
-                className={`w-full pl-8 pr-3 py-1.5 rounded-xl border text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 transition ${
+                className={`w-full pl-8 pr-3 py-1.5 rounded-md border text-xs focus:outline-none focus:border-blue-500 transition ${
                   isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-800 border-slate-700 text-white'
                 }`}
               />
@@ -413,7 +413,7 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
                   return (
                     <div
                       key={cluster.id}
-                      className={`rounded-2xl border overflow-hidden transition-all duration-200 ${
+                      className={`rounded-lg border overflow-hidden transition-all duration-200 ${
                         isLight
                           ? 'bg-white border-slate-200 shadow-xs hover:border-slate-300'
                           : 'bg-slate-900 border-slate-800/90 hover:border-slate-700'
@@ -428,16 +428,16 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
                       >
                         <div className="flex items-center gap-3 min-w-0">
                           {/* Sleek Minimal Number Badge */}
-                          <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 font-mono font-black text-xs flex items-center justify-center shrink-0 border border-slate-200/80 dark:border-slate-700/60">
+                          <div className="w-7 h-7 rounded-md bg-slate-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 font-mono font-bold text-xs flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-700">
                             {String(clusterIdx + 1).padStart(2, '0')}
                           </div>
 
                           <div className="min-w-0 space-y-0.5">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <h3 className="text-sm md:text-[15px] font-extrabold text-slate-900 dark:text-white leading-tight">
+                              <h3 className="text-sm md:text-[15px] font-bold text-slate-900 dark:text-white leading-tight">
                                 {cluster.title.replace(/^\d+\.\s*/, '')}
                               </h3>
-                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800/90 text-slate-600 dark:text-slate-400 border border-slate-200/60 dark:border-slate-700/60 font-mono">
+                              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 font-mono">
                                 {cluster.lessons.length} bài
                               </span>
                             </div>
@@ -450,7 +450,7 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
                         {/* Right: Progress & Chevron */}
                         <div className="flex items-center gap-4 shrink-0">
                           <div className="hidden sm:flex flex-col items-end">
-                            <span className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400">
+                            <span className="text-xs font-mono font-medium text-slate-500 dark:text-slate-400">
                               {cluster.rememberedLessons} / {cluster.totalLessons} đã nhớ
                             </span>
                             <div className="w-20 h-1.5 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden mt-1">
@@ -462,8 +462,8 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
                           </div>
 
                           <div
-                            className={`w-7 h-7 rounded-xl flex items-center justify-center transition-transform duration-200 ${
-                              isOpen ? 'rotate-180 bg-blue-600/10 text-blue-500' : 'text-slate-400'
+                            className={`w-6 h-6 rounded-md flex items-center justify-center transition-transform duration-200 ${
+                              isOpen ? 'rotate-180 bg-blue-600/10 text-blue-600' : 'text-slate-400'
                             }`}
                           >
                             <i className="fa-solid fa-chevron-down text-xs" />
@@ -578,7 +578,7 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
           {layoutMode === 'flat' && (
             <div className="space-y-4">
               <div
-                className={`rounded-3xl border divide-y overflow-hidden shadow-sm transition-all ${
+                className={`rounded-lg border divide-y overflow-hidden shadow-xs transition-all ${
                   isLight
                     ? 'bg-white border-slate-200 divide-slate-100'
                     : 'bg-slate-900 border-slate-800 divide-slate-800/80'
@@ -605,22 +605,22 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
                       <div
                         key={lesson.id}
                         onClick={() => openLessonDetail(lesson.id)}
-                        className={`p-4 flex items-center justify-between gap-4 cursor-pointer transition-colors duration-150 group ${
-                          isLight ? 'hover:bg-blue-50/40' : 'hover:bg-slate-800/50'
+                        className={`p-3.5 sm:p-4 flex items-center justify-between gap-4 cursor-pointer transition-colors duration-150 group ${
+                          isLight ? 'hover:bg-slate-50' : 'hover:bg-slate-800/50'
                         }`}
                       >
                         <div className="flex items-center gap-3 min-w-0 flex-1">
-                          <span className="w-8 h-8 rounded-xl bg-blue-600/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs font-black shrink-0 font-mono">
+                          <span className="w-7 h-7 rounded-md bg-blue-600/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs font-bold shrink-0 font-mono">
                             {displayId}
                           </span>
 
                           <div className="min-w-0 flex-1 space-y-0.5">
-                            <h3 className="text-sm md:text-base font-extrabold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 group-hover:underline tracking-tight leading-snug truncate">
+                            <h3 className="text-sm md:text-base font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 tracking-tight leading-snug truncate">
                               {cleanTitle}
                             </h3>
 
                             <div className="flex items-center gap-2">
-                              <span className="text-xs font-medium text-slate-600 dark:text-slate-400 truncate">
+                              <span className="text-xs font-medium text-slate-500 dark:text-slate-400 truncate">
                                 {lesson.subtitle || lesson.category}
                               </span>
                               {score !== undefined && (
@@ -632,22 +632,22 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-3 shrink-0">
+                        <div className="flex items-center gap-2 shrink-0">
                           <button
                             onClick={(e) => toggleFavorite(lesson.id, e)}
-                            className={`p-2 rounded-xl transition ${
+                            className={`p-1.5 rounded-md transition ${
                               isFav
-                                ? 'text-amber-400 hover:scale-110'
+                                ? 'text-amber-400'
                                 : 'text-slate-300 dark:text-slate-600 hover:text-amber-400'
                             }`}
                             title={isFav ? 'Bỏ thích' : 'Đánh dấu Thích'}
                           >
-                            <i className={`fa-${isFav ? 'solid' : 'regular'} fa-star text-lg`} />
+                            <i className={`fa-${isFav ? 'solid' : 'regular'} fa-star text-base`} />
                           </button>
 
                           <button
                             onClick={(e) => toggleRemembered(lesson.id, e)}
-                            className={`p-2 rounded-xl transition ${
+                            className={`p-1.5 rounded-md transition ${
                               isRem
                                 ? 'text-emerald-500 hover:scale-110'
                                 : 'text-slate-300 dark:text-slate-600 hover:text-emerald-500'
@@ -671,9 +671,9 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
 
               {/* Volume Switcher */}
               <div
-                className={`p-3.5 px-5 rounded-2xl border flex items-center justify-between gap-3 text-xs font-bold ${
+                className={`p-3 px-4 rounded-lg border flex items-center justify-between gap-3 text-xs font-semibold ${
                   isLight
-                    ? 'bg-white border-slate-200 text-slate-600 shadow-sm'
+                    ? 'bg-white border-slate-200 text-slate-600 shadow-xs'
                     : 'bg-slate-900 border-slate-800 text-slate-400'
                 }`}
               >
@@ -689,16 +689,16 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
                   <span>Trang Trước</span>
                 </button>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
                   <button
                     onClick={() => {
                       setActiveVolume(1);
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
-                    className={`px-3 py-1 rounded-xl transition ${
+                    className={`px-3 py-1 rounded-md transition ${
                       activeVolume === 1
-                        ? 'bg-blue-600 text-white font-extrabold shadow'
-                        : 'text-slate-400 hover:text-white'
+                        ? 'bg-blue-600 text-white font-bold shadow-xs'
+                        : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                     }`}
                   >
                     Trang 1 (100 Bài)
@@ -709,10 +709,10 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
                       setActiveVolume(2);
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
-                    className={`px-3 py-1 rounded-xl transition ${
+                    className={`px-3 py-1 rounded-md transition ${
                       activeVolume === 2
-                        ? 'bg-blue-600 text-white font-extrabold shadow'
-                        : 'text-slate-400 hover:text-white'
+                        ? 'bg-blue-600 text-white font-bold shadow-xs'
+                        : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                     }`}
                   >
                     Trang 2 (Mở Rộng)
@@ -752,7 +752,7 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
                   } catch (e) {}
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold border transition ${
+                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-md text-xs font-semibold border transition ${
                   isLight
                     ? 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100 shadow-xs'
                     : 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800'
@@ -770,7 +770,7 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
                       tab: 'calendar-view',
                     })
                   }
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold border transition cursor-pointer ${
+                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-md text-xs font-semibold border transition cursor-pointer ${
                     isLight
                       ? 'bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700 shadow-xs'
                       : 'bg-blue-950/50 hover:bg-blue-900/60 border-blue-800 text-blue-300'
@@ -784,10 +784,10 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
             </div>
 
             {/* Favorite & Remembered Quick Toggle */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <button
                 onClick={() => toggleFavorite(currentLesson.id)}
-                className={`p-2.5 px-3 rounded-xl text-xs font-medium border transition flex items-center gap-1.5 ${
+                className={`p-2 px-3 rounded-md text-xs font-medium border transition flex items-center gap-1.5 ${
                   favoriteIds[currentLesson.id]
                     ? 'bg-amber-500/15 border-amber-500/40 text-amber-500'
                     : isLight
@@ -813,7 +813,7 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
                     })
                   );
                 }}
-                className="p-2.5 px-3.5 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1.5 transition cursor-pointer"
+                className="p-2 px-3 rounded-md text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1.5 transition cursor-pointer"
                 title="Hỏi Trợ Lý AI về bài học này"
               >
                 <i className="fa-solid fa-comment-dots" />
@@ -822,7 +822,7 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
 
               <button
                 onClick={() => toggleRemembered(currentLesson.id)}
-                className={`p-2.5 px-3.5 rounded-xl text-xs font-semibold border transition flex items-center gap-1.5 ${
+                className={`p-2 px-3 rounded-md text-xs font-semibold border transition flex items-center gap-1.5 ${
                   rememberedIds[currentLesson.id]
                     ? 'bg-emerald-600 border-emerald-500 text-white shadow-xs'
                     : isLight
@@ -929,8 +929,8 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
                 }
               }}
               disabled={fullIndex.findIndex((l) => l.id === currentLesson.id) <= 0}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold border transition disabled:opacity-30 ${
-                isLight ? 'bg-white border-slate-200 text-slate-700' : 'bg-slate-900 border-slate-800 text-slate-300'
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-md text-xs font-semibold border transition disabled:opacity-30 cursor-pointer ${
+                isLight ? 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50' : 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-850'
               }`}
             >
               <i className="fa-solid fa-chevron-left" /> Bài trước
@@ -944,7 +944,7 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
                 }
               }}
               disabled={fullIndex.findIndex((l) => l.id === currentLesson.id) >= fullIndex.length - 1}
-              className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs flex items-center gap-2 transition"
+              className="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs flex items-center gap-2 transition cursor-pointer"
             >
               <span>Bài tiếp theo</span>
               <i className="fa-solid fa-chevron-right" />

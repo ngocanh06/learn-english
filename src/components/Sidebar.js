@@ -42,26 +42,26 @@ export default function Sidebar({
           <div
             className={`flex items-center transition-all duration-200 border-b ${
               isMini
-                ? 'p-3.5 justify-center border-slate-200/80 dark:border-slate-800'
-                : 'p-4 px-5 justify-between border-slate-200/80 dark:border-slate-800'
+                ? 'p-3.5 justify-center border-slate-200 dark:border-slate-800'
+                : 'p-3.5 px-4 justify-between border-slate-200 dark:border-slate-800'
             }`}
           >
             <div
-              className={`flex items-center gap-3 cursor-pointer group ${isMini ? 'justify-center' : ''}`}
+              className={`flex items-center gap-2.5 cursor-pointer group ${isMini ? 'justify-center' : ''}`}
               onClick={() => {
                 onNavigate('dashboard');
                 if (isDrawer) setMobileOpen(false);
               }}
               title="Về Trang chủ Language Hub"
             >
-              <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-xs transition-transform group-hover:scale-105 shrink-0">
-                <i className="fa-solid fa-graduation-cap text-sm" />
+              <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white shrink-0">
+                <i className="fa-solid fa-graduation-cap text-xs" />
               </div>
 
               {!isMini && (
                 <div className="min-w-0">
                   <h1
-                    className={`text-sm font-extrabold tracking-tight leading-none truncate ${
+                    className={`text-sm font-bold tracking-tight leading-none truncate ${
                       isLight ? 'text-slate-900' : 'text-white'
                     }`}
                   >
@@ -78,7 +78,7 @@ export default function Sidebar({
             {!isDrawer && (
               <button
                 onClick={() => setCollapsed(!collapsed)}
-                className={`p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ${
+                className={`p-1.5 rounded-md text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ${
                   isMini ? 'hidden' : ''
                 }`}
                 title={collapsed ? 'Mở rộng' : 'Thu gọn'}
@@ -95,7 +95,7 @@ export default function Sidebar({
             {isDrawer && (
               <button
                 onClick={() => setMobileOpen(false)}
-                className="p-2 rounded-xl text-slate-400 hover:text-slate-200"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200"
               >
                 <i className="fa-solid fa-xmark text-sm" />
               </button>
@@ -103,9 +103,9 @@ export default function Sidebar({
           </div>
 
           {/* Navigation Items */}
-          <div className={`py-3 space-y-1 ${isMini ? 'px-2' : 'px-3'}`}>
+          <div className={`py-2 space-y-0.5 ${isMini ? 'px-2' : 'px-2.5'}`}>
             {!isMini && (
-              <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+              <div className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                 Menu
               </div>
             )}
@@ -124,11 +124,11 @@ export default function Sidebar({
                       onNavigate(item.id);
                       if (isDrawer) setMobileOpen(false);
                     }}
-                    className={`w-full flex items-center rounded-xl transition-all duration-200 relative ${
-                      isMini ? 'p-2.5 justify-center' : 'px-3 py-2.5 gap-3'
+                    className={`w-full flex items-center rounded-lg transition-colors duration-150 relative cursor-pointer ${
+                      isMini ? 'p-2 justify-center' : 'px-2.5 py-2 gap-2.5'
                     } ${
                       active
-                        ? 'bg-blue-600 text-white shadow-sm font-bold'
+                        ? 'bg-blue-600 text-white font-semibold'
                         : isLight
                         ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium'
                         : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 font-medium'
@@ -147,8 +147,8 @@ export default function Sidebar({
                     )}
 
                     {item.id === 'ai-coach' && overdueCount > 0 && !isMini && (
-                      <span className="px-1.5 py-0.5 rounded-md text-[10px] font-black bg-amber-500 text-slate-950 font-mono tracking-tight shrink-0 shadow-xs">
-                        {overdueCount} nợ
+                      <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-500 text-slate-950 font-mono tracking-tight shrink-0">
+                        {overdueCount}
                       </span>
                     )}
                   </button>
@@ -172,8 +172,8 @@ export default function Sidebar({
 
           {/* Dynamic Active Goal & Certificate Track Card */}
           {!isMini && (
-            <div className={`mx-3 my-2 p-3 rounded-xl border ${
-              isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-850/80 border-slate-800'
+            <div className={`mx-2.5 my-2 p-3 rounded-lg border ${
+              isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900 border-slate-800'
             }`}>
               <div className="flex items-center justify-between mb-1">
                 <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 truncate flex items-center gap-1.5">
@@ -184,7 +184,7 @@ export default function Sidebar({
                   {learningProfile?.targetScore || activeCert.defaultScore}
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 mb-2.5 leading-tight line-clamp-2">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 mb-2 leading-tight line-clamp-2">
                 {activeCert.description}
               </p>
               <div className="flex items-center gap-1.5">
@@ -199,7 +199,7 @@ export default function Sidebar({
                     }
                     if (isDrawer) setMobileOpen(false);
                   }}
-                  className="flex-1 py-1.5 px-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition text-center flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                  className="flex-1 py-1.5 px-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition text-center flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <span>Xem Lộ Trình</span>
                   <i className="fa-solid fa-arrow-right text-[10px]" />
@@ -209,7 +209,7 @@ export default function Sidebar({
                     onNavigate('ai-coach', { tab: 'my-plan' });
                     if (isDrawer) setMobileOpen(false);
                   }}
-                  className={`p-1.5 rounded-lg border text-xs transition cursor-pointer ${
+                  className={`p-1.5 rounded-md border text-xs transition cursor-pointer ${
                     isLight
                       ? 'border-slate-200 text-slate-600 hover:bg-slate-100'
                       : 'border-slate-700 text-slate-300 hover:bg-slate-800'
@@ -229,7 +229,7 @@ export default function Sidebar({
                   onNavigate('ielts-roadmap');
                   if (isDrawer) setMobileOpen(false);
                 }}
-                className="w-9 h-9 rounded-xl bg-blue-600/15 border border-blue-500/30 text-blue-500 hover:bg-blue-600 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer"
+                className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer"
                 title="Lộ Trình IELTS 7.0+ Du Học"
               >
                 <i className="fa-solid fa-plane-departure" />
@@ -239,27 +239,27 @@ export default function Sidebar({
 
           {/* Minimal Best Score Tag */}
           {bestScore && (
-            <div className={`my-2 ${isMini ? 'px-2 flex justify-center' : 'mx-3'}`}>
+            <div className={`my-2 ${isMini ? 'px-2 flex justify-center' : 'mx-2.5'}`}>
               {isMini ? (
                 <div
-                  className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-amber-500 flex items-center justify-center text-xs"
+                  className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-amber-500 flex items-center justify-center text-xs"
                   title={`Kỷ lục: ${bestScore} điểm`}
                 >
                   <i className="fa-solid fa-trophy" />
                 </div>
               ) : (
                 <div
-                  className={`p-3 rounded-xl border flex items-center justify-between ${
+                  className={`p-2.5 px-3 rounded-lg border flex items-center justify-between ${
                     isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900 border-slate-800'
                   }`}
                 >
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-2">
                     <i className="fa-solid fa-trophy text-amber-500 text-xs" />
                     <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                       Điểm cao nhất
                     </span>
                   </div>
-                  <span className="text-xs font-extrabold text-slate-900 dark:text-white">
+                  <span className="text-xs font-bold text-slate-900 dark:text-white font-mono">
                     {bestScore}
                   </span>
                 </div>
@@ -270,17 +270,17 @@ export default function Sidebar({
 
         {/* Bottom: Theme & Profile */}
         <div
-          className={`border-t space-y-2 ${
+          className={`border-t space-y-1.5 ${
             isMini
-              ? 'p-2 border-slate-200/80 dark:border-slate-800'
-              : 'p-3 border-slate-200/80 dark:border-slate-800'
+              ? 'p-2 border-slate-200 dark:border-slate-800'
+              : 'p-2.5 border-slate-200 dark:border-slate-800'
           }`}
         >
           {/* Mini mode expand button */}
           {isMini && !isDrawer && (
             <button
               onClick={() => setCollapsed(false)}
-              className="w-full p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center justify-center"
+              className="w-full p-2 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center justify-center cursor-pointer"
               title="Mở rộng"
             >
               <i className="fa-solid fa-chevron-right text-xs" />
@@ -290,8 +290,8 @@ export default function Sidebar({
           {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
-            className={`w-full flex items-center rounded-xl text-xs font-medium transition ${
-              isMini ? 'p-2.5 justify-center' : 'px-3 py-2 justify-between'
+            className={`w-full flex items-center rounded-lg text-xs font-medium transition cursor-pointer ${
+              isMini ? 'p-2 justify-center' : 'px-3 py-1.5 justify-between'
             } ${
               isLight
                 ? 'bg-slate-100/70 hover:bg-slate-100 text-slate-700'
@@ -299,7 +299,7 @@ export default function Sidebar({
             }`}
             title={isLight ? 'Giao diện Tối' : 'Giao diện Sáng'}
           >
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2">
               <i className={`fa-solid ${isLight ? 'fa-sun text-amber-500' : 'fa-moon text-blue-400'} text-xs`} />
               {!isMini && <span>{isLight ? 'Giao diện Sáng' : 'Giao diện Tối'}</span>}
             </div>
@@ -315,8 +315,8 @@ export default function Sidebar({
             <div className="relative">
               <button
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                className={`w-full flex items-center rounded-xl transition text-left ${
-                  isMini ? 'p-1.5 justify-center' : 'p-2 gap-2.5'
+                className={`w-full flex items-center rounded-lg transition text-left cursor-pointer ${
+                  isMini ? 'p-1 justify-center' : 'p-2 gap-2.5'
                 } ${
                   isLight
                     ? 'hover:bg-slate-100 text-slate-900'
@@ -327,7 +327,7 @@ export default function Sidebar({
                 <img
                   src={currentUser.avatar}
                   alt={currentUser.name}
-                  className="w-7 h-7 rounded-lg object-cover shrink-0"
+                  className="w-7 h-7 rounded-md object-cover shrink-0"
                 />
                 {!isMini && (
                   <>
@@ -347,13 +347,13 @@ export default function Sidebar({
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setUserDropdownOpen(false)} />
                   <div
-                    className={`absolute bottom-full mb-2 rounded-2xl border shadow-xl z-50 p-2 animate-fadeIn ${
+                    className={`absolute bottom-full mb-1.5 rounded-lg border shadow-lg z-50 p-1.5 animate-fadeIn ${
                       isMini ? 'left-full ml-2 w-52' : 'left-0 w-full'
                     } ${
                       isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
                     }`}
                   >
-                    <div className="p-2 border-b border-slate-200/80 dark:border-slate-800 mb-1">
+                    <div className="p-2 border-b border-slate-200 dark:border-slate-800 mb-1">
                       <p className="text-xs font-bold truncate">{currentUser.name}</p>
                       <p className="text-[10px] text-slate-400 truncate">
                         {currentUser.username ? <span className="text-blue-500 font-bold">@{currentUser.username} • </span> : null}
@@ -367,9 +367,9 @@ export default function Sidebar({
                         setUserProfileModalOpen(true);
                         if (isDrawer) setMobileOpen(false);
                       }}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
                     >
-                      <i className="fa-solid fa-user-gear text-blue-500" />
+                      <i className="fa-solid fa-user-gear text-blue-500 text-xs" />
                       Hồ Sơ & Mục Tiêu
                     </button>
 
@@ -379,9 +379,9 @@ export default function Sidebar({
                         logout();
                         if (isDrawer) setMobileOpen(false);
                       }}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition"
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-medium text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition cursor-pointer"
                     >
-                      <i className="fa-solid fa-right-from-bracket" />
+                      <i className="fa-solid fa-right-from-bracket text-xs" />
                       Đăng Xuất
                     </button>
                   </div>
@@ -395,8 +395,8 @@ export default function Sidebar({
                   openLogin();
                   if (isDrawer) setMobileOpen(false);
                 }}
-                className={`w-full rounded-xl text-xs font-bold border transition flex items-center justify-center gap-2 ${
-                  isMini ? 'p-2' : 'py-2 px-3'
+                className={`w-full rounded-lg text-xs font-semibold border transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                  isMini ? 'p-2' : 'py-1.5 px-3'
                 } ${
                   isLight
                     ? 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
@@ -414,7 +414,7 @@ export default function Sidebar({
                     openRegister();
                     if (isDrawer) setMobileOpen(false);
                   }}
-                  className="w-full py-2 px-3 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white transition flex items-center justify-center gap-2"
+                  className="w-full py-1.5 px-3 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white transition flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <i className="fa-solid fa-user-plus text-xs" />
                   Đăng Ký
@@ -436,7 +436,7 @@ export default function Sidebar({
         } ${
           isLight
             ? 'bg-white border-slate-200'
-            : 'bg-slate-950 border-slate-800'
+            : 'bg-[#0b0f19] border-slate-800'
         }`}
       >
         {renderNav(false)}
@@ -446,12 +446,12 @@ export default function Sidebar({
       {mobileOpen && (
         <div className="lg:hidden fixed inset-0 z-50 flex">
           <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm animate-fadeIn"
+            className="fixed inset-0 bg-black/50 transition-opacity"
             onClick={() => setMobileOpen(false)}
           />
           <aside
-            className={`relative w-72 max-w-[85vw] h-full shadow-2xl border-r z-10 animate-slideRight ${
-              isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-950 border-slate-800 text-white'
+            className={`relative w-72 max-w-[85vw] h-full shadow-lg border-r z-10 animate-slideRight ${
+              isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-[#0b0f19] border-slate-800 text-white'
             }`}
           >
             {renderNav(true)}

@@ -1,3 +1,5 @@
+import { IELTS_LISTENING_LESSONS } from '../data/dailyDictation3Tracks.js';
+
 // ─── DAILY DICTATION PROGRESS UTILITIES ───
 // Centralized helper for checking, syncing, and auto-completing DailyDictation 3-track combo tasks.
 
@@ -37,10 +39,21 @@ export const isDiamondLesson = (lessonId) => {
 };
 
 /**
+ * Helper to get the human-friendly title of an IELTS listening lesson.
+ */
+export const getIeltsLessonTitle = (lessonNum) => {
+  const num = parseInt(lessonNum, 10);
+  if (isNaN(num) || num <= 0) return 'Bài 1. Student Accommodation Registration';
+  const found = (IELTS_LISTENING_LESSONS || []).find((l) => l.num === num);
+  if (found) return `Bài ${num}. ${found.title}`;
+  return `Bài ${num}. IELTS Daily Social Context`;
+};
+
+/**
  * Checks if a specific dictation lesson is completed/starred.
  * Diamond lessons require PRO upgrade and are NEVER auto-completed.
  *
- * @param {string} lessonId - e.g. 'ss-81', 'cv-68', 'tc-38'
+ * @param {string} lessonId - e.g. 'ss-81', 'cv-68', 'tc-38', 'ielts-1'
  * @param {Object} dictationStars - the user's stored star overrides
  * @returns {boolean}
  */
@@ -73,18 +86,23 @@ export const isLessonStarred = (lessonId, dictationStars = {}) => {
     const num = parseInt(lessonId.replace('st-', ''), 10);
     return !isNaN(num) && num <= 30;
   }
+  if (lessonId.startsWith('ielts-')) {
+    return false;
+  }
 
   return false;
 };
 
 /**
  * Evaluates the completion of the 3 DailyDictation tracks assigned to a specific day.
+ * Includes Short Stories, Conversations, and IELTS Listening.
  *
- * @param {Object} dailyDictationPlan - object from UNIFIED_MASTER_DAYS with shortStories, conversations, toeicListening
+ * @param {Object} dailyDictationPlan - object from UNIFIED_MASTER_DAYS with shortStories, conversations, toeicListening, ieltsListening
  * @param {Object} dictationStars - current dictationStars storage
+ * @param {number|string} dayNum - the current day number (defaults to 1)
  * @returns {{ isAllDone: boolean, doneCount: number, totalTracks: number, tracks: Array }}
  */
-export const getDayDictationStatus = (dailyDictationPlan, dictationStars = {}) => {
+export const getDayDictationStatus = (dailyDictationPlan, dictationStars = {}, dayNum = 1) => {
   if (!dailyDictationPlan) {
     return { isAllDone: false, doneCount: 0, totalTracks: 3, tracks: [] };
   }
@@ -92,18 +110,25 @@ export const getDayDictationStatus = (dailyDictationPlan, dictationStars = {}) =
   const ssNum = dailyDictationPlan.shortStories?.match(/\d+/)?.[0] || '81';
   const cvNum = dailyDictationPlan.conversations?.match(/\d+/)?.[0] || '68';
   const tcNum = dailyDictationPlan.toeicListening?.match(/\d+/)?.[0] || '38';
+  const ieltsNum = dailyDictationPlan.ieltsListening?.match(/\d+/)?.[0] || String(((Number(dayNum || 1) - 1) % 360) + 1);
 
   const ssId = `ss-${ssNum}`;
   const cvId = `cv-${cvNum}`;
   const isShortTalk = /Short Talk/i.test(dailyDictationPlan.toeicListening || '');
   const tcId = isShortTalk ? `st-${tcNum}` : `tc-${tcNum}`;
+  const ieltsId = `ielts-${ieltsNum}`;
 
   const ssDone = isLessonStarred(ssId, dictationStars);
   const cvDone = isLessonStarred(cvId, dictationStars);
   const tcDone = isLessonStarred(tcId, dictationStars);
+  const ieltsDone = isLessonStarred(ieltsId, dictationStars);
 
-  const doneCount = [ssDone, cvDone, tcDone].filter(Boolean).length;
+  // 3 core Daily Dictation tracks: Short Stories + Conversations + IELTS Listening
+  const coreTracks = [ssDone, cvDone, ieltsDone];
+  const doneCount = coreTracks.filter(Boolean).length;
   const isAllDone = doneCount === 3;
+
+  const ieltsLessonTitle = dailyDictationPlan.ieltsListening || getIeltsLessonTitle(ieltsNum);
 
   return {
     isAllDone,
@@ -129,6 +154,16 @@ export const getDayDictationStatus = (dailyDictationPlan, dictationStars = {}) =
         isDone: cvDone,
         icon: 'fa-comments',
         color: 'bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 border-indigo-300 dark:border-indigo-800',
+      },
+      {
+        id: ieltsId,
+        type: 'ielts-listening',
+        num: ieltsNum,
+        name: 'IELTS Listening',
+        lesson: ieltsLessonTitle,
+        isDone: ieltsDone,
+        icon: 'fa-earth-americas',
+        color: 'bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-800',
       },
       {
         id: tcId,

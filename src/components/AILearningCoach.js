@@ -32,6 +32,7 @@ import {
 
 export default function AILearningCoach({
   initialTab,
+  initialTrack,
   initialDateKey,
   initialDay,
   initialViewMode,
@@ -71,8 +72,15 @@ export default function AILearningCoach({
   // Selected skill filter for 45-day roadmap
   const [selectedSkillFilter, setSelectedSkillFilter] = useState('ALL');
 
-  // Active DailyDictation Sub-Track: 'short-stories' | 'conversations' | 'toeic-listening'
-  const [activeDictationSubTrack, setActiveDictationSubTrack] = useState('short-stories');
+  // Active DailyDictation Sub-Track: 'short-stories' | 'conversations' | 'toeic-listening' | 'ielts-listening'
+  const [activeDictationSubTrack, setActiveDictationSubTrack] = useState(() => initialTrack || 'short-stories');
+
+  useEffect(() => {
+    if (initialTrack) {
+      setActiveDictationSubTrack(initialTrack);
+    }
+  }, [initialTrack]);
+
   const [dictationSectionFilter, setDictationSectionFilter] = useState('all'); // 'all' | 'active' | sectionId
   const [dictationSearchQuery, setDictationSearchQuery] = useState('');
   const [dictationStatusFilter, setDictationStatusFilter] = useState('all'); // 'all' | 'todo' | 'completed'
@@ -292,44 +300,44 @@ export default function AILearningCoach({
 
   return (
     <div className="flex flex-col gap-6 max-w-7xl mx-auto pb-16 font-sans">
-      {/* ─── 1. TOP HERO DASHBOARD (Clean, Elegant & Cohesive Style like ReadingHub) ─── */}
+      {/* ─── 1. TOP HERO DASHBOARD ─── */}
       <div
-        className={`p-6 md:p-8 rounded-3xl border transition-all ${
+        className={`p-5 md:p-6 rounded-lg border transition-colors ${
           isLight
-            ? 'bg-white border-slate-200/90 text-slate-900 shadow-sm'
-            : 'bg-slate-900 border-slate-800 text-white shadow-xl'
+            ? 'bg-white border-slate-200 text-slate-900'
+            : 'bg-[#111827] border-slate-800 text-slate-100'
         }`}
       >
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
           {/* Left: User Title & Info */}
-          <div className="space-y-3 max-w-xl">
+          <div className="space-y-2 max-w-xl">
             <div className="flex items-center gap-2 flex-wrap">
               <span
-                className={`inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider border ${
+                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-semibold uppercase tracking-wider border ${
                   isLight
-                    ? 'bg-blue-50 border-blue-200/80 text-blue-700'
-                    : 'bg-blue-950/40 border-blue-800/60 text-blue-300'
+                    ? 'bg-blue-50 border-blue-200 text-blue-700'
+                    : 'bg-blue-950/40 border-blue-800 text-blue-300'
                 }`}
               >
                 <i className="fa-solid fa-graduation-cap text-blue-500" />
-                Lộ Trình Thành Thạo Toàn Diện 4 Kỹ Năng • A1 ➔ C1
+                Lộ Trình Toàn Diện 4 Kỹ Năng • A1 ➔ C1
               </span>
-              <span className="text-xs font-mono font-bold text-slate-400">
+              <span className="text-xs font-mono font-medium text-slate-400">
                 01/09/2026
               </span>
               <button
                 type="button"
                 onClick={() => setActiveTab('ielts-roadmap')}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-amber-500 to-rose-600 text-white shadow-xs hover:scale-105 transition-transform cursor-pointer ml-auto sm:ml-0"
+                className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-semibold bg-rose-600 hover:bg-rose-700 text-white transition-colors cursor-pointer ml-auto sm:ml-0"
                 title="Chuyển sang Lộ Trình Luyện Thi IELTS Academic 7.0+ Du Học"
               >
                 <i className="fa-solid fa-plane-departure text-[10px]" />
-                <span>Mục Tiêu Du Học: IELTS 7.0+ ✈️</span>
+                <span>Mục Tiêu Du Học: IELTS 7.0+</span>
               </button>
             </div>
 
-            <h1 className="text-2xl md:text-3xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
-              Kế Hoạch & Lộ Trình Học Tập
+            <h1 className="text-xl md:text-2xl font-bold tracking-tight text-slate-900 dark:text-white leading-tight">
+              Kế Hoạch &amp; Lộ Trình Học Tập
             </h1>
 
             <p className="text-slate-600 dark:text-slate-400 text-xs md:text-sm leading-relaxed">
@@ -398,152 +406,151 @@ export default function AILearningCoach({
             </div>
           </div>
 
-          {/* Right: 3 Sleek Clean Stat Cards */}
-          <div className="grid grid-cols-3 gap-3 shrink-0">
+          {/* Right: 3 Stat Cards */}
+          <div className="grid grid-cols-3 gap-2.5 shrink-0">
             {/* Card 1: Streak */}
             <div
-              className={`p-4 rounded-2xl border text-center transition ${
+              className={`p-3 rounded-lg border text-center transition ${
                 isLight
-                  ? 'bg-slate-50/70 border-slate-200/80 hover:bg-slate-50'
-                  : 'bg-slate-800/40 border-slate-800 hover:bg-slate-800'
+                  ? 'bg-slate-50 border-slate-200'
+                  : 'bg-slate-900 border-slate-800'
               }`}
             >
-              <div className="flex items-center justify-center gap-1.5 text-xs font-extrabold text-amber-500 uppercase tracking-wider mb-1">
+              <div className="flex items-center justify-center gap-1 text-[11px] font-bold text-amber-500 uppercase tracking-wider mb-0.5">
                 <i className="fa-solid fa-fire text-amber-500 text-xs" />
                 <span>Chuỗi</span>
               </div>
-              <div className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white font-mono">
+              <div className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white font-mono">
                 {studyStreak.count || 0}
               </div>
-              <span className="text-[10px] text-slate-400 font-medium block mt-0.5">ngày liên tục</span>
+              <span className="text-[10px] text-slate-400 block">ngày liên tục</span>
             </div>
 
             {/* Card 2: Time Today */}
             <div
-              className={`p-4 rounded-2xl border text-center transition ${
+              className={`p-3 rounded-lg border text-center transition ${
                 isLight
-                  ? 'bg-slate-50/70 border-slate-200/80 hover:bg-slate-50'
-                  : 'bg-slate-800/40 border-slate-800 hover:bg-slate-800'
+                  ? 'bg-slate-50 border-slate-200'
+                  : 'bg-slate-900 border-slate-800'
               }`}
             >
-              <div className="flex items-center justify-center gap-1.5 text-xs font-extrabold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1">
+              <div className="flex items-center justify-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-0.5">
                 <i className="fa-solid fa-clock text-emerald-500 text-xs" />
                 <span>Hôm Nay</span>
               </div>
-              <div className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white font-mono">
+              <div className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white font-mono">
                 {studyMinutesToday || 0}
-                <span className="text-xs font-sans text-slate-400 font-medium">/{userGoal.dailyMinutes}m</span>
+                <span className="text-xs font-sans text-slate-400 font-normal">/{userGoal.dailyMinutes}m</span>
               </div>
-              <span className="text-[10px] text-slate-400 font-medium block mt-0.5">thời gian học</span>
+              <span className="text-[10px] text-slate-400 block">thời gian học</span>
             </div>
 
             {/* Card 3: Overall Readiness */}
             <div
-              className={`p-4 rounded-2xl border text-center transition ${
+              className={`p-3 rounded-lg border text-center transition ${
                 isLight
-                  ? 'bg-slate-50/70 border-slate-200/80 hover:bg-slate-50'
-                  : 'bg-slate-800/40 border-slate-800 hover:bg-slate-800'
+                  ? 'bg-slate-50 border-slate-200'
+                  : 'bg-slate-900 border-slate-800'
               }`}
             >
-              <div className="flex items-center justify-center gap-1.5 text-xs font-extrabold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-1">
+              <div className="flex items-center justify-center gap-1 text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-0.5">
                 <i className="fa-solid fa-bullseye text-blue-500 text-xs" />
                 <span>Tiến Độ</span>
               </div>
-              <div className="text-2xl md:text-3xl font-black text-blue-600 dark:text-blue-400 font-mono">
+              <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-400 font-mono">
                 {readinessMetrics.overallReadiness}%
               </div>
-              <span className="text-[10px] text-slate-400 font-medium block mt-0.5">mục tiêu sẵn sàng</span>
+              <span className="text-[10px] text-slate-400 block">mục tiêu sẵn sàng</span>
             </div>
           </div>
         </div>
 
         {/* Bottom Section: 4 Pillar Mini Chips + Progress Bar */}
-        <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800 space-y-3">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="mt-4 pt-3.5 border-t border-slate-100 dark:border-slate-800 space-y-2.5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
             {/* 4 Micro Chips */}
             <div className="flex items-center gap-2 flex-wrap text-xs">
               <span
-                className={`px-3 py-1 rounded-xl border font-medium flex items-center gap-1.5 ${
-                  isLight ? 'bg-slate-50 border-slate-200 text-slate-700' : 'bg-slate-800/60 border-slate-700 text-slate-300'
+                className={`px-2.5 py-1 rounded-md border font-medium flex items-center gap-1.5 ${
+                  isLight ? 'bg-slate-50 border-slate-200 text-slate-700' : 'bg-slate-850 border-slate-700 text-slate-300'
                 }`}
               >
                 <i className="fa-solid fa-graduation-cap text-amber-500" />
                 <strong className="text-slate-900 dark:text-white font-mono">{readinessMetrics.grammarCount}/115</strong> Ngữ pháp
               </span>
               <span
-                className={`px-3 py-1 rounded-xl border font-medium flex items-center gap-1.5 ${
-                  isLight ? 'bg-slate-50 border-slate-200 text-slate-700' : 'bg-slate-800/60 border-slate-700 text-slate-300'
+                className={`px-2.5 py-1 rounded-md border font-medium flex items-center gap-1.5 ${
+                  isLight ? 'bg-slate-50 border-slate-200 text-slate-700' : 'bg-slate-850 border-slate-700 text-slate-300'
                 }`}
               >
                 <i className="fa-solid fa-book-bookmark text-purple-500" />
                 <strong className="text-slate-900 dark:text-white font-mono">{readinessMetrics.vocabCount}</strong> Từ vựng
               </span>
               <span
-                className={`px-3 py-1 rounded-xl border font-medium flex items-center gap-1.5 ${
-                  isLight ? 'bg-slate-50 border-slate-200 text-slate-700' : 'bg-slate-800/60 border-slate-700 text-slate-300'
+                className={`px-2.5 py-1 rounded-md border font-medium flex items-center gap-1.5 ${
+                  isLight ? 'bg-slate-50 border-slate-200 text-slate-700' : 'bg-slate-850 border-slate-700 text-slate-300'
                 }`}
               >
                 <i className="fa-solid fa-headphones text-cyan-500" />
                 <strong className="text-slate-900 dark:text-white font-mono">{readinessMetrics.ddStarsCount}</strong> Bài nghe đã xong
               </span>
               <span
-                className={`px-3 py-1 rounded-xl border font-medium flex items-center gap-1.5 ${
-                  isLight ? 'bg-slate-50 border-slate-200 text-slate-700' : 'bg-slate-800/60 border-slate-700 text-slate-300'
+                className={`px-2.5 py-1 rounded-md border font-medium flex items-center gap-1.5 ${
+                  isLight ? 'bg-slate-50 border-slate-200 text-slate-700' : 'bg-slate-850 border-slate-700 text-slate-300'
                 }`}
               >
                 <i className="fa-solid fa-graduation-cap text-indigo-500" />
-                <strong className="text-slate-900 dark:text-white font-mono">24 Tuần</strong> Lộ Trình IELTS 7.0+
+                <strong className="text-slate-900 dark:text-white font-mono">24 Tuần</strong> IELTS 7.0+
               </span>
             </div>
 
-            <span className="text-xs font-mono font-bold text-slate-500">
-              Tổng thể: <strong className="text-blue-600 dark:text-blue-400">{readinessMetrics.overallReadiness}%</strong>
+            <span className="text-xs font-mono font-medium text-slate-500">
+              Tổng thể: <strong className="text-blue-600 dark:text-blue-400 font-bold">{readinessMetrics.overallReadiness}%</strong>
             </span>
           </div>
 
           {/* Clean Progress Bar */}
-          <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+          <div className="w-full h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
             <div
-              className="h-full rounded-full bg-blue-600 transition-all duration-500"
+              className="h-full rounded-full bg-blue-600 transition-all duration-300"
               style={{ width: `${Math.max(6, readinessMetrics.overallReadiness)}%` }}
             />
           </div>
         </div>
       </div>
 
-      {/* ─── TABS NAVIGATION (Clean Segmented Pills) ─── */}
-      <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 w-fit overflow-x-auto scrollbar-hide">
+      {/* ─── TABS NAVIGATION (Clean Segmented Bar) ─── */}
+      <div className="flex items-center gap-1 p-1 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-fit max-w-full overflow-x-auto scrollbar-hide">
         {[
           {
             id: 'my-plan',
-            label: '🎯 Kế Hoạch Cá Nhân Hóa (Adaptive Engine)',
+            label: 'Kế Hoạch Cá Nhân Hóa',
             icon: 'fa-compass-drafting',
-            badge: 'Tự Động Tính Toán',
           },
           learningProfile?.certification === 'toeic'
-            ? { id: 'study4-toeic', label: 'Lộ Trình Đề Thi TOEIC (ETS Study4) 🎯', icon: 'fa-table-list', badge: 'Chi Tiết Buổi' }
+            ? { id: 'study4-toeic', label: 'Lộ Trình Đề Thi TOEIC (Study4)', icon: 'fa-table-list', badge: '10 Đề' }
             : learningProfile?.certification === 'none'
-            ? { id: 'master-roadmap', label: 'Lộ Trình Nền Tảng 5 Kỹ Năng 🌿', icon: 'fa-layer-group', badge: 'Nền Tảng' }
-            : { id: 'ielts-roadmap', label: 'Lộ Trình IELTS Cambridge ✈️', icon: 'fa-plane-departure', badge: 'Cambridge' },
-          { id: 'calendar-view', label: 'Thời Khóa Biểu (Lịch Học Ngày / Tuần)', icon: 'fa-calendar-days' },
+            ? { id: 'master-roadmap', label: 'Lộ Trình Nền Tảng 5 Kỹ Năng', icon: 'fa-layer-group', badge: 'Cơ Bản' }
+            : { id: 'ielts-roadmap', label: 'Lộ Trình IELTS Cambridge', icon: 'fa-plane-departure', badge: 'Cam 12-19' },
+          { id: 'calendar-view', label: 'Thời Khóa Biểu', icon: 'fa-calendar-days' },
           { id: 'dailydictation', label: 'DailyDictation (Luyện Nghe)', icon: 'fa-headphones' },
-          { id: 'writing-studio', label: 'Luyện Dịch Câu (Writing Studio)', icon: 'fa-pen-nib' },
+          { id: 'writing-studio', label: 'Luyện Dịch Câu (Writing)', icon: 'fa-pen-nib' },
         ].map((tab) => {
           const active = activeTab === tab.id;
           return (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap select-none cursor-pointer ${
+              className={`px-3 py-2 rounded-md text-xs font-semibold transition-colors flex items-center gap-2 whitespace-nowrap select-none cursor-pointer ${
                 active
-                  ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm border border-slate-200/60 dark:border-slate-700'
+                  ? 'bg-white dark:bg-[#111827] text-blue-600 dark:text-blue-400 border border-slate-200 dark:border-slate-700'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               <i className={`fa-solid ${tab.icon} text-xs ${active ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}`} />
               <span>{tab.label}</span>
               {tab.badge && (
-                <span className="px-1.5 py-0.5 rounded-md text-[9px] font-black bg-gradient-to-r from-blue-600 to-indigo-600 text-white leading-none">
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300 leading-none">
                   {tab.badge}
                 </span>
               )}

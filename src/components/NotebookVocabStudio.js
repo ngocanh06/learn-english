@@ -62,18 +62,18 @@ export default function NotebookVocabStudio({
   }, [completedCalendarTasks, vocabDayCompleted, dateKey, dayState]);
 
   return (
-    <div className={`p-6 md:p-8 rounded-3xl border space-y-6 shadow-sm ${
+    <div className={`p-5 md:p-6 rounded-lg border space-y-6 shadow-xs ${
       isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
     }`}>
       {/* ─── TOP BAR: TITLE, STATS & COMPLETION BUTTON ──────────────────────── */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-500 flex items-center justify-center text-sm font-bold">
+            <span className="w-7 h-7 rounded-md bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xs font-bold">
               <i className="fa-solid fa-book-bookmark" />
             </span>
-            <h2 className="text-xl md:text-2xl font-black">Sổ Tay Từ Vựng Của Bạn</h2>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30">
+            <h2 className="text-lg md:text-xl font-bold">Sổ Tay Từ Vựng Của Bạn</h2>
+            <span className="px-2 py-0.5 rounded-md text-xs font-semibold bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
               {savedVocab.length} từ vựng
             </span>
           </div>

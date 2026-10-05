@@ -75,24 +75,24 @@ function EventEditModal({ row, onClose, onSaveRow, isLight }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={onClose}>
       <form onSubmit={handleSave} onClick={e => e.stopPropagation()}
-        className={`w-full max-w-2xl rounded-3xl p-6 shadow-2xl border transition-all max-h-[90vh] overflow-y-auto ${isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
+        className={`w-full max-w-2xl rounded-xl p-5 md:p-6 shadow-lg border transition-all max-h-[90vh] overflow-y-auto ${isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
           }`}>
 
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4 mb-4">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-black text-xl shadow-lg">
+            <div className="w-10 h-10 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-lg">
               {row.date.split('/')[0]}
             </div>
             <div>
-              <h3 className="font-black text-xl">{row.dow}, Ngày {row.date}</h3>
-              <p className="text-xs text-indigo-500 dark:text-indigo-400 font-bold">Chỉnh sửa nội dung học & Trạng thái</p>
+              <h3 className="font-bold text-lg">{row.dow}, Ngày {row.date}</h3>
+              <p className="text-xs text-blue-600 dark:text-blue-400 font-medium">Chỉnh sửa nội dung học & Trạng thái</p>
             </div>
           </div>
-          <button type="button" onClick={onClose} className="p-2 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
-            <i className="fa-solid fa-xmark text-xl" />
+          <button type="button" onClick={onClose} className="p-1.5 rounded-md text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+            <i className="fa-solid fa-xmark text-lg" />
           </button>
         </div>
 
@@ -417,7 +417,7 @@ export default function StudySchedule({ theme }) {
 
       {/* ─── 1. GOOGLE CALENDAR MONTH VIEW ─────────────────────────────────────── */}
       {viewMode === 'calendar' && (
-        <div className={`border rounded-3xl overflow-hidden shadow-xl ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
+        <div className={`border rounded-lg overflow-hidden shadow-xs ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
           }`}>
           {/* Month Header */}
           <div className={`p-4 border-b flex items-center justify-between flex-wrap gap-2 ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-800/80 border-slate-700'
@@ -526,11 +526,11 @@ export default function StudySchedule({ theme }) {
 
               return (
                 <div key={item.dateFormatted} onClick={() => row && setEditingRow(row)}
-                  className={`p-4 rounded-3xl border transition-all cursor-pointer flex flex-col justify-between min-h-[240px] ${today
-                    ? 'bg-indigo-600 text-white shadow-xl ring-2 ring-indigo-400'
+                  className={`p-3.5 rounded-lg border transition-all cursor-pointer flex flex-col justify-between min-h-[220px] ${today
+                    ? 'bg-blue-600 text-white shadow-sm ring-1 ring-blue-400'
                     : isLight
-                      ? 'bg-white border-slate-200 hover:border-indigo-400 text-slate-900 shadow-sm'
-                      : 'bg-slate-900 border-slate-800 hover:border-indigo-500 text-white'
+                      ? 'bg-white border-slate-200 hover:border-slate-300 text-slate-900 shadow-xs'
+                      : 'bg-slate-900 border-slate-800 hover:border-slate-700 text-white'
                     }`}>
                   <div>
                     <div className="flex items-center justify-between border-b border-black/10 dark:border-white/10 pb-2 mb-3">
@@ -607,25 +607,25 @@ export default function StudySchedule({ theme }) {
           </div>
 
           {activeDayRow && (
-            <div className={`p-6 md:p-8 rounded-3xl border shadow-xl flex flex-col gap-6 ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
+            <div className={`p-5 md:p-6 rounded-lg border shadow-xs flex flex-col gap-6 ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
               }`}>
               <div className="flex items-center justify-between flex-wrap gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
                 <div>
-                  <span className="text-xs text-indigo-500 font-bold uppercase tracking-wider">
+                  <span className="text-xs text-blue-600 dark:text-blue-400 font-bold uppercase tracking-wider">
                     {activeDayRow.dow} {isToday(activeDayRow.date) && <span className="bg-amber-500 text-slate-900 px-2 py-0.5 rounded font-black ml-2">Hôm nay</span>}
                   </span>
-                  <h2 className={`text-3xl md:text-4xl font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>{activeDayRow.date}</h2>
+                  <h2 className={`text-2xl md:text-3xl font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>{activeDayRow.date}</h2>
                 </div>
 
                 <div className="flex items-center gap-2">
                   <button onClick={() => toggleRowStatusQuick(activeDayRow.id)}
-                    className={`px-4 py-2.5 rounded-2xl font-bold text-sm shadow transition flex items-center gap-2 ${activeDayRow.status === 'Complete' ? 'bg-emerald-600 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                    className={`px-3.5 py-2 rounded-md font-bold text-xs shadow-xs transition flex items-center gap-2 ${activeDayRow.status === 'Complete' ? 'bg-emerald-600 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
                       }`}>
                     <i className={`fa-solid ${activeDayRow.status === 'Complete' ? 'fa-circle-check' : 'fa-circle-dot'}`} />
                     {activeDayRow.status === 'Complete' ? 'Đã hoàn thành' : 'Đánh dấu hoàn thành'}
                   </button>
                   <button onClick={() => setEditingRow(activeDayRow)}
-                    className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-sm shadow flex items-center gap-2">
+                    className="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-bold text-xs shadow-xs flex items-center gap-2">
                     <i className="fa-solid fa-pen-to-square" /> Sửa
                   </button>
                 </div>
@@ -677,7 +677,7 @@ export default function StudySchedule({ theme }) {
             </div>
           </div>
 
-          <div className={`overflow-x-auto rounded-3xl border shadow-xl ${isLight ? 'bg-white border-slate-200' : 'bg-[#0b0f19] border-slate-800'
+          <div className={`overflow-x-auto rounded-lg border shadow-xs ${isLight ? 'bg-white border-slate-200' : 'bg-[#0b0f19] border-slate-800'
             }`}>
             <table className="w-full text-sm border-collapse" style={{ minWidth: 1200 }}>
               <thead>
