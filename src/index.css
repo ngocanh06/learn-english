@@ -10,6 +10,26 @@
   font-family: 'Lora', 'Times New Roman', Times, serif !important;
 }
 
+/* Mobile Safe Area Top Inset Support (prevents phone clock and status bar from overlapping header) */
+.pt-safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+@media all and (display-mode: standalone) {
+  .pt-safe-top {
+    padding-top: max(env(safe-area-inset-top, 0px), 46px);
+  }
+}
+
+/* Standalone iOS web app fallback */
+@supports (-webkit-touch-callout: none) {
+  @media all and (display-mode: standalone) {
+    .pt-safe-top {
+      padding-top: max(env(safe-area-inset-top, 0px), 48px);
+    }
+  }
+}
+
 /* ─── MINIMALIST ELEGANT DESIGN SYSTEM ────────────────────────────────────────── */
 :root, .dark {
   --bg-page: #0b0f19;

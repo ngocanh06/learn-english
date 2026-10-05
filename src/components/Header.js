@@ -20,24 +20,37 @@ export default function Header({
 
   return (
     <header
-      style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
-      className={`lg:hidden sticky top-0 z-30 border-b select-none transition-colors duration-200 ${
+      className={`lg:hidden sticky top-0 z-30 border-b select-none transition-colors duration-200 pt-safe-top ${
         isLight
-          ? 'bg-white border-slate-200'
-          : 'bg-[#0b0f19] border-slate-800'
+          ? 'bg-white/95 backdrop-blur-md border-slate-200 shadow-2xs'
+          : 'bg-[#0b0f19]/95 backdrop-blur-md border-slate-800'
       }`}
     >
-      <div className="flex items-center justify-between h-14 px-4 gap-2">
-        {/* Left: Tab Icon & Page Title */}
-        <div className="flex items-center gap-2.5 min-w-0">
+      <div className="flex items-center justify-between h-14 px-3 sm:px-4 gap-2">
+        {/* Left: Hamburger Drawer Menu & Tab Info */}
+        <div className="flex items-center gap-2 min-w-0">
+          <button
+            type="button"
+            onClick={() => setMobileOpen(true)}
+            className={`w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 cursor-pointer transition-colors active:scale-95 ${
+              isLight
+                ? 'bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700'
+                : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-200'
+            }`}
+            title="Mở Menu Lộ Trình & Chức Năng"
+            aria-label="Mở menu"
+          >
+            <i className="fa-solid fa-bars text-sm" />
+          </button>
+
           <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white shrink-0">
             <i className={`fa-solid ${currentItem.icon} text-xs`} />
           </div>
           <div className="min-w-0">
-            <h1 className="text-sm font-bold truncate leading-tight">
+            <h1 className="text-xs sm:text-sm font-bold truncate leading-tight">
               {currentItem.label}
             </h1>
-            <p className="text-[11px] text-slate-400 font-medium truncate leading-tight">
+            <p className="text-[10px] text-slate-400 font-medium truncate leading-tight">
               Language Hub
             </p>
           </div>
