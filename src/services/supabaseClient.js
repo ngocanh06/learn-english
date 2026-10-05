@@ -23,6 +23,9 @@ let supabaseInstance = null;
 let currentConfiguredUrl = '';
 let currentConfiguredKey = '';
 
+const DEFAULT_SUPABASE_URL = 'https://nusumevfcubseogepitv.supabase.co';
+const DEFAULT_SUPABASE_ANON_KEY = 'sb_publishable_tJJ9dkiY2bZMLFQQ8s90fw_RVm6kf4U';
+
 export function normalizeSupabaseUrl(rawUrl) {
   if (!rawUrl) return '';
   let clean = rawUrl.trim();
@@ -38,13 +41,13 @@ export function getSupabaseCredentials() {
   const localUrl = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_URL_KEY) || '' : '';
   const localKey = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_ANON_KEY) || '' : '';
 
-  const finalUrl = normalizeSupabaseUrl(localUrl || envUrl);
-  const finalKey = (localKey || envKey).trim();
+  const finalUrl = normalizeSupabaseUrl(localUrl || envUrl || DEFAULT_SUPABASE_URL);
+  const finalKey = (localKey || envKey || DEFAULT_SUPABASE_ANON_KEY).trim();
 
   return {
     url: finalUrl,
     anonKey: finalKey,
-    isEnv: Boolean(!localUrl && envUrl),
+    isEnv: Boolean(!localUrl && (envUrl || DEFAULT_SUPABASE_URL)),
   };
 }
 
@@ -140,6 +143,39 @@ export function syncKeyToSupabase(userId, baseKey, value) {
 }
 
 /**
+ * Merge two mastery objects keeping the highest level and latest progress
+ */
+function mergeMasteryObjects(localVal, remoteVal) {
+  if (!localVal && !remoteVal) return {};
+  if (!localVal) return remoteVal;
+  if (!remoteVal) return localVal;
+
+  const merged = { ...localVal };
+  for (const [k, rItem] of Object.entries(remoteVal)) {
+    if (!merged[k]) {
+      merged[k] = rItem;
+    } else {
+      const lItem = merged[k];
+      if (typeof lItem === 'object' && typeof rItem === 'object') {
+        const higherLevel = Math.max(lItem.level || 1, rItem.level || 1);
+        const maxStreak = Math.max(lItem.correctStreak || 0, rItem.correctStreak || 0);
+        const lastReview = Math.max(lItem.lastReview || 0, rItem.lastReview || 0);
+        merged[k] = {
+          ...lItem,
+          ...rItem,
+          level: higherLevel,
+          correctStreak: maxStreak,
+          lastReview,
+        };
+      } else {
+        merged[k] = rItem || lItem;
+      }
+    }
+  }
+  return merged;
+}
+
+/**
  * Fetch all remote data for user from Supabase and merge into localStorage
  */
 export async function pullAllUserDataFromSupabase(userId) {
@@ -162,9 +198,23 @@ export async function pullAllUserDataFromSupabase(userId) {
     data.forEach((row) => {
       if (row.data_key && row.value !== undefined) {
         try {
-          const serialized = JSON.stringify(row.value);
+          let finalVal = row.value;
+
+          // Smart merge for vocabulary mastery maps to prevent regression
+          if (row.data_key === 'notebook_vocab_mastery_v1' || row.data_key === 'vocab_mastery_v2') {
+            const rawLocal = localStorage.getItem(`${scopedUserPrefix}${row.data_key}`) || localStorage.getItem(row.data_key);
+            if (rawLocal) {
+              try {
+                const parsedLocal = JSON.parse(rawLocal);
+                finalVal = mergeMasteryObjects(parsedLocal, row.value);
+              } catch (e) {}
+            }
+          }
+
+          const serialized = JSON.stringify(finalVal);
           localStorage.setItem(`${scopedUserPrefix}${row.data_key}`, serialized);
           localStorage.setItem(row.data_key, serialized);
+          localStorage.setItem(`user_guest_${row.data_key}`, serialized);
           updateCount++;
         } catch (e) {}
       }
@@ -186,7 +236,116 @@ export async function pullAllUserDataFromSupabase(userId) {
 }
 
 /**
- * Push all local user data to Supabase (Initial upload)
+ * Collect all relevant learning data from local storage, merging alternate keys
+ */
+export function getMergedLocalUserData(userId) {
+  if (!userId || userId === 'guest') return [];
+
+  const rawUserId = userId.replace(/^user_/, '');
+  const candidatePrefixes = [
+    `user_${userId}_`,
+    `user_${rawUserId}_`,
+    `user_user_${rawUserId}_`,
+    'user_guest_',
+  ];
+
+  const knownKeys = new Set([
+    'notebook_vocab_mastery_v1',
+    'vocab_mastery_v2',
+    'saved_video_vocab_v1',
+    'calendar_completed_tasks_v1',
+    'daily_dictation_completed_v1',
+    'dictation_transcripts_v1',
+    'ielts_speaking_completed_tasks_v1',
+    'ielts_writing_completed_tasks_v1',
+    'ielts_reading_completed_tasks_v1',
+    'ielts_diagnostic_test_result',
+    'ielts_user_profile',
+    'user_learning_profile_v1',
+    'exam_records_v1',
+    'learning_history_v1',
+  ]);
+
+  // Scan localStorage to detect all customized user keys
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (!k) continue;
+
+      let matchedBase = null;
+      for (const prefix of candidatePrefixes) {
+        if (k.startsWith(prefix)) {
+          matchedBase = k.slice(prefix.length);
+          break;
+        }
+      }
+      if (matchedBase) {
+        knownKeys.add(matchedBase);
+      } else if (knownKeys.has(k)) {
+        knownKeys.add(k);
+      }
+    }
+  } catch (e) {}
+
+  const payload = [];
+
+  knownKeys.forEach((baseKey) => {
+    const candidateKeys = [
+      `user_${userId}_${baseKey}`,
+      `user_${rawUserId}_${baseKey}`,
+      `user_user_${rawUserId}_${baseKey}`,
+      `user_guest_${baseKey}`,
+      baseKey,
+    ];
+
+    let mergedValue = null;
+
+    for (const cand of candidateKeys) {
+      try {
+        const raw = localStorage.getItem(cand);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed !== null && parsed !== undefined) {
+            if (typeof parsed === 'object' && !Array.isArray(parsed)) {
+              if (baseKey === 'notebook_vocab_mastery_v1' || baseKey === 'vocab_mastery_v2') {
+                mergedValue = mergeMasteryObjects(mergedValue || {}, parsed);
+              } else {
+                mergedValue = { ...(mergedValue || {}), ...parsed };
+              }
+            } else if (Array.isArray(parsed)) {
+              if (!mergedValue || parsed.length > (mergedValue?.length || 0)) {
+                mergedValue = parsed;
+              }
+            } else if (mergedValue === null) {
+              mergedValue = parsed;
+            }
+          }
+        }
+      } catch (e) {}
+    }
+
+    if (mergedValue !== null && mergedValue !== undefined) {
+      // Re-save to canonical keys locally
+      try {
+        const serialized = JSON.stringify(mergedValue);
+        localStorage.setItem(`user_${userId}_${baseKey}`, serialized);
+        localStorage.setItem(baseKey, serialized);
+      } catch (e) {}
+
+      payload.push({
+        user_id: userId,
+        data_key: baseKey,
+        value: mergedValue,
+        updated_at: new Date().toISOString(),
+      });
+    }
+  });
+
+  return payload;
+}
+
+/**
+ * Push all local user data to Supabase (Initial upload / Full Sync)
  */
 export async function pushAllLocalUserDataToSupabase(userId) {
   if (!userId || userId === 'guest') return 0;
@@ -194,29 +353,8 @@ export async function pushAllLocalUserDataToSupabase(userId) {
   if (!client) return 0;
 
   try {
-    const scopedPrefix = `user_${userId}_`;
-    const payload = [];
-
-    for (let i = 0; i < localStorage.length; i++) {
-      const k = localStorage.key(i);
-      if (k && k.startsWith(scopedPrefix)) {
-        const baseKey = k.slice(scopedPrefix.length);
-        try {
-          const raw = localStorage.getItem(k);
-          if (raw) {
-            const parsed = JSON.parse(raw);
-            payload.push({
-              user_id: userId,
-              data_key: baseKey,
-              value: parsed,
-              updated_at: new Date().toISOString(),
-            });
-          }
-        } catch (e) {}
-      }
-    }
-
-    if (payload.length === 0) return 0;
+    const payload = getMergedLocalUserData(userId);
+    if (!payload || payload.length === 0) return 0;
 
     const { error } = await client
       .from('user_sync_data')
@@ -228,6 +366,16 @@ export async function pushAllLocalUserDataToSupabase(userId) {
     console.error('Failed to push local user data to Supabase:', err);
     return 0;
   }
+}
+
+/**
+ * Bidirectional Sync: First pull latest from Supabase, then push local records
+ */
+export async function syncBidirectional(userId) {
+  if (!userId || userId === 'guest') return { pulled: 0, pushed: 0 };
+  const pulled = await pullAllUserDataFromSupabase(userId);
+  const pushed = await pushAllLocalUserDataToSupabase(userId);
+  return { pulled: pulled || 0, pushed };
 }
 
 /**

@@ -8,7 +8,7 @@ import {
   migrateGuestData,
 } from '../services/authService';
 import {
-  pullAllUserDataFromSupabase,
+  syncBidirectional,
   subscribeToUserRealtimeSync,
   isSupabaseConfigured,
 } from '../services/supabaseClient';
@@ -18,6 +18,7 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isSyncingCloud, setIsSyncingCloud] = useState(false);
 
   // Modals management
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -35,18 +36,34 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }, []);
 
+  const syncCloudData = async () => {
+    if (!currentUser || currentUser.id === 'guest' || !isSupabaseConfigured()) {
+      return { pulled: 0, pushed: 0 };
+    }
+    setIsSyncingCloud(true);
+    try {
+      const res = await syncBidirectional(currentUser.id);
+      return res;
+    } catch (e) {
+      console.warn('Sync cloud data failed:', e);
+      return { pulled: 0, pushed: 0 };
+    } finally {
+      setIsSyncingCloud(false);
+    }
+  };
+
   // Realtime Cloud Synchronization with Supabase (Multi-device instant sync)
   useEffect(() => {
     if (!currentUser || currentUser.id === 'guest' || !isSupabaseConfigured()) return;
 
-    // 1. Pull latest progress from cloud to sync devices
-    pullAllUserDataFromSupabase(currentUser.id);
+    // 1. Initial 2-way sync: Pull latest cloud progress then push local updates
+    syncCloudData();
 
     // 2. Subscribe to realtime changes (< 100ms latency)
     const unsubscribe = subscribeToUserRealtimeSync(currentUser.id);
 
     const handleConfigChange = () => {
-      pullAllUserDataFromSupabase(currentUser.id);
+      syncCloudData();
     };
     window.addEventListener('supabase-config-changed', handleConfigChange);
 
@@ -109,6 +126,8 @@ export function AuthProvider({ children }) {
     openRegister,
     userProfileModalOpen,
     setUserProfileModalOpen,
+    syncCloudData,
+    isSyncingCloud,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

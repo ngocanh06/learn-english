@@ -24,7 +24,17 @@ export default function Sidebar({
     openRegister,
     logout,
     setUserProfileModalOpen,
+    syncCloudData,
+    isSyncingCloud,
   } = useAuth();
+  const [syncStatusMsg, setSyncStatusMsg] = useState('');
+
+  const handleSidebarSync = async () => {
+    if (isSyncingCloud) return;
+    const res = await syncCloudData();
+    setSyncStatusMsg(`Đã đồng bộ ${res.pulled + res.pushed > 0 ? `${res.pulled + res.pushed} mục` : 'thành công'}!`);
+    setTimeout(() => setSyncStatusMsg(''), 3000);
+  };
 
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [hoveredItem, setHoveredItem] = useState(null);
@@ -310,6 +320,30 @@ export default function Sidebar({
             )}
           </button>
 
+          {/* Cloud Database Sync Button */}
+          <button
+            onClick={handleSidebarSync}
+            disabled={isSyncingCloud}
+            className={`w-full flex items-center justify-between py-2 px-2.5 rounded-lg border text-xs font-semibold transition cursor-pointer active:scale-95 ${
+              isSyncingCloud
+                ? 'bg-blue-50 border-blue-300 text-blue-600 dark:bg-blue-950/40 dark:border-blue-700 dark:text-blue-400'
+                : isLight
+                ? 'bg-emerald-50/60 border-emerald-200 text-emerald-700 hover:bg-emerald-100/70'
+                : 'bg-emerald-950/20 border-emerald-800 text-emerald-400 hover:bg-emerald-900/30'
+            }`}
+            title="Đồng bộ Supabase Cloud (Máy tính ⇄ Điện thoại)"
+          >
+            <div className="flex items-center gap-2">
+              <i className={`fa-solid ${isSyncingCloud ? 'fa-arrows-rotate animate-spin text-blue-500' : 'fa-cloud-arrow-up text-emerald-500'} text-xs`} />
+              {!isMini && <span>{isSyncingCloud ? 'Đang đồng bộ...' : 'Đồng Bộ Cloud'}</span>}
+            </div>
+            {!isMini && (
+              <span className="text-[10px] font-bold text-emerald-500 uppercase">
+                {syncStatusMsg ? '✓ Xong' : 'Realtime'}
+              </span>
+            )}
+          </button>
+
           {/* User Account */}
           {isAuthenticated && currentUser ? (
             <div className="relative">
@@ -371,6 +405,17 @@ export default function Sidebar({
                     >
                       <i className="fa-solid fa-user-gear text-blue-500 text-xs" />
                       Hồ Sơ & Mục Tiêu
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        handleSidebarSync();
+                        setUserDropdownOpen(false);
+                      }}
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer text-emerald-600 dark:text-emerald-400"
+                    >
+                      <i className="fa-solid fa-cloud-arrow-up text-xs" />
+                      Đồng Bộ Cloud Ngay
                     </button>
 
                     <button

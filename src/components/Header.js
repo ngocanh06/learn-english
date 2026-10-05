@@ -13,10 +13,18 @@ export default function Header({
   overdueCount = 0,
 }) {
   const isLight = theme === 'light';
-  const { currentUser, isAuthenticated, openLogin } = useAuth();
+  const { currentUser, isAuthenticated, openLogin, syncCloudData, isSyncingCloud } = useAuth();
   const [learningProfile] = useUserStorage('user_learning_profile_v1', DEFAULT_USER_LEARNING_PROFILE);
   const activeCert = CERTIFICATIONS.find((c) => c.id === learningProfile?.certification) || CERTIFICATIONS[1];
   const currentItem = NAV_ITEMS.find((n) => n.id === activeNav) || NAV_ITEMS[0];
+  const [syncToast, setSyncToast] = React.useState('');
+
+  const handleManualSync = async () => {
+    if (isSyncingCloud) return;
+    const res = await syncCloudData();
+    setSyncToast(`Đã đồng bộ ${res.pulled + res.pushed > 0 ? `${res.pulled + res.pushed} mục` : 'mới nhất'}!`);
+    setTimeout(() => setSyncToast(''), 3000);
+  };
 
   return (
     <header
@@ -77,6 +85,23 @@ export default function Header({
             </button>
           )}
 
+          {/* Cloud Sync Button */}
+          <button
+            onClick={handleManualSync}
+            disabled={isSyncingCloud}
+            className={`p-2 rounded-lg border text-xs cursor-pointer transition active:scale-95 ${
+              isSyncingCloud
+                ? 'bg-blue-50 border-blue-300 text-blue-600 dark:bg-blue-950/40 dark:border-blue-700 dark:text-blue-400'
+                : isLight
+                ? 'bg-slate-100 border-slate-200 text-emerald-600 hover:bg-slate-200'
+                : 'bg-slate-800 border-slate-700 text-emerald-400 hover:bg-slate-750'
+            }`}
+            title="Đồng bộ dữ liệu Supabase Cloud (Máy tính ⇄ Điện thoại)"
+            aria-label="Đồng bộ Cloud"
+          >
+            <i className={`fa-solid ${isSyncingCloud ? 'fa-arrows-rotate animate-spin' : 'fa-cloud-arrow-up'}`} />
+          </button>
+
           <button
             onClick={toggleTheme}
             className={`p-2 rounded-lg border text-xs cursor-pointer transition ${
@@ -111,6 +136,13 @@ export default function Header({
           )}
         </div>
       </div>
+
+      {syncToast && (
+        <div className="bg-emerald-600 text-white text-[11px] font-semibold py-1 px-3 text-center animate-fade-in flex items-center justify-center gap-1.5 shadow-sm">
+          <i className="fa-solid fa-circle-check text-xs" />
+          <span>{syncToast}</span>
+        </div>
+      )}
     </header>
   );
 }
