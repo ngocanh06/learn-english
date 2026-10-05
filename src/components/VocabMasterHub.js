@@ -721,20 +721,9 @@ export default function VocabMasterHub({
                         </span>
                       )}
                     </div>
-                    <h4 className="font-bold text-xs sm:text-sm leading-snug line-clamp-1 mb-1">
+                    <h4 className="font-bold text-xs sm:text-sm leading-snug line-clamp-2">
                       {sec.label}
                     </h4>
-                    <p
-                      className={`text-[11px] leading-relaxed line-clamp-2 ${
-                        active
-                          ? isLight
-                            ? 'text-blue-900 font-medium'
-                            : 'text-blue-200'
-                          : 'text-slate-500 dark:text-slate-400'
-                      }`}
-                    >
-                      {sec.desc}
-                    </p>
                   </div>
                 </button>
               );
