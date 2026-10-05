@@ -13,7 +13,7 @@ export default function UnifiedMasterRoadmapHub({ onNavigate, onOpenWriting, the
   const [selectedStage, setSelectedStage] = useState('ALL');
 
   const getDateKeyForDay = (day) => {
-    const startDate = new Date(2026, 8, 1);
+    const startDate = new Date(2026, 9, 1);
     const dayDate = new Date(startDate);
     dayDate.setDate(dayDate.getDate() + (day - 1));
     return `${String(dayDate.getDate()).padStart(2, '0')}/${String(dayDate.getMonth() + 1).padStart(2, '0')}/${dayDate.getFullYear()}`;

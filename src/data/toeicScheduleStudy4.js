@@ -79,8 +79,8 @@ export const STUDY4_TOEIC_SCHEDULE = [
 // Học viên đã hoàn thành Test 1 (Baseline). Hiện tại đang ở Test 2!
 // Tuyến thực chiến Test 2 chính thức bắt đầu từ ngày 14/09/2026.
 export const DEFAULT_ACTIVE_TEST_NUM = 2;
-export const ACTIVE_TEST_BASE_DATE = new Date(2026, 8, 14); // 14/09/2026 (Hôm nay bắt đầu Test 2)
-export const TEST_TRACK_START_DATE = new Date(2026, 8, 10); // Lùi về 10/09 để bao quát cả 4 buổi Test 1 đã làm
+export const ACTIVE_TEST_BASE_DATE = new Date(2026, 9, 5); // 05/10/2026 (Hôm nay bắt đầu Test 2)
+export const TEST_TRACK_START_DATE = new Date(2026, 9, 1); // Bắt đầu từ 01/10/2026
 
 // ─── TUYẾN 1: LỊCH THỰC CHIẾN LÀM & CHỮA ĐỀ (32 BUỔI CHO 10 BỘ ĐỀ TOEIC) ───
 export const STUDY4_TEST_TRACK = [

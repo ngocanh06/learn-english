@@ -1,6 +1,6 @@
-import { UNIFIED_MASTER_DAYS } from '../data/unifiedMasterRoadmap';
-import { READING_DATABASE } from '../data/readingData';
-import { getDayDictationStatus } from './dictationProgress';
+import { UNIFIED_MASTER_DAYS } from '../data/unifiedMasterRoadmap.js';
+import { READING_DATABASE } from '../data/readingData.js';
+import { getDayDictationStatus } from './dictationProgress.js';
 
 const DOW_LABELS = ['Chủ Nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
 
@@ -30,7 +30,7 @@ export function getReadingTestIdForDay(dayNum) {
  */
 export function getPlanForDate(dateObj) {
   if (!dateObj) return null;
-  const start = new Date(2026, 8, 1); // 01/09/2026
+  const start = new Date(2026, 9, 1); // 01/10/2026
   const d = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
   const diffDays = Math.round((d - start) / (1000 * 60 * 60 * 24));
   if (diffDays < 0) return null;
@@ -60,7 +60,7 @@ export function calculateOverdueTasks({
   study4StatusMap = {},
 } = {}) {
   const today = new Date();
-  const start = new Date(2026, 8, 1); // Roadmap start date: 01/09/2026
+  const start = new Date(2026, 9, 1); // Roadmap start date: 01/10/2026
   const todayZero = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
   // Check if today is before start date

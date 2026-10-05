@@ -52,12 +52,12 @@ export default function VocabFromSheet({
   const WORDS_PER_DAY = 50;
   const baseWordChunks = Math.max(1, Math.ceil(totalWords / WORDS_PER_DAY));
 
-  // Determine current day number in roadmap (Roadmap starts 01/09/2026)
+  // Determine current day number in roadmap (Roadmap starts 01/10/2026)
   const todayDayNum = useMemo(() => {
     if (targetDay && Number(targetDay) > 0) {
       return Number(targetDay);
     }
-    const start = new Date(2026, 8, 1);
+    const start = new Date(2026, 9, 1);
     const now = new Date();
     const d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const diffDays = Math.round((d - start) / (1000 * 60 * 60 * 24));

@@ -52,7 +52,7 @@ export default function AILearningCoach({
     dailyMinutes: 45,
     targetWeeks: 8,
     focusSkill: 'balanced',
-    startDate: '01/09/2026',
+    startDate: '01/10/2026',
   });
 
   // Real-time Dynamic Study Metrics (Computed from system clock)
@@ -138,7 +138,7 @@ export default function AILearningCoach({
   }, [now, activeTestNum]);
 
   const todayVocabSession = useMemo(() => {
-    const start = new Date(2026, 8, 1);
+    const start = new Date(2026, 9, 1);
     const diffDays = Math.round((now - start) / (1000 * 60 * 60 * 24));
     const idx = diffDays >= 0 ? diffDays % STUDY4_VOCAB_TRACK.length : 0;
     return STUDY4_VOCAB_TRACK[idx] || STUDY4_VOCAB_TRACK[0];
@@ -323,7 +323,7 @@ export default function AILearningCoach({
                 Lộ Trình Toàn Diện 4 Kỹ Năng • A1 ➔ C1
               </span>
               <span className="text-xs font-mono font-medium text-slate-400">
-                01/09/2026
+                01/10/2026
               </span>
               <button
                 type="button"

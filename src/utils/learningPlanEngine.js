@@ -96,7 +96,7 @@ export function generateTodayPlan({
   const dateKey = `${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getMonth() + 1).padStart(2, '0')}/${dateObj.getFullYear()}`;
   
   // Find mapped day in roadmap (1..60)
-  const start = new Date(2026, 8, 1);
+  const start = new Date(2026, 9, 1);
   const diffDays = Math.max(0, Math.round((dateObj - start) / (1000 * 60 * 60 * 24)));
   const dayNum = (diffDays % 60) + 1;
   const roadmapDay = UNIFIED_MASTER_DAYS.find((d) => d.day === dayNum) || UNIFIED_MASTER_DAYS[0];

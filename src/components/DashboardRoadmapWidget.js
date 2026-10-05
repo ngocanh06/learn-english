@@ -71,9 +71,9 @@ export default function DashboardRoadmapWidget({ onNavigate, theme = 'dark' }) {
   const [completedTasks] = useUserStorage('master_calendar_completed_tasks_v2', {});
   const [study4StatusMap] = useUserStorage('study4_status_map_v1', {});
 
-  // Current day in 49 days (Calculated dynamically from 01/09/2026)
+  // Current day in 49 days (Calculated dynamically from 01/10/2026)
   const currentDay = useMemo(() => {
-    const start = new Date(2026, 8, 1);
+    const start = new Date(2026, 9, 1);
     const today = new Date();
     const diff = Math.round((new Date(today.getFullYear(), today.getMonth(), today.getDate()) - start) / (1000 * 60 * 60 * 24));
     return Math.max(1, Math.min(49, diff + 1));
