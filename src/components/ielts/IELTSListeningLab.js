@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { IELTS_LISTENING_TESTS } from '../../data/ieltsPracticeData';
 import { useUserStorage } from '../../hooks/useUserStorage';
 
@@ -16,61 +16,248 @@ export default function IELTSListeningLab({ theme = 'dark' }) {
   // Persistence: User listening scores { [testId]: { score, total, band, date } }
   const [, setListeningScores] = useUserStorage('ielts_listening_scores_v1', {});
 
-  // Audio Playback state (TTS)
+  // Parse dialogue lines into turns: { id, speaker, text, raw }
+  const scriptLines = useMemo(() => {
+    if (!activeTest?.audioScript) return [];
+    return activeTest.audioScript
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .map((line, idx) => {
+        const colonIdx = line.indexOf(':');
+        if (colonIdx > 0 && colonIdx < 35) {
+          return {
+            id: idx,
+            speaker: line.substring(0, colonIdx).trim(),
+            text: line.substring(colonIdx + 1).trim(),
+            raw: line,
+          };
+        }
+        return { id: idx, speaker: 'Narrator', text: line, raw: line };
+      });
+  }, [activeTest]);
+
+  // Audio Playback state
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentLineIndex, setCurrentLineIndex] = useState(0);
   const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
-  const utteranceRef = useRef(null);
+  const isCancelledRef = useRef(false);
+  const timerRef = useRef(null);
+  const activeUtteranceRef = useRef(null);
+  const audioFallbackRef = useRef(null);
+  const voicesRef = useRef([]);
+
+  // Load available speech voices asynchronously
+  useEffect(() => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    const loadVoices = () => {
+      try {
+        const v = window.speechSynthesis.getVoices();
+        if (v && v.length > 0) {
+          voicesRef.current = v;
+        }
+      } catch (e) {}
+    };
+    loadVoices();
+    if (window.speechSynthesis.onvoiceschanged !== undefined) {
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+  }, []);
+
+  // Stop playback cleanly
+  const stopAudio = useCallback(() => {
+    isCancelledRef.current = true;
+    if (timerRef.current) clearTimeout(timerRef.current);
+    if (audioFallbackRef.current) {
+      try {
+        audioFallbackRef.current.pause();
+        audioFallbackRef.current.currentTime = 0;
+      } catch (e) {}
+    }
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      try {
+        window.speechSynthesis.cancel();
+      } catch (e) {}
+    }
+    setIsPlaying(false);
+  }, []);
+
+  // Speak a specific dialogue line sequentially
+  const speakLine = useCallback(
+    (index) => {
+      if (isCancelledRef.current || index >= scriptLines.length) {
+        setIsPlaying(false);
+        setCurrentLineIndex(0);
+        return;
+      }
+
+      setCurrentLineIndex(index);
+      const line = scriptLines[index];
+      if (!line || !line.text) {
+        speakLine(index + 1);
+        return;
+      }
+
+      if (typeof window === 'undefined') return;
+
+      let handled = false;
+      const advanceToNext = () => {
+        if (handled || isCancelledRef.current) return;
+        handled = true;
+        timerRef.current = setTimeout(() => {
+          if (!isCancelledRef.current) {
+            speakLine(index + 1);
+          }
+        }, 380); // Natural pause between speakers
+      };
+
+      // 1. Try Browser SpeechSynthesis first
+      if ('speechSynthesis' in window) {
+        try {
+          if (window.speechSynthesis.paused) {
+            window.speechSynthesis.resume();
+          }
+
+          const utter = new SpeechSynthesisUtterance(line.text);
+          utter.rate = playbackSpeed;
+          utter.lang = 'en-GB';
+
+          // Natural voice & pitch modulation based on speaker
+          const firstSpeaker = scriptLines[0]?.speaker || 'Agent';
+          const isFirstSpeaker = line.speaker === firstSpeaker;
+          utter.pitch = isFirstSpeaker ? 0.95 : 1.15;
+
+          const allVoices = voicesRef.current.length > 0 ? voicesRef.current : window.speechSynthesis.getVoices();
+          if (allVoices && allVoices.length > 0) {
+            const ukVoices = allVoices.filter(
+              (v) => v.lang && (v.lang.includes('en-GB') || v.lang.includes('en_GB') || v.name.toLowerCase().includes('uk'))
+            );
+            const enVoices = allVoices.filter((v) => v.lang && v.lang.toLowerCase().startsWith('en'));
+
+            if (ukVoices.length >= 2) {
+              utter.voice = isFirstSpeaker ? ukVoices[0] : ukVoices[1];
+            } else if (ukVoices.length === 1) {
+              utter.voice = ukVoices[0];
+            } else if (enVoices.length > 0) {
+              utter.voice = isFirstSpeaker ? enVoices[0] : enVoices[1] || enVoices[0];
+            }
+          }
+
+          utter.onend = () => {
+            advanceToNext();
+          };
+
+          utter.onerror = (e) => {
+            if (handled || isCancelledRef.current) return;
+            if (e && (e.error === 'canceled' || e.error === 'interrupted')) return;
+            handled = true;
+
+            // Fallback to Google Audio endpoint
+            try {
+              const clean = encodeURIComponent(line.text.slice(0, 180));
+              const audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${clean}`);
+              audio.playbackRate = playbackSpeed;
+              audioFallbackRef.current = audio;
+              audio.onended = () => {
+                if (!isCancelledRef.current) {
+                  timerRef.current = setTimeout(() => speakLine(index + 1), 380);
+                }
+              };
+              audio.onerror = () => {
+                if (!isCancelledRef.current) speakLine(index + 1);
+              };
+              audio.play().catch(() => {
+                if (!isCancelledRef.current) speakLine(index + 1);
+              });
+            } catch (err) {
+              if (!isCancelledRef.current) speakLine(index + 1);
+            }
+          };
+
+          // Chrome Garbage Collection protection
+          activeUtteranceRef.current = utter;
+          window.__activeIeltsUtterance = utter;
+
+          window.speechSynthesis.speak(utter);
+          return;
+        } catch (err) {}
+      }
+
+      // 2. Audio Fallback if SpeechSynthesis is unavailable
+      try {
+        const clean = encodeURIComponent(line.text.slice(0, 180));
+        const audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${clean}`);
+        audio.playbackRate = playbackSpeed;
+        audioFallbackRef.current = audio;
+        audio.onended = () => {
+          if (!isCancelledRef.current) {
+            timerRef.current = setTimeout(() => speakLine(index + 1), 380);
+          }
+        };
+        audio.onerror = () => {
+          if (!isCancelledRef.current) speakLine(index + 1);
+        };
+        audio.play().catch(() => {
+          if (!isCancelledRef.current) speakLine(index + 1);
+        });
+      } catch (err) {
+        if (!isCancelledRef.current) speakLine(index + 1);
+      }
+    },
+    [scriptLines, playbackSpeed]
+  );
 
   // Reset when test changes
   useEffect(() => {
     setUserAnswers({});
     setIsSubmitted(false);
     setShowTranscript(false);
-    if (window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-      setIsPlaying(false);
-    }
-  }, [selectedTestId]);
+    stopAudio();
+    setCurrentLineIndex(0);
+  }, [selectedTestId, stopAudio]);
 
-  // Clean up speech on unmount
+  // Clean up on unmount
   useEffect(() => {
     return () => {
-      if (window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-      }
+      stopAudio();
     };
-  }, []);
+  }, [stopAudio]);
 
+  // Master Play/Pause Toggle
   const handlePlayAudio = () => {
-    if (!window.speechSynthesis) {
-      alert('Trình duyệt của bạn không hỗ trợ phát âm thanh Web Speech.');
-      return;
-    }
-
     if (isPlaying) {
-      window.speechSynthesis.cancel();
-      setIsPlaying(false);
+      stopAudio();
       return;
     }
 
-    window.speechSynthesis.cancel();
-    const utter = new SpeechSynthesisUtterance(activeTest.audioScript);
-    utter.rate = playbackSpeed;
-    utter.lang = 'en-GB';
-
-    // Find British or English voice
-    const voices = window.speechSynthesis.getVoices();
-    const gbVoice = voices.find(
-      (v) => v.lang.includes('en-GB') || v.lang.includes('en_GB') || v.name.includes('UK')
-    );
-    if (gbVoice) utter.voice = gbVoice;
-
-    utter.onend = () => setIsPlaying(false);
-    utter.onerror = () => setIsPlaying(false);
-
-    utteranceRef.current = utter;
-    window.speechSynthesis.speak(utter);
+    isCancelledRef.current = false;
     setIsPlaying(true);
+
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      try {
+        if (window.speechSynthesis.paused) {
+          window.speechSynthesis.resume();
+        }
+        window.speechSynthesis.cancel();
+      } catch (e) {}
+    }
+
+    // Crucial 60ms delay after cancel() for Chromium audio thread readiness
+    setTimeout(() => {
+      if (!isCancelledRef.current) {
+        const startIndex = currentLineIndex < scriptLines.length ? currentLineIndex : 0;
+        speakLine(startIndex);
+      }
+    }, 60);
+  };
+
+  const jumpToLine = (idx) => {
+    stopAudio();
+    isCancelledRef.current = false;
+    setIsPlaying(true);
+    setTimeout(() => {
+      speakLine(idx);
+    }, 60);
   };
 
   const handleSelectAnswer = (qId, option) => {
@@ -180,95 +367,190 @@ export default function IELTSListeningLab({ theme = 'dark' }) {
         </div>
 
         {/* ─── AUDIO PLAYER BAR ────────────────────────────────────── */}
+        {/* ─── AUDIO PLAYER BAR ────────────────────────────────────── */}
         <div
-          className={`mt-6 p-4 md:p-5 rounded-2xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
+          className={`mt-6 p-4 md:p-5 rounded-2xl border transition-all ${
             isLight ? 'bg-sky-50/80 border-sky-200 text-sky-950' : 'bg-sky-950/30 border-sky-800/60 text-sky-100'
           }`}
         >
-          <div className="flex items-start sm:items-center gap-3 min-w-0">
-            <button
-              onClick={handlePlayAudio}
-              className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-lg text-white shadow-lg transition-transform active:scale-95 cursor-pointer shrink-0 ${
-                isPlaying
-                  ? 'bg-rose-600 hover:bg-rose-500 animate-pulse'
-                  : 'bg-sky-600 hover:bg-sky-500'
-              }`}
-              title={isPlaying ? 'Dừng phát âm thanh' : 'Bấm để nghe đoạn hội thoại'}
-            >
-              <i className={`fa-solid ${isPlaying ? 'fa-pause' : 'fa-play ml-0.5'}`} />
-            </button>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            {/* Play Button & Info */}
+            <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
+              <button
+                type="button"
+                onClick={handlePlayAudio}
+                className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-lg text-white shadow-lg transition-transform active:scale-95 cursor-pointer shrink-0 ${
+                  isPlaying
+                    ? 'bg-rose-600 hover:bg-rose-500 animate-pulse'
+                    : 'bg-sky-600 hover:bg-sky-500'
+                }`}
+                title={isPlaying ? 'Tạm dừng phát âm thanh' : 'Bấm để nghe đoạn hội thoại'}
+              >
+                <i className={`fa-solid ${isPlaying ? 'fa-pause' : 'fa-play ml-0.5'}`} />
+              </button>
 
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold font-mono">
-                  {isPlaying ? 'Đang phát âm thanh Cambridge...' : 'Bấm Play để bắt đầu nghe'}
-                </span>
-                {isPlaying && (
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                )}
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs font-bold font-mono">
+                    {isPlaying
+                      ? `Đang phát câu ${currentLineIndex + 1}/${scriptLines.length}`
+                      : currentLineIndex > 0
+                      ? `Đã dừng ở câu ${currentLineIndex + 1}/${scriptLines.length}`
+                      : 'Bấm Play để bắt đầu nghe'}
+                  </span>
+                  {isPlaying && (
+                    <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-200 dark:bg-sky-800 text-sky-900 dark:text-sky-200">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
+                      {scriptLines[currentLineIndex]?.speaker}
+                    </span>
+                  )}
+                  {!isPlaying && (
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400">
+                      ({scriptLines.length} lượt thoại)
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-1 mt-0.5 italic">
+                  {isPlaying && scriptLines[currentLineIndex]
+                    ? `"${scriptLines[currentLineIndex].text}"`
+                    : activeTest.scenario}
+                </p>
               </div>
-              <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-1 mt-0.5">
-                {activeTest.scenario}
-              </p>
+            </div>
+
+            {/* Playback Controls & Settings */}
+            <div className="flex items-center gap-2 shrink-0 self-end sm:self-center flex-wrap">
+              {/* Navigation Steps */}
+              <div className="flex items-center gap-1 bg-white/70 dark:bg-slate-900/80 p-1 rounded-xl border border-sky-200 dark:border-sky-800">
+                <button
+                  type="button"
+                  onClick={() => jumpToLine(Math.max(0, currentLineIndex - 1))}
+                  className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-sky-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                  title="Câu trước đó"
+                >
+                  <i className="fa-solid fa-backward-step text-xs" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => jumpToLine(Math.min(scriptLines.length - 1, currentLineIndex + 1))}
+                  className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-sky-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                  title="Câu kế tiếp"
+                >
+                  <i className="fa-solid fa-forward-step text-xs" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => jumpToLine(0)}
+                  className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-sky-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                  title="Phát lại từ đầu"
+                >
+                  <i className="fa-solid fa-rotate-left text-[11px]" />
+                </button>
+              </div>
+
+              {/* Speed Selector */}
+              <div className="flex items-center gap-1 bg-white/70 dark:bg-slate-900/80 p-1 rounded-xl border border-sky-200 dark:border-sky-800 text-xs font-bold">
+                {[0.9, 1.0, 1.25].map((spd) => (
+                  <button
+                    key={spd}
+                    type="button"
+                    onClick={() => {
+                      setPlaybackSpeed(spd);
+                      if (isPlaying) {
+                        stopAudio();
+                      }
+                    }}
+                    className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${
+                      playbackSpeed === spd
+                        ? 'bg-sky-600 text-white shadow-xs'
+                        : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    {spd}x
+                  </button>
+                ))}
+              </div>
+
+              {/* Transcript Toggle */}
+              <button
+                type="button"
+                onClick={() => setShowTranscript(!showTranscript)}
+                className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 ${
+                  showTranscript
+                    ? 'bg-sky-600 text-white border-sky-600 shadow-xs'
+                    : isLight
+                    ? 'bg-white border-sky-300 text-sky-800 hover:bg-sky-100'
+                    : 'bg-slate-900 border-sky-700 text-sky-300 hover:bg-slate-800'
+                }`}
+              >
+                <i className="fa-solid fa-file-lines text-xs" />
+                <span>{showTranscript ? 'Ẩn Audio Script' : 'Xem Audio Script'}</span>
+              </button>
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5 shrink-0 self-end sm:self-center">
-            {/* Speed Selector */}
-            <div className="flex items-center gap-1 bg-white/70 dark:bg-slate-900/80 p-1 rounded-xl border border-sky-200 dark:border-sky-800 text-xs font-bold">
-              {[0.9, 1.0, 1.25].map((spd) => (
-                <button
-                  key={spd}
-                  onClick={() => {
-                    setPlaybackSpeed(spd);
-                    if (isPlaying) {
-                      window.speechSynthesis.cancel();
-                      setIsPlaying(false);
-                    }
-                  }}
-                  className={`px-2 py-1 rounded-lg transition-all ${
-                    playbackSpeed === spd
-                      ? 'bg-sky-600 text-white shadow-xs'
-                      : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-                >
-                  {spd}x
-                </button>
-              ))}
-            </div>
-
-            {/* Transcript Toggle */}
-            <button
-              onClick={() => setShowTranscript(!showTranscript)}
-              className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 ${
-                showTranscript
-                  ? 'bg-sky-600 text-white border-sky-600 shadow-xs'
-                  : isLight
-                  ? 'bg-white border-sky-300 text-sky-800 hover:bg-sky-100'
-                  : 'bg-slate-900 border-sky-700 text-sky-300 hover:bg-slate-800'
-              }`}
-            >
-              <i className="fa-solid fa-file-lines text-xs" />
-              <span>{showTranscript ? 'Ẩn Audio Script' : 'Xem Audio Script'}</span>
-            </button>
+          {/* Progress bar across dialogue */}
+          <div className="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden mt-3">
+            <div
+              className="bg-sky-500 h-full transition-all duration-300"
+              style={{
+                width: `${Math.round(((currentLineIndex + (isPlaying ? 1 : 0)) / (scriptLines.length || 1)) * 100)}%`,
+              }}
+            />
           </div>
         </div>
 
-        {/* Audio Script Drawer */}
+        {/* Audio Script Drawer with Click-to-Play turns */}
         {showTranscript && (
           <div
-            className={`mt-4 p-5 rounded-2xl border text-xs md:text-sm font-serif leading-relaxed whitespace-pre-line animate-fadeIn ${
+            className={`mt-4 p-5 rounded-2xl border space-y-2 animate-fadeIn ${
               isLight ? 'bg-amber-50/70 border-amber-200 text-amber-950' : 'bg-slate-850 border-slate-750 text-slate-200'
             }`}
           >
-            <div className="flex items-center justify-between font-sans text-xs font-bold mb-2 text-amber-600 dark:text-amber-400">
+            <div className="flex items-center justify-between font-sans text-xs font-bold mb-3 text-amber-600 dark:text-amber-400">
               <span className="flex items-center gap-1.5">
                 <i className="fa-solid fa-closed-captioning" />
-                Audio Script (Bản ghi âm thanh chi tiết):
+                Audio Script (Bấm vào câu bất kỳ để nghe lại lượt thoại đó):
               </span>
               <span className="text-[11px] font-normal">Dùng để kiểm tra bẫy sau khi nghe</span>
             </div>
-            {activeTest.audioScript}
+
+            <div className="space-y-2 max-h-96 overflow-y-auto pr-1">
+              {scriptLines.map((line, idx) => {
+                const isCurrent = currentLineIndex === idx && isPlaying;
+                const isSpeaker1 = line.speaker === scriptLines[0]?.speaker;
+
+                return (
+                  <div
+                    key={line.id}
+                    onClick={() => jumpToLine(idx)}
+                    className={`p-2.5 rounded-xl border text-xs md:text-sm transition-all cursor-pointer flex items-start gap-2.5 ${
+                      isCurrent
+                        ? 'bg-sky-500/15 border-sky-500 shadow-sm ring-1 ring-sky-500'
+                        : isLight
+                        ? 'bg-white/80 border-amber-200/80 hover:bg-amber-100/50'
+                        : 'bg-slate-900/60 border-slate-700/60 hover:bg-slate-800/80'
+                    }`}
+                  >
+                    <span
+                      className={`px-2 py-0.5 rounded-md text-[10px] font-bold shrink-0 mt-0.5 ${
+                        isSpeaker1
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-purple-600 text-white'
+                      }`}
+                    >
+                      {line.speaker}
+                    </span>
+                    <span className="flex-1 leading-relaxed">{line.text}</span>
+                    <i
+                      className={`fa-solid ${
+                        isCurrent ? 'fa-volume-high text-sky-500 animate-pulse' : 'fa-play text-slate-400'
+                      } text-[10px] shrink-0 mt-1`}
+                    />
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
       </div>
