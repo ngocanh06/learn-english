@@ -290,7 +290,7 @@ export default function ReadingHub({
               Phòng Luyện Đọc Hiểu (Reading Comprehension)
             </h1>
             <p className="text-slate-600 dark:text-slate-400 text-xs md:text-sm leading-relaxed">
-              Hệ thống bài đọc hiểu phong phú theo chuẩn quốc tế từ Sơ cấp (A1) đến Nâng cao (C1). Đi kèm từ vựng bôi đậm, phiên âm IPA, phát âm âm thanh và bài tập trắc nghiệm giải thích chi tiết.
+              Bài đọc theo chuẩn CEFR A1 - C1, có tra từ điển tại chỗ, bản dịch song ngữ và câu hỏi trắc nghiệm.
             </p>
           </div>
 
@@ -299,23 +299,22 @@ export default function ReadingHub({
             <button
               type="button"
               onClick={() => onNavigate && onNavigate('vocabulary', { section: 'notebook' })}
-              className={`px-4 py-2.5 rounded-2xl border flex items-center gap-2 font-bold text-xs transition cursor-pointer shadow-xs ${
+              className={`px-3 py-2 rounded-lg border flex items-center gap-2 font-semibold text-xs transition cursor-pointer ${
                 isLight
-                  ? 'bg-amber-50 hover:bg-amber-100/80 border-amber-200 text-amber-900'
-                  : 'bg-amber-950/40 hover:bg-amber-950/70 border-amber-700/50 text-amber-300'
+                  ? 'bg-amber-50 hover:bg-amber-100 border-amber-200 text-amber-900'
+                  : 'bg-amber-950/40 hover:bg-amber-950/70 border-amber-800 text-amber-300'
               }`}
-              title="Mở Sổ từ vựng cá nhân (Xem tất cả từ đã lưu)"
+              title="Mở Sổ từ vựng cá nhân"
             >
-              <i className="fa-solid fa-book-bookmark text-amber-500 text-sm" />
+              <i className="fa-solid fa-book-bookmark text-amber-500 text-xs" />
               <span>Sổ Từ Vựng ({savedVocab.length})</span>
-              <i className="fa-solid fa-arrow-right text-[10px] opacity-70" />
             </button>
           </div>
         </div>
       </div>
 
       {/* ─── CEFR LEVEL SELECTOR (A1 -> C1) ──────────────────────── */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
         {READING_LEVELS.map((lvl) => {
           const active = selectedLevelId === lvl.id;
           return (
@@ -325,30 +324,30 @@ export default function ReadingHub({
                 setSelectedLevelId(lvl.id);
                 setActiveTestId(null);
               }}
-              className={`p-3.5 rounded-2xl border text-left transition-all duration-200 flex flex-col justify-between cursor-pointer ${
+              className={`p-3 rounded-xl border text-left transition-colors duration-150 flex flex-col justify-between cursor-pointer ${
                 active
                   ? isLight
-                    ? 'bg-blue-50/80 border-blue-300 text-blue-950 shadow-sm ring-2 ring-blue-400/20'
-                    : 'bg-blue-950/40 border-blue-700 text-blue-100 shadow-sm ring-1 ring-blue-500/30'
+                    ? 'bg-blue-50 border-blue-500 text-blue-950'
+                    : 'bg-blue-950/40 border-blue-600 text-blue-100'
                   : isLight
-                  ? 'bg-white border-slate-200 text-slate-800 hover:bg-slate-50 shadow-xs'
-                  : 'bg-slate-900 border-slate-800 text-slate-200 hover:bg-slate-800'
+                  ? 'bg-white border-slate-200 text-slate-800 hover:bg-slate-50'
+                  : 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800'
               }`}
             >
               <div className="flex items-center justify-between gap-1 mb-1">
                 <span
-                  className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-md ${
+                  className={`text-[10px] font-bold uppercase px-1.5 py-0.5 rounded ${
                     active
-                      ? isLight ? 'bg-blue-200/80 text-blue-800' : 'bg-blue-500/30 text-blue-200'
-                      : 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                      ? isLight ? 'bg-blue-200 text-blue-900 font-mono' : 'bg-blue-500/30 text-blue-200 font-mono'
+                      : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 font-mono'
                   }`}
                 >
                   {lvl.id}
                 </span>
                 <i className={`fa-solid ${lvl.icon} text-xs text-blue-500`} />
               </div>
-              <h4 className="font-extrabold text-xs leading-tight">{lvl.name}</h4>
-              <p className={`text-[10px] mt-1 line-clamp-1 ${active ? (isLight ? 'text-blue-700' : 'text-blue-300') : 'text-slate-500 dark:text-slate-400'}`}>
+              <h4 className="font-bold text-xs leading-tight">{lvl.name}</h4>
+              <p className={`text-[10px] mt-0.5 line-clamp-1 ${active ? (isLight ? 'text-blue-700' : 'text-blue-300') : 'text-slate-400'}`}>
                 {lvl.desc}
               </p>
             </button>

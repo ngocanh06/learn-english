@@ -23,8 +23,9 @@ let supabaseInstance = null;
 let currentConfiguredUrl = '';
 let currentConfiguredKey = '';
 
+// Default credentials for the project
 const DEFAULT_SUPABASE_URL = 'https://nusumevfcubseogepitv.supabase.co';
-const DEFAULT_SUPABASE_ANON_KEY = 'sb_publishable_tJJ9dkiY2bZMLFQQ8s90fw_RVm6kf4U';
+const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im51c3VtZXZmY3Vic2VvZ2VwaXR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExMjk4NTYsImV4cCI6MjEwNjcwNTg1Nn0.YCNXXStXK4gkZHXckAhioLZksuB7lMXftURAXk29UQk';
 
 export function normalizeSupabaseUrl(rawUrl) {
   if (!rawUrl) return '';
@@ -41,19 +42,60 @@ export function getSupabaseCredentials() {
   const localUrl = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_URL_KEY) || '' : '';
   const localKey = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_ANON_KEY) || '' : '';
 
-  const finalUrl = normalizeSupabaseUrl(localUrl || envUrl || DEFAULT_SUPABASE_URL);
-  const finalKey = (localKey || envKey || DEFAULT_SUPABASE_ANON_KEY).trim();
+  let finalUrl = normalizeSupabaseUrl(localUrl || envUrl || DEFAULT_SUPABASE_URL);
+  let finalKey = (localKey || envKey || DEFAULT_SUPABASE_ANON_KEY).trim();
 
   return {
     url: finalUrl,
     anonKey: finalKey,
-    isEnv: Boolean(!localUrl && (envUrl || DEFAULT_SUPABASE_URL)),
+    isEnv: Boolean(!localUrl && finalUrl),
   };
 }
 
 export function isSupabaseConfigured() {
   const { url, anonKey } = getSupabaseCredentials();
   return Boolean(url && anonKey && url.startsWith('http'));
+}
+
+/**
+ * Perform a live ping/health-check to verify Supabase credentials and database table
+ */
+export async function testSupabaseConnection(customUrl, customKey) {
+  const creds = customUrl && customKey 
+    ? { url: normalizeSupabaseUrl(customUrl), anonKey: customKey.trim() } 
+    : getSupabaseCredentials();
+
+  if (!creds.url || !creds.anonKey) {
+    return { ok: false, error: 'Chưa nhập URL hoặc Anon Key của Supabase.' };
+  }
+
+  try {
+    const testClient = createClient(creds.url, creds.anonKey, {
+      auth: { persistSession: false },
+    });
+
+    const { error } = await testClient
+      .from('user_sync_data')
+      .select('data_key')
+      .limit(1);
+
+    if (error) {
+      if (error.code === '42P01' || error.message?.includes('does not exist')) {
+        return {
+          ok: false,
+          error: 'Kết nối được Supabase nhưng chưa tạo bảng "user_sync_data". Vui lòng bấm "Copy SQL tạo bảng" và chạy trong SQL Editor trên supabase.com.',
+        };
+      }
+      return { ok: false, error: `Lỗi Supabase: ${error.message || error.details}` };
+    }
+
+    return { ok: true, message: 'Kết nối Supabase Cloud Realtime thành công!' };
+  } catch (err) {
+    return {
+      ok: false,
+      error: `Không thể kết nối đến máy chủ: ${err.message || 'Kiểm tra lại URL dự án'}.`,
+    };
+  }
 }
 
 export function saveSupabaseCredentials(url, anonKey) {
@@ -179,9 +221,9 @@ function mergeMasteryObjects(localVal, remoteVal) {
  * Fetch all remote data for user from Supabase and merge into localStorage
  */
 export async function pullAllUserDataFromSupabase(userId) {
-  if (!userId || userId === 'guest') return null;
+  if (!userId || userId === 'guest') throw new Error('Vui lòng đăng nhập để đồng bộ Cloud.');
   const client = getSupabaseClient();
-  if (!client) return null;
+  if (!client) throw new Error('Chưa cấu hình thông tin kết nối Supabase Cloud.');
 
   try {
     const { data, error } = await client
@@ -189,8 +231,10 @@ export async function pullAllUserDataFromSupabase(userId) {
       .select('data_key, value, updated_at')
       .eq('user_id', userId);
 
-    if (error) throw error;
-    if (!Array.isArray(data)) return null;
+  if (error) {
+    throw new Error(`Tải dữ liệu từ Supabase thất bại: ${error.message || 'Lỗi truy vấn'}`);
+  }
+  if (!Array.isArray(data)) return 0;
 
     let updateCount = 0;
     const scopedUserPrefix = `user_${userId}_`;
@@ -231,7 +275,7 @@ export async function pullAllUserDataFromSupabase(userId) {
     return updateCount;
   } catch (err) {
     console.warn('Failed to pull user data from Supabase:', err);
-    return null;
+    throw err;
   }
 }
 
@@ -348,31 +392,32 @@ export function getMergedLocalUserData(userId) {
  * Push all local user data to Supabase (Initial upload / Full Sync)
  */
 export async function pushAllLocalUserDataToSupabase(userId) {
-  if (!userId || userId === 'guest') return 0;
+  if (!userId || userId === 'guest') throw new Error('Vui lòng đăng nhập tài khoản để đồng bộ Cloud.');
   const client = getSupabaseClient();
-  if (!client) return 0;
+  if (!client) throw new Error('Chưa cấu hình thông tin kết nối Supabase Cloud.');
 
-  try {
-    const payload = getMergedLocalUserData(userId);
-    if (!payload || payload.length === 0) return 0;
+  const payload = getMergedLocalUserData(userId);
+  if (!payload || payload.length === 0) return 0;
 
-    const { error } = await client
-      .from('user_sync_data')
-      .upsert(payload, { onConflict: 'user_id,data_key' });
+  const { error } = await client
+    .from('user_sync_data')
+    .upsert(payload, { onConflict: 'user_id,data_key' });
 
-    if (error) throw error;
-    return payload.length;
-  } catch (err) {
-    console.error('Failed to push local user data to Supabase:', err);
-    return 0;
+  if (error) {
+    console.error('Failed to push local user data to Supabase:', error);
+    throw new Error(`Đẩy dữ liệu lên Cloud thất bại: ${error.message || 'Lỗi kết nối'}`);
   }
+  return payload.length;
 }
 
 /**
  * Bidirectional Sync: First pull latest from Supabase, then push local records
  */
 export async function syncBidirectional(userId) {
-  if (!userId || userId === 'guest') return { pulled: 0, pushed: 0 };
+  if (!userId || userId === 'guest') throw new Error('Vui lòng đăng nhập để đồng bộ Cloud.');
+  const client = getSupabaseClient();
+  if (!client) throw new Error('Chưa cấu hình thông tin kết nối Supabase Cloud.');
+
   const pulled = await pullAllUserDataFromSupabase(userId);
   const pushed = await pushAllLocalUserDataToSupabase(userId);
   return { pulled: pulled || 0, pushed };

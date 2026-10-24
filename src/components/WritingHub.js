@@ -685,84 +685,73 @@ export default function WritingHub({
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-16 font-sans">
-      {/* ─── SLEEK LUXURY HEADER ──────────────────────────────────── */}
+      {/* ─── CLEAN STUDY HEADER ──────────────────────────────────── */}
       <div
-        className={`p-6 md:p-7 rounded-lg border transition-all duration-300 relative overflow-hidden ${
+        className={`p-5 md:p-6 rounded-xl border transition-colors ${
           isLight
-            ? 'bg-slate-900 border-slate-800 text-white shadow-xs'
-            : 'bg-slate-900/90 border-slate-800 text-white'
+            ? 'bg-white border-slate-200 text-slate-900 shadow-xs'
+            : 'bg-[#111827] border-slate-800 text-white'
         }`}
       >
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
-          <div className="space-y-2">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="space-y-1.5">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold uppercase tracking-wider font-mono bg-blue-500/20 text-blue-300 border border-blue-400/30 flex items-center gap-1.5">
+              <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold uppercase tracking-wider font-mono bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 flex items-center gap-1.5">
                 <i className="fa-solid fa-pen-nib text-xs" />
-                THE IELTS DICTIONARY • TẬP DỊCH IELTS
+                Luyện Viết & Dịch Câu IELTS
               </span>
-              <span className="px-2.5 py-0.5 rounded-md text-[11px] font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">
-                100% Phản Xạ Dịch Câu Bản Ngữ
+              <span className="px-2.5 py-0.5 rounded-md text-[11px] font-mono bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-bold">
+                5 Cấp độ • Phản xạ dịch câu
               </span>
             </div>
 
-            <h1 className="text-xl md:text-2xl font-bold tracking-tight leading-tight">
-              Phòng Luyện Dịch & Viết Chuẩn IELTS
+            <h1 className="text-xl md:text-2xl font-bold tracking-tight">
+              Phòng Luyện Dịch & Viết Câu
             </h1>
 
-            <p className="text-slate-300 text-xs md:text-sm max-w-3xl leading-relaxed">
-              Phương pháp luyện tập dịch từ Việt sang Anh giúp củng cố ngữ pháp, từ vựng và tư duy viết học thuật
-              chuẩn 100% giáo trình The IELTS Dictionary với 5 bước từ cơ bản đến Band 8.0+.
+            <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 max-w-2xl leading-relaxed">
+              Luyện dịch Việt - Anh trực tiếp, nhận phản hồi tức thì và tự động đối chiếu ngữ pháp chuẩn bản ngữ.
             </p>
           </div>
 
-          {/* Header Controls & User Status */}
-          <div className="flex items-center gap-3 shrink-0 flex-wrap">
+          {/* Header Controls */}
+          <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
             {onNavigate && (
               <button
                 type="button"
                 onClick={() => onNavigate('vocabulary', { section: 'notebook' })}
-                className="px-4 py-3 rounded-2xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 font-bold text-xs flex items-center gap-2 transition cursor-pointer shadow-xs"
+                className={`px-3 py-2 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer ${
+                  isLight
+                    ? 'bg-amber-50 hover:bg-amber-100 border-amber-200 text-amber-800'
+                    : 'bg-amber-950/30 hover:bg-amber-900/40 border-amber-800 text-amber-300'
+                }`}
                 title="Mở Sổ từ vựng cá nhân"
               >
-                <i className="fa-solid fa-book-bookmark text-amber-400 text-sm" />
+                <i className="fa-solid fa-book-bookmark text-amber-500 text-xs" />
                 <span>Sổ từ vựng ({savedVocab.length})</span>
-                <i className="fa-solid fa-arrow-right text-[10px] opacity-70" />
               </button>
             )}
 
-            {/* User Status Card */}
+            {/* User Status Badge */}
             <div
-              className={`p-4 rounded-2xl border text-xs flex flex-col justify-center space-y-1 ${
-                isLight
-                  ? 'bg-slate-800/80 border-slate-700/80 text-white shadow-xs'
-                  : 'bg-slate-800/60 border-slate-700 text-slate-300 shadow-xs'
+              className={`px-3 py-1.5 rounded-lg border text-xs flex items-center gap-2 ${
+                isLight ? 'bg-slate-50 border-slate-200 text-slate-700' : 'bg-slate-900 border-slate-800 text-slate-300'
               }`}
             >
               {isAuthenticated ? (
-                <>
-                  <div className="flex items-center gap-2 font-bold">
-                    <i className="fa-solid fa-circle-check text-emerald-400" />
-                    <span>{currentUser?.name || currentUser?.username}</span>
-                  </div>
-                  <p className="text-slate-400 text-[11px] font-mono">
-                    Tài khoản đã đồng bộ dữ liệu dịch câu
-                  </p>
-                </>
+                <div className="flex items-center gap-1.5 font-medium">
+                  <i className="fa-solid fa-circle-check text-emerald-500 text-xs" />
+                  <span className="truncate max-w-[120px]">{currentUser?.name || currentUser?.username}</span>
+                </div>
               ) : (
-                <>
-                  <div className="flex items-center gap-2 font-bold text-amber-400">
-                    <i className="fa-solid fa-user-clock text-amber-400" />
-                    <span>Chế độ Khách</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={openLogin}
-                    className="text-blue-400 text-[11px] font-bold hover:underline cursor-pointer flex items-center gap-1"
-                  >
-                    <span>Đăng nhập lưu bài làm</span>
-                    <i className="fa-solid fa-arrow-right text-[10px]" />
-                  </button>
-                </>
+                <button
+                  type="button"
+                  onClick={openLogin}
+                  className="text-blue-600 dark:text-blue-400 font-medium hover:underline cursor-pointer flex items-center gap-1"
+                >
+                  <i className="fa-solid fa-user-clock text-amber-500 text-xs" />
+                  <span>Đăng nhập lưu bài</span>
+                </button>
               )}
             </div>
           </div>
@@ -799,7 +788,7 @@ export default function WritingHub({
         </div>
       )}
 
-      {/* ─── 5 BƯỚC TRANSLATION HUB (THE IELTS DICTIONARY STEPS) ──────── */}
+      {/* ─── 5 BƯỚC TRANSLATION HUB ──────── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
         {WRITING_CATEGORIES.map((cat, idx) => {
           const active = activeStep === cat.id;
@@ -807,19 +796,19 @@ export default function WritingHub({
             <button
               key={cat.id}
               onClick={() => setActiveStep(cat.id)}
-              className={`p-3.5 rounded-2xl border text-left transition-all duration-200 flex flex-col justify-between cursor-pointer ${
+              className={`p-3 rounded-xl border text-left transition-colors duration-150 flex flex-col justify-between cursor-pointer ${
                 active
                   ? isLight
-                    ? 'bg-blue-50/95 border-blue-500 text-blue-950 shadow-sm ring-2 ring-blue-500/20'
-                    : 'bg-blue-950/50 border-blue-500 text-blue-100 shadow-sm ring-1 ring-blue-500/30'
+                    ? 'bg-blue-50 border-blue-500 text-blue-950'
+                    : 'bg-blue-950/50 border-blue-500 text-blue-100'
                   : isLight
-                  ? 'bg-white border-slate-200 text-slate-800 hover:bg-slate-50 shadow-xs'
+                  ? 'bg-white border-slate-200 text-slate-800 hover:bg-slate-50'
                   : 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800/80'
               }`}
             >
               <div className="flex items-center justify-between w-full mb-2">
                 <span
-                  className={`w-7 h-7 rounded-xl flex items-center justify-center text-xs font-mono font-black ${
+                  className={`w-6 h-6 rounded-md flex items-center justify-center text-xs font-mono font-bold ${
                     active
                       ? 'bg-blue-600 text-white'
                       : isLight
@@ -832,7 +821,7 @@ export default function WritingHub({
                 <i className={`fa-solid ${cat.icon} text-xs ${active ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}`} />
               </div>
               <div>
-                <h4 className="font-extrabold text-xs leading-tight line-clamp-1">{cat.label}</h4>
+                <h4 className="font-bold text-xs leading-tight line-clamp-1">{cat.label}</h4>
                 <p className="text-[10px] text-slate-400 font-mono mt-0.5">{cat.count}</p>
               </div>
             </button>

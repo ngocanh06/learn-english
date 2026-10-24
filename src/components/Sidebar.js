@@ -3,6 +3,7 @@ import { NAV_ITEMS } from '../config/navigation';
 import { useAuth } from '../context/AuthContext';
 import { useUserStorage } from '../hooks/useUserStorage';
 import { DEFAULT_USER_LEARNING_PROFILE, CERTIFICATIONS } from '../config/learningCertifications';
+import { isSupabaseConfigured } from '../services/supabaseClient';
 
 export default function Sidebar({
   activeNav,
@@ -28,11 +29,20 @@ export default function Sidebar({
     isSyncingCloud,
   } = useAuth();
   const [syncStatusMsg, setSyncStatusMsg] = useState('');
+  const isCloudConfigured = isSupabaseConfigured();
 
   const handleSidebarSync = async () => {
     if (isSyncingCloud) return;
-    const res = await syncCloudData();
-    setSyncStatusMsg(`Đã đồng bộ ${res.pulled + res.pushed > 0 ? `${res.pulled + res.pushed} mục` : 'thành công'}!`);
+    if (!isCloudConfigured) {
+      setUserProfileModalOpen(true);
+      return;
+    }
+    try {
+      const res = await syncCloudData();
+      setSyncStatusMsg(`Đã đồng bộ ${res.pulled + res.pushed > 0 ? `${res.pulled + res.pushed} mục` : 'thành công'}!`);
+    } catch (e) {
+      setUserProfileModalOpen(true);
+    }
     setTimeout(() => setSyncStatusMsg(''), 3000);
   };
 
@@ -320,26 +330,50 @@ export default function Sidebar({
             )}
           </button>
 
-          {/* Cloud Database Sync Button */}
+          {/* Cloud Database Sync / Fast Direct Sync Button */}
           <button
             onClick={handleSidebarSync}
             disabled={isSyncingCloud}
             className={`w-full flex items-center justify-between py-2 px-2.5 rounded-lg border text-xs font-semibold transition cursor-pointer active:scale-95 ${
               isSyncingCloud
                 ? 'bg-blue-50 border-blue-300 text-blue-600 dark:bg-blue-950/40 dark:border-blue-700 dark:text-blue-400'
+                : isCloudConfigured
+                ? isLight
+                  ? 'bg-emerald-50/60 border-emerald-200 text-emerald-700 hover:bg-emerald-100/70'
+                  : 'bg-emerald-950/20 border-emerald-800 text-emerald-400 hover:bg-emerald-900/30'
                 : isLight
-                ? 'bg-emerald-50/60 border-emerald-200 text-emerald-700 hover:bg-emerald-100/70'
-                : 'bg-emerald-950/20 border-emerald-800 text-emerald-400 hover:bg-emerald-900/30'
+                ? 'bg-amber-50/70 border-amber-200 text-amber-800 hover:bg-amber-100/80'
+                : 'bg-amber-950/20 border-amber-800/60 text-amber-300 hover:bg-amber-900/30'
             }`}
-            title="Đồng bộ Supabase Cloud (Máy tính ⇄ Điện thoại)"
+            title={isCloudConfigured ? 'Đồng bộ Supabase Cloud (Máy tính ⇄ Điện thoại)' : 'Mở Sao Lưu & Chuyển Dữ Liệu (Trực tiếp)'}
           >
             <div className="flex items-center gap-2">
-              <i className={`fa-solid ${isSyncingCloud ? 'fa-arrows-rotate animate-spin text-blue-500' : 'fa-cloud-arrow-up text-emerald-500'} text-xs`} />
-              {!isMini && <span>{isSyncingCloud ? 'Đang đồng bộ...' : 'Đồng Bộ Cloud'}</span>}
+              <i
+                className={`fa-solid ${
+                  isSyncingCloud
+                    ? 'fa-arrows-rotate animate-spin text-blue-500'
+                    : isCloudConfigured
+                    ? 'fa-cloud-arrow-up text-emerald-500'
+                    : 'fa-bolt text-amber-500'
+                } text-xs`}
+              />
+              {!isMini && (
+                <span>
+                  {isSyncingCloud
+                    ? 'Đang đồng bộ...'
+                    : isCloudConfigured
+                    ? 'Đồng Bộ Cloud'
+                    : 'Sao Lưu & Đồng Bộ'}
+                </span>
+              )}
             </div>
             {!isMini && (
-              <span className="text-[10px] font-bold text-emerald-500 uppercase">
-                {syncStatusMsg ? '✓ Xong' : 'Realtime'}
+              <span
+                className={`text-[10px] font-bold uppercase ${
+                  isCloudConfigured ? 'text-emerald-500' : 'text-amber-500'
+                }`}
+              >
+                {syncStatusMsg ? syncStatusMsg : isCloudConfigured ? 'Realtime' : 'Trực tiếp'}
               </span>
             )}
           </button>
