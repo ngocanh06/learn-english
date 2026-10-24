@@ -47,6 +47,7 @@ export default function AILearningCoach({
   const [learningProfile, setLearningProfile] = useUserStorage('user_learning_profile_v1', DEFAULT_USER_LEARNING_PROFILE);
   const [onboardingModalOpen, setOnboardingModalOpen] = useState(false);
   const [ieltsInitialSubTab, setIeltsInitialSubTab] = useState('roadmap');
+  const [ieltsInitialWeek, setIeltsInitialWeek] = useState(1);
   const activeCertObj = CERTIFICATIONS.find((c) => c.id === learningProfile?.certification) || CERTIFICATIONS[1];
 
   const [userGoal] = useUserStorage('ai_coach_goal_v1', {
@@ -610,6 +611,10 @@ export default function AILearningCoach({
                 if (['vocab', 'vocabulary', 'reading', 'writing', 'video-hub', 'grammar'].includes(t)) {
                   onNavigate && onNavigate(t, { fromNav: 'ai-coach', fromTab: 'calendar-view', ...params });
                 } else {
+                  if (t === 'ielts-roadmap') {
+                    if (params?.subTab) setIeltsInitialSubTab(params.subTab);
+                    if (params?.week) setIeltsInitialWeek(params.week);
+                  }
                   setActiveTab(t);
                 }
               }}
@@ -625,6 +630,7 @@ export default function AILearningCoach({
               onNavigate={(nav, params) => onNavigate && onNavigate(nav, { fromNav: 'ai-coach', fromTab: 'ielts-roadmap', ...params })}
               theme={theme}
               initialSubTab={ieltsInitialSubTab}
+              initialWeek={ieltsInitialWeek}
             />
           )}
 
