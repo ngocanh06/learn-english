@@ -410,10 +410,14 @@ export default function IELTSListeningLab({ theme = 'dark' }) {
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-1 mt-0.5 italic">
-                  {isPlaying && scriptLines[currentLineIndex]
-                    ? `"${scriptLines[currentLineIndex].text}"`
-                    : activeTest.scenario}
+                <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-1 mt-0.5">
+                  {showTranscript && isPlaying && scriptLines[currentLineIndex] ? (
+                    <span className="italic font-medium text-sky-700 dark:text-sky-300">
+                      "{scriptLines[currentLineIndex].text}"
+                    </span>
+                  ) : (
+                    <span>{activeTest.scenario}</span>
+                  )}
                 </p>
               </div>
             </div>
