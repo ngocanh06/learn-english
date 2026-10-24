@@ -23,6 +23,7 @@ import PersonalizedPlanDashboard from './PersonalizedPlanDashboard';
 import PersonalizedOnboardingModal from './PersonalizedOnboardingModal';
 import { DEFAULT_USER_LEARNING_PROFILE, CERTIFICATIONS } from '../config/learningCertifications';
 import { generateDynamicToeicSchedule } from '../services/dynamicScheduleEngine';
+import { getRoadmapStartDate, formatDateKey } from '../utils/scheduleDateHelper';
 import { useAuth } from '../context/AuthContext';
 import {
   DEFAULT_DICTATION_STARS,
@@ -138,7 +139,7 @@ export default function AILearningCoach({
   }, [now, activeTestNum]);
 
   const todayVocabSession = useMemo(() => {
-    const start = new Date(2026, 9, 1);
+    const start = getRoadmapStartDate();
     const diffDays = Math.round((now - start) / (1000 * 60 * 60 * 24));
     const idx = diffDays >= 0 ? diffDays % STUDY4_VOCAB_TRACK.length : 0;
     return STUDY4_VOCAB_TRACK[idx] || STUDY4_VOCAB_TRACK[0];
@@ -323,7 +324,7 @@ export default function AILearningCoach({
                 Lộ Trình Toàn Diện 4 Kỹ Năng • A1 ➔ C1
               </span>
               <span className="text-xs font-mono font-medium text-slate-400">
-                01/10/2026
+                {formatDateKey(getRoadmapStartDate())}
               </span>
               <button
                 type="button"

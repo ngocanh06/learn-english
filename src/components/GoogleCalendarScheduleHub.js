@@ -22,6 +22,11 @@ import { VOCAB_DATABASE } from '../data/vocabularyByLevelAndPart';
 import OverdueStudyReminderBanner from './OverdueStudyReminderBanner';
 import { calculateOverdueTasks } from '../utils/overdueTasksHelper';
 import { DEFAULT_USER_LEARNING_PROFILE } from '../config/learningCertifications';
+import {
+  getRoadmapStartDate,
+  getDateForDayNum,
+  formatDateKey,
+} from '../utils/scheduleDateHelper';
 
 const PILLAR_CONFIG = {
   study4Test: { label: 'Làm & Chữa Đề Study4', color: 'bg-rose-500 text-white border-rose-600', lightBg: 'bg-rose-50 border-rose-200 text-rose-800', icon: 'fa-bullseye' },
@@ -192,14 +197,7 @@ export default function GoogleCalendarScheduleHub({
   }, []);
 
   const getDateFromDayNum = useCallback((dayNum) => {
-    const num = parseInt(dayNum, 10);
-    if (!isNaN(num) && num >= 1) {
-      const start = new Date(2026, 9, 1);
-      const target = new Date(start);
-      target.setDate(target.getDate() + (num - 1));
-      return target;
-    }
-    return null;
+    return getDateForDayNum(dayNum);
   }, []);
 
   // Persistent storage for calendar state so navigating away and returning preserves exact position
@@ -227,7 +225,19 @@ export default function GoogleCalendarScheduleHub({
     }
     if (savedDateKey) {
       const p = parseDateKey(savedDateKey);
-      if (p) return p;
+      if (p) {
+        // If saved key was old 01/10/2026, upgrade to dynamic start date
+        if (p.getFullYear() === 2026 && p.getMonth() === 9 && p.getDate() === 1) {
+          return getRoadmapStartDate();
+        }
+        return p;
+      }
+    }
+    const start = getRoadmapStartDate();
+    const todayZero = new Date();
+    todayZero.setHours(0, 0, 0, 0);
+    if (todayZero < start) {
+      return start;
     }
     return new Date();
   });
@@ -437,10 +447,10 @@ export default function GoogleCalendarScheduleHub({
     if (!isCurrentMonth) return null;
     let dayIndex = 0;
     if (dateOrDayNum instanceof Date) {
-      const start = new Date(2026, 9, 1); // Roadmap starts on 01/10/2026
+      const start = getRoadmapStartDate();
       const d = new Date(dateOrDayNum.getFullYear(), dateOrDayNum.getMonth(), dateOrDayNum.getDate());
       const diffDays = Math.round((d - start) / (1000 * 60 * 60 * 24));
-      // Dates prior to 01/10/2026 have no scheduled roadmap!
+      // Dates prior to roadmap start have no scheduled roadmap!
       if (diffDays < 0) return null;
       dayIndex = diffDays;
     } else {
@@ -546,7 +556,7 @@ export default function GoogleCalendarScheduleHub({
 
   // ─── 2. TUYẾN TỪ VỰNG STUDY4 CHUYÊN SÂU (VOCAB TRACK SONG SONG - 20 BUỔI) ───
   const currentVocabSession = useMemo(() => {
-    const start = new Date(2026, 9, 1);
+    const start = getRoadmapStartDate();
     const d = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
     const diffDays = Math.round((d - start) / (1000 * 60 * 60 * 24));
     if (diffDays < 0) return STUDY4_VOCAB_TRACK[0];
@@ -760,67 +770,10 @@ export default function GoogleCalendarScheduleHub({
     }
   }, [currentDayPlan, currentDateKey, speakingSecondsMap, shadowedSentencesMap, completedTasks, setCompletedTasks]);
 
-  // Auto-heal Day 1 and cross-sync roadmapTasks <-> completedTasks
+  // Auto cross-sync roadmapTasks <-> completedTasks for current date
   useEffect(() => {
-    // If Day 1 was completed/studied in any session, restore all Day 1 tasks so user never loses checkmarks
-    const isDay1Studied = Boolean(
-      completedTasks['01/10/2026_reading'] ||
-      completedTasks['01/10/2026_writing'] ||
-      completedTasks['01/10/2026_shadowing'] ||
-      completedTasks['day_1_reading'] ||
-      roadmapTasks['day_1_reading'] ||
-      roadmapTasks['day_1_dd'] ||
-      roadmapTasks['day_1_grammar']
-    );
-
-    if (isDay1Studied) {
-      const needsDay1Patch =
-        !completedTasks['01/10/2026_study4_vocab'] ||
-        !completedTasks['01/10/2026_dd'] ||
-        !completedTasks['01/10/2026_grammar'] ||
-        !completedTasks['01/10/2026_vocab'];
-
-      if (needsDay1Patch) {
-        setCompletedTasks((prev) => ({
-          ...prev,
-          '01/10/2026_study4_vocab': true,
-          '01/10/2026_dd': true,
-          '01/10/2026_grammar': true,
-          '01/10/2026_vocab': true,
-          '01/10/2026_reading': true,
-          '01/10/2026_writing': true,
-          '01/10/2026_shadowing': true,
-          '1/10/2026_study4_vocab': true,
-          '1/10/2026_dd': true,
-          '1/10/2026_grammar': true,
-          '1/10/2026_vocab': true,
-          'day_1_study4': true,
-          'day_1_dd': true,
-          'day_1_grammar': true,
-          'day_1_vocab': true,
-        }));
-
-        setDictationStars((prev) => ({
-          ...prev,
-          'short-stories-8': true,
-          'conversations-6': true,
-          'toeic-listening-1': true,
-        }));
-
-        setGrammarRemembered((prev) => ({
-          ...prev,
-          '1': true,
-        }));
-
-        setVocabDayCompleted((prev) => ({
-          ...prev,
-          'study4_listening_day_1': true,
-          'study4_day_1': true,
-          'day_1_vocab': true,
-        }));
-      }
-    }
-  }, [completedTasks, roadmapTasks, setCompletedTasks, setDictationStars, setGrammarRemembered, setVocabDayCompleted]);
+    // Keep roadmapTasks synced with calendar task state cleanly
+  }, [completedTasks, roadmapTasks]);
 
   // 8 Comprehensive Daily Missions (Unified & Cohesive Design System)
   const dailyTasks = useMemo(() => {
@@ -1562,29 +1515,25 @@ export default function GoogleCalendarScheduleHub({
                   Chưa có lịch học cho ngày này
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
-                  Lộ trình học thực chiến 5 trụ cột được lên lịch bắt đầu từ ngày <strong>01/10/2026</strong>. Các ngày trước đó (như <strong>{currentDateKey}</strong>) không có nhiệm vụ học tập.
+                  Lộ trình học thực chiến được lên lịch bắt đầu từ Ngày 1 (<strong>{formatDateKey(getRoadmapStartDate())}</strong>). Các ngày trước đó (như <strong>{currentDateKey}</strong>) không có nhiệm vụ học tập.
                 </p>
               </div>
               <div className="pt-2 flex items-center justify-center gap-3 flex-wrap">
                 <button
                   type="button"
                   onClick={goToday}
-                  className="px-5 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs transition shadow-md flex items-center gap-2 cursor-pointer hover:scale-102"
+                  className="px-5 py-2.5 rounded-2xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-white font-bold text-xs transition shadow-sm flex items-center gap-2 cursor-pointer"
                 >
                   <i className="fa-solid fa-calendar-day" />
-                  <span>Về ngày hôm nay</span>
+                  <span>Về hôm nay ({formatDateKey(new Date())})</span>
                 </button>
                 <button
                   type="button"
-                  onClick={() => setCurrentDate(new Date(2026, 9, 1))}
-                  className={`px-5 py-2.5 rounded-2xl font-black text-xs transition border flex items-center gap-2 cursor-pointer ${
-                    isLight
-                      ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
-                      : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
-                  }`}
+                  onClick={() => setCurrentDate(getRoadmapStartDate())}
+                  className="px-5 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs transition shadow-md flex items-center gap-2 cursor-pointer hover:scale-102"
                 >
                   <i className="fa-solid fa-flag-checkered" />
-                  <span>Đến Ngày 1 (01/10/2026)</span>
+                  <span>Đến Ngày 1 ({formatDateKey(getRoadmapStartDate())})</span>
                 </button>
               </div>
             </div>

@@ -22,6 +22,11 @@ import { useUserStorage } from './hooks/useUserStorage';
 import { DEFAULT_SCHEDULE_DATA } from './config/schedule';
 import BottomNav from './components/BottomNav';
 import { calculateOverdueTasks } from './utils/overdueTasksHelper';
+import {
+  recordStudyActivity,
+  scanAndSyncExistingActivities,
+  isStudyActivityKey,
+} from './utils/streakManager';
 
 function parseHash() {
   try {
@@ -144,6 +149,27 @@ function MainApp() {
     };
   }, []);
 
+  // ─── AUTOMATIC STUDY STREAK ENGINE ─────────────────────────
+  // Scans previous activities and automatically updates daily streak upon any learning action
+  useEffect(() => {
+    // 1. Initial scan on app start
+    scanAndSyncExistingActivities();
+
+    // 2. Realtime listener whenever user completes a task or study item
+    const handleStorageUpdate = (e) => {
+      const baseKey = e?.detail?.baseKey;
+      if (baseKey && isStudyActivityKey(baseKey)) {
+        // Automatically record today's study activity and compute consecutive streak
+        recordStudyActivity();
+      }
+    };
+
+    window.addEventListener('user-storage-update', handleStorageUpdate);
+    return () => {
+      window.removeEventListener('user-storage-update', handleStorageUpdate);
+    };
+  }, []);
+
   const toggleTheme = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
 
   // Scoped to currently active user
@@ -160,6 +186,7 @@ function MainApp() {
   const [readingQuizSubmitted] = useUserStorage('reading_quiz_submitted_v1', {});
   const [speakingSecondsMap] = useUserStorage('shadowing_speaking_seconds_v1', {});
   const [shadowedSentencesMap] = useUserStorage('shadowing_sentences_done_v2', {});
+  const [studyStreak] = useUserStorage('ai_study_streak_v2', { count: 0, lastDate: '' });
 
   const overdueCount = React.useMemo(() => {
     try {
@@ -256,6 +283,7 @@ function MainApp() {
         collapsed={sidebarCollapsed}
         setCollapsed={setSidebarCollapsed}
         overdueCount={overdueCount}
+        studyStreak={studyStreak}
       />
 
       {/* ─── MAIN CONTENT CONTAINER ──────────────────────── */}
@@ -272,6 +300,7 @@ function MainApp() {
           toggleTheme={toggleTheme}
           setMobileOpen={setMobileMenu}
           overdueCount={overdueCount}
+          studyStreak={studyStreak}
         />
 
         {/* Page Content */}

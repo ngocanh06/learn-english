@@ -16,6 +16,7 @@ export default function Sidebar({
   collapsed,
   setCollapsed,
   overdueCount = 0,
+  studyStreak = { count: 0 },
 }) {
   const isLight = theme === 'light';
   const {
@@ -125,8 +126,12 @@ export default function Sidebar({
           {/* Navigation Items */}
           <div className={`py-2 space-y-0.5 ${isMini ? 'px-2' : 'px-2.5'}`}>
             {!isMini && (
-              <div className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                Menu
+              <div className="px-2.5 py-1 flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                <span>Menu</span>
+                <span className="flex items-center gap-1 text-amber-500 font-mono font-bold" title={`Chuỗi học tập liên tục: ${studyStreak?.count || 0} ngày`}>
+                  <i className="fa-solid fa-fire text-[10px]" />
+                  <span>{studyStreak?.count || 0}d</span>
+                </span>
               </div>
             )}
 
