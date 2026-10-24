@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ROADMAP_STAGES, UNIFIED_MASTER_DAYS } from '../data/unifiedMasterRoadmap';
 import { useUserStorage } from '../hooks/useUserStorage';
 import { DEFAULT_DICTATION_STARS, getDayDictationStatus } from '../utils/dictationProgress';
+import { getDateForDayNum, formatDateKey } from '../utils/scheduleDateHelper';
 
 export default function UnifiedMasterRoadmapHub({ onNavigate, onOpenWriting, theme = 'dark' }) {
   const isLight = theme === 'light';
@@ -13,10 +14,8 @@ export default function UnifiedMasterRoadmapHub({ onNavigate, onOpenWriting, the
   const [selectedStage, setSelectedStage] = useState('ALL');
 
   const getDateKeyForDay = (day) => {
-    const startDate = new Date(2026, 9, 1);
-    const dayDate = new Date(startDate);
-    dayDate.setDate(dayDate.getDate() + (day - 1));
-    return `${String(dayDate.getDate()).padStart(2, '0')}/${String(dayDate.getMonth() + 1).padStart(2, '0')}/${dayDate.getFullYear()}`;
+    const dayDate = getDateForDayNum(day);
+    return formatDateKey(dayDate);
   };
 
   const toggleTask = (day, taskKey) => {

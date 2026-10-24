@@ -1,4 +1,5 @@
 import { SHORT_STORIES_LESSONS } from './dailyDictationFullData.js';
+import { getRoadmapStartDate } from '../utils/scheduleDateHelper.js';
 
 export const DAILY_DICTATION_DATA = {
   user: 'Học viên',
@@ -79,8 +80,8 @@ export const STUDY4_TOEIC_SCHEDULE = [
 // Học viên đã hoàn thành Test 1 (Baseline). Hiện tại đang ở Test 2!
 // Tuyến thực chiến Test 2 chính thức bắt đầu từ ngày 14/09/2026.
 export const DEFAULT_ACTIVE_TEST_NUM = 2;
-export const ACTIVE_TEST_BASE_DATE = new Date(2026, 9, 5); // 05/10/2026 (Hôm nay bắt đầu Test 2)
-export const TEST_TRACK_START_DATE = new Date(2026, 9, 1); // Bắt đầu từ 01/10/2026
+export const ACTIVE_TEST_BASE_DATE = new Date(2026, 9, 25); // 25/10/2026 (Ngày mai bắt đầu Day 1)
+export const TEST_TRACK_START_DATE = new Date(2026, 9, 25); // Bắt đầu từ 25/10/2026
 
 // ─── TUYẾN 1: LỊCH THỰC CHIẾN LÀM & CHỮA ĐỀ (32 BUỔI CHO 10 BỘ ĐỀ TOEIC) ───
 export const STUDY4_TEST_TRACK = [
@@ -149,7 +150,8 @@ export const STUDY4_TEST_TRACK = [
 export function getStudy4TestSession(dateObj, activeTestNum = 2) {
   if (!dateObj) return null;
   const d = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
-  const baseDate = new Date(ACTIVE_TEST_BASE_DATE.getFullYear(), ACTIVE_TEST_BASE_DATE.getMonth(), ACTIVE_TEST_BASE_DATE.getDate());
+  const startDate = getRoadmapStartDate();
+  const baseDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
   const diffDays = Math.round((d - baseDate) / (1000 * 60 * 60 * 24));
 
   // Vị trí xuất phát của Test hiện tại trong mảng STUDY4_TEST_TRACK (Test 2 là index 4)

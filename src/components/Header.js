@@ -12,6 +12,7 @@ export default function Header({
   toggleTheme,
   setMobileOpen,
   overdueCount = 0,
+  studyStreak = { count: 0 },
 }) {
   const isLight = theme === 'light';
   const { currentUser, isAuthenticated, openLogin, syncCloudData, isSyncingCloud, setUserProfileModalOpen } = useAuth();
@@ -76,6 +77,17 @@ export default function Header({
 
         {/* Right actions: Goal Badge, Overdue Reminder, Theme & User */}
         <div className="flex items-center gap-1.5 shrink-0">
+          {/* Study Streak Badge */}
+          <button
+            type="button"
+            onClick={() => onNavigate('ai-coach', { tab: 'overview' })}
+            className="px-2 py-1 rounded-md text-[11px] font-bold border border-amber-300/80 dark:border-amber-800/80 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 flex items-center gap-1 transition cursor-pointer"
+            title={`Chuỗi học tập liên tục: ${studyStreak?.count || 0} ngày`}
+          >
+            <i className="fa-solid fa-fire text-amber-500 text-[10px]" />
+            <span className="font-mono">{studyStreak?.count || 0}d</span>
+          </button>
+
           <button
             onClick={() => onNavigate('ai-coach', { tab: 'my-plan' })}
             className="px-2 py-1 rounded-md text-[11px] font-semibold border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition cursor-pointer"
