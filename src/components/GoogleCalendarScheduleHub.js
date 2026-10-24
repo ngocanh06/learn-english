@@ -22,6 +22,7 @@ import study4ReadingData from '../data/study4ReadingTest1.json';
 import { VOCAB_DATABASE } from '../data/vocabularyByLevelAndPart';
 import OverdueStudyReminderBanner from './OverdueStudyReminderBanner';
 import { calculateOverdueTasks } from '../utils/overdueTasksHelper';
+import StudyReminderModal from './StudyReminderModal';
 import { DEFAULT_USER_LEARNING_PROFILE } from '../config/learningCertifications';
 import {
   getRoadmapStartDate,
@@ -53,6 +54,7 @@ export default function GoogleCalendarScheduleHub({
   // Persistence: Completed tasks map: { [`${dateStr}_${pillarKey}`]: boolean }
   const [completedTasks, setCompletedTasks] = useUserStorage('master_calendar_completed_tasks_v2', {});
   const [roadmapTasks, setRoadmapTasks] = useUserStorage('master_roadmap_completed_tasks_v1', {});
+  const [reminderModalOpen, setReminderModalOpen] = useState(false);
   const [activeTestNum, setActiveTestNum] = useUserStorage('study4_active_test_num_v1', DEFAULT_ACTIVE_TEST_NUM);
   const [study4StatusMap, setStudy4StatusMap] = useUserStorage('study4_status_map_v1', {
     1: 'Hoàn thành',
@@ -1285,6 +1287,17 @@ export default function GoogleCalendarScheduleHub({
 
         {/* Right: Quick IELTS Roadmap Button + Side Roadmap Toggle */}
         <div className="flex items-center gap-2 flex-wrap">
+          {/* Mobile Reminder Bell */}
+          <button
+            type="button"
+            onClick={() => setReminderModalOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition border bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800 shadow-xs cursor-pointer"
+            title="Cài đặt thông báo chuông nhắc học trên điện thoại"
+          >
+            <i className="fa-solid fa-bell text-xs text-amber-500 animate-pulse" />
+            <span>Nhắc Nhở Điện Thoại</span>
+          </button>
+
           <button
             onClick={() => onNavigateTab && onNavigateTab('ielts-roadmap')}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition border bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800 shadow-xs cursor-pointer"
@@ -1968,6 +1981,13 @@ export default function GoogleCalendarScheduleHub({
           </div>
         )}
       </div>
+
+      {/* Modal Cài Đặt Nhắc Nhở Học Tập Trên Điện Thoại */}
+      <StudyReminderModal
+        isOpen={reminderModalOpen}
+        onClose={() => setReminderModalOpen(false)}
+        theme={theme}
+      />
     </div>
   );
 }
