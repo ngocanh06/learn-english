@@ -1197,7 +1197,10 @@ export default function AILearningCoach({
                             <i className="fa-solid fa-bullseye text-xs" /> BÀI HỌC TRỌNG TÂM TIẾP THEO ({currentCat.title})
                           </span>
                           <h4 className="text-sm md:text-base font-black text-slate-900 dark:text-white">
-                            Bài {currentTargetLesson.num}: {currentTargetLesson.title} ({currentTargetLesson.parts || 30} parts • Vocab level: {currentTargetLesson.level || 'B1'})
+                            {currentTargetLesson.testCode
+                              ? `${currentTargetLesson.testCode}: ${currentTargetLesson.topic}`
+                              : `Bài ${currentTargetLesson.num}: ${currentTargetLesson.title}`}{' '}
+                            ({currentTargetLesson.parts || 30} parts • Vocab level: {currentTargetLesson.level || 'B1'})
                           </h4>
                           <div className="flex items-center gap-2">
                             <div className="w-28 h-2 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
@@ -1213,7 +1216,7 @@ export default function AILearningCoach({
                             <span className="text-xs font-mono font-bold text-emerald-500">
                               {isLessonStarred(currentTargetLesson.id, dictationStars)
                                 ? 'Đã hoàn thành ⭐'
-                                : `Đang học ${nextTargetLesson ? `• Bài kế: ${nextTargetLesson.num}. ${nextTargetLesson.title}` : '• Sắp hoàn thành'}`}
+                                : `Đang học ${nextTargetLesson ? `• Bài kế: ${nextTargetLesson.testCode ? nextTargetLesson.testCode : `${nextTargetLesson.num}. ${nextTargetLesson.title}`}` : '• Sắp hoàn thành'}`}
                             </span>
                           </div>
                         </div>
@@ -1224,7 +1227,7 @@ export default function AILearningCoach({
                           rel="noreferrer"
                           className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black shrink-0 transition shadow-xs flex items-center gap-1.5 self-start sm:self-center"
                         >
-                          <span>Học tiếp bài {currentTargetLesson.num}</span>
+                          <span>Học tiếp {currentTargetLesson.testCode || `Bài ${currentTargetLesson.num}`}</span>
                           <i className="fa-solid fa-arrow-up-right-from-square text-[10px]" />
                         </a>
                       </div>
@@ -1334,43 +1337,66 @@ export default function AILearningCoach({
                               }`}
                             >
                               <div className="flex items-center gap-3 min-w-0 flex-1">
-                                {isDiamond ? (
-                                  <span className="text-base shrink-0 text-cyan-500" title="Bài khóa VIP (Kim cương)">
-                                    💎
-                                  </span>
-                                ) : (
-                                  <i
-                                    className={`fa-star text-base shrink-0 transition ${
-                                      isStarred
-                                        ? 'fa-solid text-blue-500'
-                                        : 'fa-regular text-slate-400 hover:text-blue-500'
-                                    }`}
-                                    title={isStarred ? 'Đã học (Bấm để hủy)' : 'Chưa học (Bấm để đánh dấu)'}
-                                  />
-                                )}
+                                <i
+                                  className={`fa-star text-base shrink-0 transition ${
+                                    isStarred
+                                      ? 'fa-solid text-blue-500'
+                                      : 'fa-regular text-slate-400 hover:text-blue-500'
+                                  }`}
+                                  title={isStarred ? 'Đã học (Bấm để hủy)' : 'Chưa học (Bấm để đánh dấu)'}
+                                />
 
                                 <div className="min-w-0 flex-1">
-                                  <h4
-                                    className={`text-xs md:text-sm font-extrabold leading-snug truncate ${
-                                      isDiamond
-                                        ? 'text-slate-500 dark:text-slate-400'
-                                        : isStarred
-                                        ? 'text-slate-700 dark:text-slate-300'
-                                        : 'text-slate-900 dark:text-white'
-                                    }`}
-                                  >
-                                    {lesson.num}. {lesson.title}
-                                  </h4>
-                                  <p className="text-[11px] text-slate-400 flex items-center gap-1.5 flex-wrap">
-                                    <span>{lesson.parts} parts</span>
-                                    <span>•</span>
-                                    <span>Vocab: {lesson.level}</span>
-                                    {isDiamond && <span className="text-cyan-500 font-bold">• Khóa VIP 💎</span>}
-                                  </p>
+                                  {lesson.testCode ? (
+                                    <>
+                                      <h4
+                                        className={`text-xs md:text-sm font-extrabold leading-snug truncate ${
+                                          isStarred
+                                            ? 'text-blue-700 dark:text-blue-400'
+                                            : 'text-blue-600 dark:text-blue-400 hover:underline'
+                                        }`}
+                                      >
+                                        {lesson.testCode}
+                                      </h4>
+                                      <p className="text-xs text-slate-600 dark:text-slate-300 truncate mt-0.5 font-medium">
+                                        {lesson.topic}
+                                      </p>
+                                      <p className="text-[11px] text-slate-400 flex items-center gap-1.5 flex-wrap mt-0.5">
+                                        <span>{lesson.parts} parts</span>
+                                        <span>•</span>
+                                        <span>Vocab level: {lesson.level}</span>
+                                      </p>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <h4
+                                        className={`text-xs md:text-sm font-extrabold leading-snug truncate ${
+                                          isDiamond
+                                            ? 'text-slate-500 dark:text-slate-400'
+                                            : isStarred
+                                            ? 'text-slate-700 dark:text-slate-300'
+                                            : 'text-slate-900 dark:text-white'
+                                        }`}
+                                      >
+                                        {lesson.num}. {lesson.title}
+                                      </h4>
+                                      <p className="text-[11px] text-slate-400 flex items-center gap-1.5 flex-wrap mt-0.5">
+                                        <span>{lesson.parts} parts</span>
+                                        <span>•</span>
+                                        <span>Vocab: {lesson.level}</span>
+                                      </p>
+                                    </>
+                                  )}
                                 </div>
                               </div>
 
                               <div className="shrink-0 flex items-center gap-2">
+                                {isDiamond && (
+                                  <span className="text-base text-cyan-500 shrink-0" title="PRO lesson (Khóa VIP 💎)">
+                                    💎
+                                  </span>
+                                )}
+
                                 <a
                                   href={lesson.url || currentCat.url}
                                   target="_blank"
@@ -1382,11 +1408,7 @@ export default function AILearningCoach({
                                   <i className="fa-solid fa-arrow-up-right-from-square text-xs" />
                                 </a>
 
-                                {isDiamond ? (
-                                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 font-mono">
-                                    Khóa VIP 💎
-                                  </span>
-                                ) : isCurrent ? (
+                                {isCurrent ? (
                                   <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-500 font-mono">
                                     Đang học
                                   </span>
