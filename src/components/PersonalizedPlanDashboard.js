@@ -70,21 +70,21 @@ export default function PersonalizedPlanDashboard({
 
   return (
     <div className="space-y-6 animate-fadeIn font-sans">
-      {/* ─── 0. INTERACTIVE REAL-TIME ROADMAP RECONFIGURATION TUNER ─── */}
-      <div className={`p-4 md:p-5 rounded-lg border transition-all space-y-4 ${
-        isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-slate-900 border-slate-800'
+      {/* ─── 0. TÙY CHỈNH MỤC TIÊU HỌC ─── */}
+      <div className={`p-4 md:p-5 rounded-xl border transition-colors space-y-3.5 ${
+        isLight ? 'bg-white border-slate-200' : 'bg-[#111827] border-slate-800'
       }`}>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <span className="w-7 h-7 rounded-md bg-blue-600 text-white flex items-center justify-center text-xs font-bold shadow-xs">
+            <span className="w-6 h-6 rounded-md bg-blue-600 text-white flex items-center justify-center text-xs font-bold">
               <i className="fa-solid fa-sliders" />
             </span>
             <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-              Bộ Tái Thiết Lập Lộ Trình Động (Live Engine Tuner)
+              Tùy chỉnh mục tiêu học
             </span>
           </div>
-          <span className="text-[11px] text-slate-500 italic">
-            Bấm chọn để kiểm tra: Lộ trình, giai đoạn và bài học thay đổi tức thì
+          <span className="text-xs text-slate-500">
+            Chọn chứng chỉ, thời gian và cường độ để tối ưu lộ trình
           </span>
         </div>
 
@@ -391,18 +391,18 @@ export default function PersonalizedPlanDashboard({
         </div>
       </div>
 
-      {/* ─── 2. SKILL GAP ENGINE & PRIORITY ALLOCATION ─── */}
-      <div className={`p-5 md:p-6 rounded-2xl border ${
-        isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
+      {/* ─── 2. PHÂN BỔ THỜI GIAN THEO KỸ NĂNG ─── */}
+      <div className={`p-5 rounded-xl border ${
+        isLight ? 'bg-white border-slate-200' : 'bg-[#111827] border-slate-800'
       }`}>
         <div className="flex items-center justify-between mb-3.5">
           <div>
-            <h3 className="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+            <h3 className="text-xs md:text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <i className="fa-solid fa-chart-pie text-blue-600" />
-              Phân Tích Khoảng Cách Năng Lực (Skill Gap Engine) & Tỷ Trọng Thời Gian
+              Phân bổ thời gian theo kỹ năng
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
-              Thời gian học được phân bổ dựa trên: Lỗ hổng kỹ năng + Trọng số đề thi + Mục tiêu điểm
+              Thời gian học mỗi ngày được cân đối theo kỹ năng cần bứt phá
             </p>
           </div>
         </div>
@@ -466,23 +466,20 @@ export default function PersonalizedPlanDashboard({
         </div>
       </div>
 
-      {/* ─── 3. MULTI-PHASE ROADMAP & COMPETENCY GATES ─── */}
-      <div className={`p-5 md:p-6 rounded-2xl border ${
-        isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
+      {/* ─── 3. LỘ TRÌNH CÁC GIAI ĐOẠN ─── */}
+      <div className={`p-5 rounded-xl border ${
+        isLight ? 'bg-white border-slate-200' : 'bg-[#111827] border-slate-800'
       }`}>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3.5">
           <div>
-            <h3 className="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+            <h3 className="text-xs md:text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <i className="fa-solid fa-route text-blue-600" />
-              Lộ Trình Các Giai Đoạn (Learning Phases) & Cổng Năng Lực (Competency Gates)
+              Lộ trình các giai đoạn
             </h3>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Chuyển phase dựa trên năng lực kiểm tra thực tế (Competency Criteria), không chỉ đếm ngày học.
-            </p>
           </div>
 
-          <span className="text-xs font-mono font-bold text-slate-400">
-            {phases.length} Giai Đoạn Hoàn Chỉnh
+          <span className="text-xs font-mono font-medium text-slate-400">
+            {phases.length} Giai đoạn
           </span>
         </div>
 
@@ -582,22 +579,19 @@ export default function PersonalizedPlanDashboard({
         )}
       </div>
 
-      {/* ─── 4. TIME-BUDGETED DAILY PLAN & "WHY THIS TASK?" ─── */}
-      <div className={`p-5 md:p-6 rounded-2xl border ${
-        isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
+      {/* ─── 4. NHIỆM VỤ HỌC HÔM NAY ─── */}
+      <div className={`p-5 rounded-xl border ${
+        isLight ? 'bg-white border-slate-200' : 'bg-[#111827] border-slate-800'
       }`}>
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3.5">
           <div>
-            <h3 className="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+            <h3 className="text-xs md:text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <i className="fa-solid fa-clock-check text-blue-600" />
-              Nhiệm Vụ Học Hôm Nay (Time-Budgeted: {dailyPlan.scheduledTasksDuration} / {dailyPlan.dailyTotalMinutes} phút)
+              Nhiệm vụ học hôm nay ({dailyPlan.scheduledTasksDuration} / {dailyPlan.dailyTotalMinutes} phút)
             </h3>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Mỗi nhiệm vụ có lý do sư phạm xác định (Deterministic Reason) dựa trên chênh lệch năng lực.
-            </p>
           </div>
 
-          <span className="px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900">
+          <span className="px-2 py-0.5 rounded text-xs font-mono font-medium bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900">
             {dailyPlan.tasks.length} Nhiệm vụ
           </span>
         </div>

@@ -200,32 +200,32 @@ export default function Dashboard({ onNavigate, scores = [], scheduleRows = [], 
       id: 'ielts-roadmap',
       icon: 'fa-plane-departure',
       label: 'Lộ Trình IELTS 7.0+',
-      badge: 'Mục Tiêu Du Học',
-      desc: 'Chiến lược 24 tuần cấp tốc bứt phá 5.5 lên 7.0+ chuẩn Cambridge 12 - 19 cho du học',
-      badgeColor: 'bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 border border-rose-200 dark:border-rose-800',
+      badge: 'IELTS Cambridge',
+      desc: 'Lộ trình 24 tuần cấp tốc chuẩn đề Cambridge 12 - 19',
+      badgeColor: 'bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300 border border-blue-200 dark:border-blue-800',
     },
     {
       id: 'ai-coach',
       icon: 'fa-calendar-check',
       label: 'Lộ Trình & Kế Hoạch',
-      badge: 'Lịch học chi tiết',
-      desc: 'Đồng bộ 5 trụ cột đa nguồn, lịch học thông minh và tự cân bằng',
-      badgeColor: 'bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300 border border-blue-200 dark:border-blue-800',
+      badge: 'Lịch học',
+      desc: 'Kế hoạch học tập hàng ngày và theo dõi tiến độ',
+      badgeColor: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800',
     },
     {
       id: 'reading',
       icon: 'fa-book-open-reader',
       label: 'Luyện Đọc (Reading)',
       badge: 'CEFR A1-C1',
-      desc: 'Đọc hiểu chuyên sâu theo cấp độ CEFR A1-C1 kèm giải thích chi tiết',
+      desc: 'Đọc hiểu theo cấp độ kèm dịch song ngữ và giải thích',
       badgeColor: 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800',
     },
     {
       id: 'writing',
       icon: 'fa-pen-to-square',
       label: 'Luyện Viết (Writing)',
-      badge: 'Dịch câu & Essay',
-      desc: 'Luyện dịch câu, viết luận và phân tích ngữ pháp trực quan',
+      badge: 'Dịch câu',
+      desc: 'Luyện dịch câu Việt - Anh 5 cấp độ phản xạ',
       badgeColor: 'bg-purple-50 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300 border border-purple-200 dark:border-purple-800',
     },
     {
@@ -233,23 +233,23 @@ export default function Dashboard({ onNavigate, scores = [], scheduleRows = [], 
       icon: 'fa-circle-play',
       label: 'Video & Shadowing',
       badge: 'Luyện nghe & Nhại',
-      desc: 'Học qua video ngắn, tra từ, shadowing & chính tả',
+      desc: 'Luyện nghe nhại Shadowing và ghim video tiện lợi',
       badgeColor: 'bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300 border border-blue-200 dark:border-blue-800',
     },
     {
       id: 'grammar',
       icon: 'fa-book-open',
       label: 'Ngữ Pháp Chuyên Đề',
-      badge: '115 Bài CEFR',
-      desc: 'Lý thuyết, bài tập trắc nghiệm và đo lường tiến độ hoàn thành',
+      badge: '115 Bài',
+      desc: '115 chuyên đề lý thuyết kèm bài tập trắc nghiệm',
       badgeColor: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800',
     },
     {
       id: 'vocabulary',
       icon: 'fa-layer-group',
-      label: 'Kho Từ Vựng TOEIC',
-      badge: 'Flashcard 4 Level',
-      desc: 'Từ vựng TOEIC Part 1-7, Daily Dictation, Study4 đề thi và Flashcard',
+      label: 'Kho Từ Vựng',
+      badge: 'Flashcards',
+      desc: 'Từ vựng đề thi TOEIC, IELTS và Daily Dictation',
       badgeColor: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700',
     },
   ];
@@ -305,9 +305,6 @@ export default function Dashboard({ onNavigate, scores = [], scheduleRows = [], 
             <h1 className="text-lg md:text-xl font-bold tracking-tight text-slate-900 dark:text-white">
               Xin chào, {currentUser ? currentUser.name : 'Học viên'}
             </h1>
-            <p className="text-xs text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed">
-              Kế hoạch học tập hôm nay: hoàn thành bài học dở, luyện từ vựng và giải bài tập theo lộ trình.
-            </p>
           </div>
 
           {/* Goal & Score Stat Badge */}
@@ -448,15 +445,15 @@ export default function Dashboard({ onNavigate, scores = [], scheduleRows = [], 
         <div
           className={`p-3.5 px-4 rounded-lg border flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
             isLight
-              ? 'bg-slate-50 border-slate-200 text-slate-900'
+              ? 'bg-amber-50/60 border-amber-200/80 text-slate-900'
               : 'bg-slate-900 border-slate-800 text-slate-100'
           }`}
         >
           <div className="space-y-0.5">
-            <span className="text-[11px] font-bold text-amber-700 dark:text-amber-400 block">
+            <span className={`text-[11px] font-bold block ${isLight ? 'text-amber-800' : 'text-amber-400'}`}>
               Trọng tâm cần rèn luyện: {weakAreaAnalysis.skill}
             </span>
-            <p className="text-xs text-slate-600 dark:text-slate-400 leading-snug">
+            <p className={`text-xs leading-snug ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
               {weakAreaAnalysis.tip}
             </p>
           </div>
@@ -587,16 +584,18 @@ export default function Dashboard({ onNavigate, scores = [], scheduleRows = [], 
               {leaderboard.slice(0, 4).map((userItem, idx) => (
                 <div
                   key={userItem.id}
-                  className={`flex items-center justify-between p-2 rounded-xl transition ${
+                  className={`flex items-center justify-between p-2.5 rounded-xl transition ${
                     currentUser && currentUser.id === userItem.id
-                      ? 'bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800'
+                      ? isLight
+                        ? 'bg-blue-50/90 border border-blue-200 text-slate-900 shadow-xs'
+                        : 'bg-blue-950/40 border border-blue-800 text-white'
                       : isLight
-                      ? 'bg-slate-50'
-                      : 'bg-slate-800/40'
+                      ? 'bg-slate-50 border border-slate-200/70 text-slate-800'
+                      : 'bg-slate-800/40 text-slate-200'
                   }`}
                 >
                   <div className="flex items-center gap-2.5 truncate">
-                    <span className="text-xs font-bold text-slate-400 w-4 text-center">
+                    <span className={`text-xs font-bold w-4 text-center ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
                       {idx + 1}
                     </span>
                     <img
@@ -605,10 +604,10 @@ export default function Dashboard({ onNavigate, scores = [], scheduleRows = [], 
                       className="w-7 h-7 rounded-lg object-cover shrink-0"
                     />
                     <div className="truncate">
-                      <p className="text-xs font-bold truncate">{userItem.name}</p>
+                      <p className={`text-xs font-bold truncate ${isLight ? 'text-slate-900' : 'text-white'}`}>{userItem.name}</p>
                     </div>
                   </div>
-                  <span className="text-xs font-bold text-slate-700 dark:text-slate-300 shrink-0">
+                  <span className={`text-xs font-bold shrink-0 ${isLight ? 'text-blue-700 font-mono' : 'text-slate-300'}`}>
                     {userItem.bestScore || '0'} pts
                   </span>
                 </div>

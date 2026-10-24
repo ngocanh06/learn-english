@@ -269,12 +269,6 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
               </button>
             </div>
 
-            <p className="text-sm md:text-base text-slate-300 leading-relaxed">
-              Chiến lược {dynamicIelts.totalWeeks} tuần cá nhân hóa theo quỹ thời gian: luyện tập bộ{' '}
-              {dynamicIelts.cambridgeSeries}, làm chủ Writing Task 1 & 2, phản xạ Speaking Part 1 - 3 và
-              hấp thụ từ vựng chuyên sâu Academic Word List.
-            </p>
-
             {/* Quick Metrics Chips */}
             <div className="flex flex-wrap items-center gap-2.5 pt-1 text-xs">
               <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 flex items-center gap-1.5 text-slate-200">
@@ -475,22 +469,28 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
       >
         {[
           {
+            id: 'roadmap',
+            label: dynamicIelts.daysRemaining <= 45
+              ? `Nhiệm Vụ Học (${dynamicIelts.totalWeeks} Tuần)`
+              : dynamicIelts.daysRemaining <= 70
+              ? `Nhiệm Vụ Học (${dynamicIelts.totalWeeks} Tuần)`
+              : dynamicIelts.daysRemaining <= 130
+              ? `Nhiệm Vụ Học (${dynamicIelts.totalWeeks} Tuần)`
+              : 'Nhiệm Vụ Học (24 Tuần)',
+            icon: 'fa-calendar-week',
+            badge: `${dynamicIelts.totalWeeks} tuần`,
+          },
+          {
+            id: 'strategy',
+            label: 'Kế Hoạch & Mục Tiêu',
+            icon: 'fa-chess',
+            badge: 'Chiến lược 3 chặng',
+          },
+          {
             id: 'placement-test',
             label: 'Đánh giá năng lực đầu vào',
             icon: 'fa-crosshairs',
             badge: diagnosticResult ? `Band ${diagnosticResult.estimatedBand.toFixed(1)}` : 'Nên làm',
-          },
-          {
-            id: 'roadmap',
-            label: dynamicIelts.daysRemaining <= 45
-              ? `Lộ Trình Cấp Tốc (${dynamicIelts.totalWeeks} Tuần)`
-              : dynamicIelts.daysRemaining <= 70
-              ? `Lộ Trình Tăng Tốc (${dynamicIelts.totalWeeks} Tuần)`
-              : dynamicIelts.daysRemaining <= 130
-              ? `Lộ Trình Chuẩn (${dynamicIelts.totalWeeks} Tuần)`
-              : 'Lộ Trình Toàn Diện (24 Tuần)',
-            icon: 'fa-calendar-week',
-            badge: `${dynamicIelts.totalWeeks} tuần`,
           },
           { id: 'listening-lab', label: 'Phòng Luyện Nghe', icon: 'fa-headphones', badge: 'Cam 12-18' },
           { id: 'reading-lab', label: 'Phòng Luyện Đọc', icon: 'fa-book-open', badge: 'Cam 17-18' },
@@ -551,9 +551,9 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
       )}
 
       {/* ═══════════════════════════════════════════════════════════════ */}
-      {/* ─── TAB 1: LỘ TRÌNH 24 TUẦN (WEEKLY ROADMAP) ────────────────── */}
+      {/* ─── TAB: KẾ HOẠCH HOÁ & MỤC TIÊU (STRATEGY & FRAMEWORK) ─────── */}
       {/* ═══════════════════════════════════════════════════════════════ */}
-      {activeSubTab === 'roadmap' && (
+      {activeSubTab === 'strategy' && (
         <div className="space-y-6">
           {/* ─── IELTS ADAPTIVE GUIDANCE & ACTION CARD (MASTER PROMPT V2.1) ─── */}
           <div
@@ -601,7 +601,7 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
 
                 <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                   {diagnosticResult
-                    ? `Dựa trên kết quả Test Năng Lực (${diagnosticResult.score}/25 câu đúng), hệ thống đề xuất học tập từ Tuần ${diagnosticResult.recommendedWeek} và tập trung giải quyết bẫy điểm yếu.`
+                    ? `Dựa trên kết quả Test Năng Lực (${diagnosticResult.score}/25 câu đúng), hệ thống đề xuất học tập từ Tuần ${diagnosticResult.recommendedWeek || 1} và tập trung giải quyết bẫy điểm yếu.`
                     : 'Chưa làm bài test đánh giá đầu vào. Hãy làm bài test 15 phút để hệ thống tự động cá nhân hóa lộ trình và nhảy thẳng vào tuần phù hợp.'}
                 </p>
               </div>
@@ -651,10 +651,13 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
                     <>
                       <button
                         onClick={() => {
+                          setActiveSubTab('roadmap');
                           if (adaptiveAnalysis.nextWeek) {
                             setExpandedWeek(adaptiveAnalysis.nextWeek.weekNum);
-                            const el = document.getElementById(`week-card-${adaptiveAnalysis.nextWeek.weekNum}`);
-                            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            setTimeout(() => {
+                              const el = document.getElementById(`week-card-${adaptiveAnalysis.nextWeek.weekNum}`);
+                              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }, 100);
                           }
                         }}
                         className="flex-1 py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition shadow-xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-98"
@@ -699,9 +702,10 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
               return (
                 <div
                   key={phase.id}
-                  onClick={() =>
-                    setSelectedPhase(selectedPhase === phase.id ? 'ALL' : phase.id)
-                  }
+                  onClick={() => {
+                    setSelectedPhase(selectedPhase === phase.id ? 'ALL' : phase.id);
+                    setActiveSubTab('roadmap');
+                  }}
                   className={`p-5 rounded-2xl border cursor-pointer transition-all duration-200 select-none flex flex-col justify-between group ${
                     active
                       ? 'bg-blue-600/10 border-blue-500 ring-2 ring-blue-500/30 shadow-md -translate-y-0.5'
@@ -738,10 +742,79 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
                   <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                     {phase.description}
                   </p>
+                  
+                  <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-blue-600 dark:text-blue-400">
+                    <span>Xem danh sách bài học chặng này</span>
+                    <i className="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </div>
               );
             })}
           </div>
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════════════════════════════ */}
+      {/* ─── TAB: NHIỆM VỤ HỌC (WEEKLY ROADMAP TASKS DIRECT ACCESS) ──── */}
+      {/* ═══════════════════════════════════════════════════════════════ */}
+      {activeSubTab === 'roadmap' && (
+        <div className="space-y-4">
+          {/* Thanh Bài Học Kế Tiếp Hôm Nay Tinh Gọn (Không rườm rà) */}
+          {adaptiveAnalysis.nextTask && (
+            <div
+              className={`p-3.5 px-4 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs ${
+                isLight ? 'bg-white border-blue-200' : 'bg-slate-900 border-slate-800'
+              }`}
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <span className="w-8 h-8 rounded-lg bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs shrink-0 font-bold">
+                  <i className="fa-solid fa-bolt" />
+                </span>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                      Bài học kế tiếp: Tuần {adaptiveAnalysis.nextWeek?.weekNum}
+                    </span>
+                    <span className="text-[10px] text-slate-400">
+                      • {completedCount}/{totalTasksCount} bài ({progressPercent}%)
+                    </span>
+                  </div>
+                  <h4 className="text-xs md:text-sm font-bold text-slate-900 dark:text-white truncate">
+                    {adaptiveAnalysis.nextTask.title}
+                  </h4>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+                <button
+                  onClick={() => {
+                    if (adaptiveAnalysis.nextWeek) {
+                      setExpandedWeek(adaptiveAnalysis.nextWeek.weekNum);
+                      const el = document.getElementById(`week-card-${adaptiveAnalysis.nextWeek.weekNum}`);
+                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                  }}
+                  className="py-1.5 px-3.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-98"
+                >
+                  <i className="fa-solid fa-play text-[9px]" />
+                  <span>Vào học ngay</span>
+                </button>
+
+                <button
+                  onClick={() => toggleTask(adaptiveAnalysis.nextTask.id)}
+                  className={`py-1.5 px-3 rounded-lg border text-xs font-bold transition flex items-center gap-1 cursor-pointer ${
+                    isLight
+                      ? 'border-slate-300 hover:bg-slate-100 text-slate-700'
+                      : 'border-slate-600 hover:bg-slate-700 text-slate-200'
+                  }`}
+                  title="Đánh dấu hoàn thành"
+                >
+                  <i className="fa-solid fa-check text-xs" />
+                  <span>Xong</span>
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Filters & Search Bar */}
           <div

@@ -152,6 +152,9 @@ export default function VideoPlayerStudio({ video, onBack, theme = 'dark', dateK
   // Tra từ nhanh
   const [lookupWord, setLookupWord] = useState(null);
 
+  // Ghim video cố định khi cuộn màn hình luyện Shadowing
+  const [isVideoPinned, setIsVideoPinned] = useState(true);
+
   // Favorites
   const [favorites, setFavorites] = useUserStorage('favorite_videos_v1', []);
   const isFavorited = favorites.includes(video.id);
@@ -748,12 +751,43 @@ export default function VideoPlayerStudio({ video, onBack, theme = 'dark', dateK
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* ─── LEFT COLUMN: VIDEO PLAYER & METADATA (7 cols) ─── */}
         <div className="lg:col-span-7 flex flex-col gap-4">
-          {/* YouTube Video Player Responsive Container */}
+          {/* YouTube Video Player Responsive Container - Sticky Pinned */}
           <div
-            ref={iframeContainerRef}
-            className="relative w-full aspect-video rounded-lg overflow-hidden bg-black border border-slate-800"
+            className={`transition-all duration-200 ${
+              isVideoPinned
+                ? 'sticky top-[calc(3.5rem+env(safe-area-inset-top,0px))] lg:top-4 z-20 pb-2 -mt-1 pt-1 backdrop-blur-md bg-slate-50/95 dark:bg-[#0b0f19]/95'
+                : 'relative z-10'
+            }`}
           >
-            <div id="youtube-player-embed" className="w-full h-full" />
+            <div
+              ref={iframeContainerRef}
+              className="relative w-full aspect-video rounded-xl overflow-hidden bg-black border border-slate-800 shadow-xl"
+            >
+              <div id="youtube-player-embed" className="w-full h-full" />
+            </div>
+
+            {/* Subtle Pin Control Pill */}
+            <div className="flex items-center justify-between px-1 pt-1.5 text-[11px]">
+              <span className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 font-medium">
+                <i className="fa-solid fa-circle-play text-red-500 text-xs" />
+                <span className="truncate max-w-[200px] sm:max-w-xs">{video.title}</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => setIsVideoPinned(!isVideoPinned)}
+                className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold transition cursor-pointer ${
+                  isVideoPinned
+                    ? 'bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30 shadow-2xs'
+                    : isLight
+                    ? 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                }`}
+                title={isVideoPinned ? 'Bấm để bỏ ghim video khi cuộn' : 'Bấm để ghim video ở đầu trang khi cuộn'}
+              >
+                <i className={`fa-solid ${isVideoPinned ? 'fa-thumbtack text-blue-500' : 'fa-thumbtack opacity-50'}`} />
+                <span>{isVideoPinned ? 'Đang ghim video' : 'Ghim video'}</span>
+              </button>
+            </div>
           </div>
 
           {/* Video Info Header */}

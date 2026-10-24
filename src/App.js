@@ -104,7 +104,13 @@ function MainApp() {
 
   useEffect(() => {
     if (typeof theme === 'string') {
-      document.documentElement.className = theme;
+      document.documentElement.classList.remove('light', 'dark');
+      document.documentElement.classList.add(theme);
+      document.documentElement.setAttribute('data-theme', theme);
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+      if (metaThemeColor) {
+        metaThemeColor.setAttribute('content', theme === 'light' ? '#f8fafc' : '#0a0f1a');
+      }
     }
   }, [theme]);
 

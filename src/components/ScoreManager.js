@@ -164,11 +164,11 @@ export default function ScoreManager({ theme }) {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h2 className={`text-2xl font-black flex items-center gap-3 ${isLight ? 'text-slate-900' : 'text-white'}`}>
-            <i className="fa-solid fa-chart-line text-indigo-500" />
+          <h2 className={`text-xl md:text-2xl font-bold flex items-center gap-2.5 ${isLight ? 'text-slate-900' : 'text-white'}`}>
+            <i className="fa-solid fa-chart-line text-blue-600 dark:text-blue-400 text-lg" />
             Điểm & Tiến bộ
           </h2>
-          <p className="text-slate-500 text-sm mt-1">{safeEntries.length} bài thi đã ghi nhận • Tự động quy đổi điểm TOEIC</p>
+          <p className="text-slate-500 text-xs md:text-sm mt-0.5">{safeEntries.length} bài thi đã ghi nhận • Tự động quy đổi điểm TOEIC</p>
         </div>
         <button onClick={() => {
           if (showForm && editingId) {
@@ -178,30 +178,30 @@ export default function ScoreManager({ theme }) {
             if (showForm) handleCancel();
           }
         }}
-          className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-sm transition shadow-lg shadow-indigo-600/20">
-          <i className="fa-solid fa-plus" /> Thêm kết quả bài thi
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-xs transition cursor-pointer">
+          <i className="fa-solid fa-plus text-xs" /> Thêm kết quả bài thi
         </button>
       </div>
 
       {/* Entry Form */}
       {showForm && (
-        <form ref={formRef} onSubmit={handleSubmit} className={`border rounded-2xl p-5 flex flex-col gap-4 shadow-lg transition-all ${
-          editingId ? 'ring-2 ring-indigo-500 shadow-indigo-500/20' : ''
+        <form ref={formRef} onSubmit={handleSubmit} className={`border rounded-xl p-5 flex flex-col gap-4 transition-all ${
+          editingId ? 'ring-2 ring-blue-500' : ''
         } ${
-          isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-800 border-slate-700 text-white'
+          isLight ? 'bg-white border-slate-200 text-slate-900 shadow-xs' : 'bg-slate-900 border-slate-800 text-white'
         }`}>
-          <div className="flex items-center justify-between flex-wrap gap-2 border-b border-slate-200 dark:border-slate-700 pb-3">
-            <h3 className={`font-black text-base flex items-center gap-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>
-              <i className="fa-solid fa-pen-to-square text-indigo-500" /> {editingId ? 'Chỉnh sửa kết quả bài thi' : 'Nhập kết quả bài thi'}
+          <div className="flex items-center justify-between flex-wrap gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
+            <h3 className={`font-bold text-sm md:text-base flex items-center gap-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>
+              <i className="fa-solid fa-pen-to-square text-blue-600" /> {editingId ? 'Chỉnh sửa kết quả bài thi' : 'Nhập kết quả bài thi'}
             </h3>
             {/* Input Mode Switch */}
-            <div className={`flex rounded-xl p-1 border ${isLight ? 'bg-slate-100 border-slate-200' : 'bg-slate-900 border-slate-700'}`}>
+            <div className={`flex rounded-lg p-0.5 border ${isLight ? 'bg-slate-100 border-slate-200' : 'bg-slate-900 border-slate-800'}`}>
               <button type="button" onClick={() => handleInputChange('inputMode', 'correct_count')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${form.inputMode === 'correct_count' ? 'bg-indigo-600 text-white shadow' : 'text-slate-500 hover:text-slate-900'}`}>
-                <i className="fa-solid fa-calculator mr-1.5" /> Nhập số câu đúng (Quy đổi điểm)
+                className={`px-3 py-1.5 rounded-md text-xs font-semibold transition cursor-pointer ${form.inputMode === 'correct_count' ? 'bg-blue-600 text-white' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}>
+                <i className="fa-solid fa-calculator mr-1.5" /> Nhập số câu đúng
               </button>
               <button type="button" onClick={() => handleInputChange('inputMode', 'direct_score')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${form.inputMode === 'direct_score' ? 'bg-indigo-600 text-white shadow' : 'text-slate-500 hover:text-slate-900'}`}>
+                className={`px-3 py-1.5 rounded-md text-xs font-semibold transition cursor-pointer ${form.inputMode === 'direct_score' ? 'bg-blue-600 text-white' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}>
                 <i className="fa-solid fa-trophy mr-1.5" /> Nhập điểm trực tiếp
               </button>
             </div>
@@ -209,10 +209,10 @@ export default function ScoreManager({ theme }) {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-bold text-slate-500">Ngày thi *</label>
+              <label className="text-xs font-semibold text-slate-500">Ngày thi *</label>
               <input type="date" value={form.date} onChange={e => handleInputChange('date', e.target.value)} required
-                className={`border text-sm rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-500 ${
-                  isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-700 text-white'
+                className={`border text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 ${
+                  isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-800 border-slate-700 text-white'
                 }`} />
             </div>
             <div className="flex flex-col gap-1">
@@ -315,14 +315,14 @@ export default function ScoreManager({ theme }) {
           )}
 
           <div className="flex items-center justify-between gap-3 pt-2">
-            <div className="text-sm font-black text-indigo-600 dark:text-indigo-300">
-              Tổng điểm dự kiến: <span className="text-2xl text-emerald-600 dark:text-emerald-400 ml-1">{form.total || 0}</span> / 990
+            <div className="text-sm font-bold text-blue-600 dark:text-blue-400">
+              Tổng điểm dự kiến: <span className="text-xl text-emerald-600 dark:text-emerald-400 ml-1 font-mono">{form.total || 0}</span> / 990
             </div>
             <div className="flex gap-2">
-              <button type="button" onClick={handleCancel} className={`px-4 py-2 rounded-xl font-bold text-sm ${
-                isLight ? 'bg-slate-200 text-slate-700' : 'bg-slate-700 text-slate-200'
+              <button type="button" onClick={handleCancel} className={`px-3 py-1.5 rounded-lg font-medium text-xs cursor-pointer ${
+                isLight ? 'bg-slate-100 hover:bg-slate-200 text-slate-700' : 'bg-slate-800 hover:bg-slate-700 text-slate-200'
               }`}>Hủy</button>
-              <button type="submit" className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-sm shadow-lg">
+              <button type="submit" className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-xs cursor-pointer">
                 {editingId ? 'Cập nhật' : 'Lưu kết quả'}
               </button>
             </div>
@@ -333,28 +333,28 @@ export default function ScoreManager({ theme }) {
       {safeEntries.length > 0 && (
         <>
           {/* Top Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div className={`rounded-2xl p-4 border ${isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-slate-800 border-slate-700'}`}>
-              <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Điểm mới nhất</p>
-              <p className={`text-3xl font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>{latestEntry?.total || '—'}</p>
-              {currentMilestone && <p className="text-xs mt-1 font-bold" style={{ color: currentMilestone.color }}>{currentMilestone.icon} {currentMilestone.label}</p>}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+            <div className={`rounded-lg p-3.5 border ${isLight ? 'bg-white border-slate-200' : 'bg-[#111827] border-slate-800'}`}>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mb-0.5">Điểm mới nhất</p>
+              <p className={`text-2xl font-bold font-mono ${isLight ? 'text-slate-900' : 'text-white'}`}>{latestEntry?.total || '—'}</p>
+              {currentMilestone && <p className="text-[11px] mt-0.5 font-medium" style={{ color: currentMilestone.color }}>{currentMilestone.icon} {currentMilestone.label}</p>}
             </div>
-            <div className={`rounded-2xl p-4 border ${isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-slate-800 border-slate-700'}`}>
-              <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Điểm cao nhất</p>
-              <p className="text-3xl font-black text-emerald-500">{Math.max(...safeEntries.map(e => +e.total || 0))}</p>
+            <div className={`rounded-lg p-3.5 border ${isLight ? 'bg-white border-slate-200' : 'bg-[#111827] border-slate-800'}`}>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mb-0.5">Điểm cao nhất</p>
+              <p className="text-2xl font-bold font-mono text-emerald-600 dark:text-emerald-400">{Math.max(...safeEntries.map(e => +e.total || 0))}</p>
             </div>
-            <div className={`rounded-2xl p-4 border ${isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-slate-800 border-slate-700'}`}>
-              <p className="text-xs text-amber-500 font-bold uppercase tracking-widest mb-1">TB câu chưa làm kịp</p>
-              <p className="text-3xl font-black text-amber-500">{avgUnanswered} <span className="text-xs font-normal text-slate-400">câu/đề</span></p>
+            <div className={`rounded-lg p-3.5 border ${isLight ? 'bg-white border-slate-200' : 'bg-[#111827] border-slate-800'}`}>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mb-0.5">TB chưa làm kịp</p>
+              <p className="text-2xl font-bold font-mono text-amber-600 dark:text-amber-400">{avgUnanswered} <span className="text-xs font-normal text-slate-400">câu/đề</span></p>
             </div>
-            <div className={`rounded-2xl p-4 border ${isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-slate-800 border-slate-700'}`}>
-              <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Mục tiêu TOEIC</p>
-              <div className="flex items-center gap-2">
+            <div className={`rounded-lg p-3.5 border ${isLight ? 'bg-white border-slate-200' : 'bg-[#111827] border-slate-800'}`}>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mb-0.5">Mục tiêu TOEIC</p>
+              <div className="flex items-center gap-1.5">
                 <input type="number" value={targetScore} onChange={e => setTargetScore(+e.target.value)} min="300" max="990" step="50"
-                  className={`w-20 border font-black text-xl rounded-xl px-2 py-0.5 focus:outline-none ${
-                    isLight ? 'bg-slate-50 border-slate-200 text-amber-600' : 'bg-slate-900 border-slate-700 text-yellow-300'
+                  className={`w-16 border font-bold font-mono text-lg rounded-md px-1.5 py-0.5 focus:outline-none ${
+                    isLight ? 'bg-slate-50 border-slate-200 text-blue-600' : 'bg-slate-900 border-slate-700 text-blue-400'
                   }`} />
-                <span className="text-slate-400 text-sm font-bold">/ 990</span>
+                <span className="text-slate-400 text-xs font-medium">/ 990</span>
               </div>
             </div>
           </div>

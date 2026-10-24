@@ -3,6 +3,7 @@ import { NAV_ITEMS } from '../config/navigation';
 import { useAuth } from '../context/AuthContext';
 import { useUserStorage } from '../hooks/useUserStorage';
 import { DEFAULT_USER_LEARNING_PROFILE, CERTIFICATIONS } from '../config/learningCertifications';
+import { isSupabaseConfigured } from '../services/supabaseClient';
 
 export default function Header({
   activeNav,
@@ -13,16 +14,25 @@ export default function Header({
   overdueCount = 0,
 }) {
   const isLight = theme === 'light';
-  const { currentUser, isAuthenticated, openLogin, syncCloudData, isSyncingCloud } = useAuth();
+  const { currentUser, isAuthenticated, openLogin, syncCloudData, isSyncingCloud, setUserProfileModalOpen } = useAuth();
   const [learningProfile] = useUserStorage('user_learning_profile_v1', DEFAULT_USER_LEARNING_PROFILE);
   const activeCert = CERTIFICATIONS.find((c) => c.id === learningProfile?.certification) || CERTIFICATIONS[1];
   const currentItem = NAV_ITEMS.find((n) => n.id === activeNav) || NAV_ITEMS[0];
   const [syncToast, setSyncToast] = React.useState('');
+  const isCloudConfigured = isSupabaseConfigured();
 
   const handleManualSync = async () => {
     if (isSyncingCloud) return;
-    const res = await syncCloudData();
-    setSyncToast(`Đã đồng bộ ${res.pulled + res.pushed > 0 ? `${res.pulled + res.pushed} mục` : 'mới nhất'}!`);
+    if (!isCloudConfigured) {
+      setUserProfileModalOpen(true);
+      return;
+    }
+    try {
+      const res = await syncCloudData();
+      setSyncToast(`Đã đồng bộ ${res.pulled + res.pushed > 0 ? `${res.pulled + res.pushed} mục` : 'mới nhất'}!`);
+    } catch (e) {
+      setUserProfileModalOpen(true);
+    }
     setTimeout(() => setSyncToast(''), 3000);
   };
 
@@ -85,21 +95,33 @@ export default function Header({
             </button>
           )}
 
-          {/* Cloud Sync Button */}
+          {/* Cloud Sync / Fast Direct Sync Button */}
           <button
             onClick={handleManualSync}
             disabled={isSyncingCloud}
             className={`p-2 rounded-lg border text-xs cursor-pointer transition active:scale-95 ${
               isSyncingCloud
                 ? 'bg-blue-50 border-blue-300 text-blue-600 dark:bg-blue-950/40 dark:border-blue-700 dark:text-blue-400'
+                : isCloudConfigured
+                ? isLight
+                  ? 'bg-slate-100 border-slate-200 text-emerald-600 hover:bg-slate-200'
+                  : 'bg-slate-800 border-slate-700 text-emerald-400 hover:bg-slate-750'
                 : isLight
-                ? 'bg-slate-100 border-slate-200 text-emerald-600 hover:bg-slate-200'
-                : 'bg-slate-800 border-slate-700 text-emerald-400 hover:bg-slate-750'
+                ? 'bg-amber-50 border-amber-200 text-amber-700 hover:bg-amber-100'
+                : 'bg-amber-950/40 border-amber-800 text-amber-400 hover:bg-amber-900/50'
             }`}
-            title="Đồng bộ dữ liệu Supabase Cloud (Máy tính ⇄ Điện thoại)"
-            aria-label="Đồng bộ Cloud"
+            title={isCloudConfigured ? 'Đồng bộ dữ liệu Supabase Cloud (Máy tính ⇄ Điện thoại)' : 'Mở Sao Lưu & Chuyển Tiến Độ Nhanh'}
+            aria-label="Đồng bộ tiến độ"
           >
-            <i className={`fa-solid ${isSyncingCloud ? 'fa-arrows-rotate animate-spin' : 'fa-cloud-arrow-up'}`} />
+            <i
+              className={`fa-solid ${
+                isSyncingCloud
+                  ? 'fa-arrows-rotate animate-spin text-blue-500'
+                  : isCloudConfigured
+                  ? 'fa-cloud-arrow-up text-emerald-500'
+                  : 'fa-bolt text-amber-500'
+              }`}
+            />
           </button>
 
           <button

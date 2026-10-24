@@ -340,10 +340,6 @@ export default function AILearningCoach({
               Kế Hoạch &amp; Lộ Trình Học Tập
             </h1>
 
-            <p className="text-slate-600 dark:text-slate-400 text-xs md:text-sm leading-relaxed">
-              Hệ thống theo dõi và điều phối 6 trụ cột: Nghe chép chính tả phản xạ, Ngữ pháp toàn diện (115 chuyên đề), Đọc hiểu chuẩn CEFR A1-C1, Dịch viết câu phản xạ, Luyện nói Shadowing AI và Luyện đề thực chiến.
-            </p>
-
             {/* User Details Pill */}
             <div
               className={`flex items-center gap-2 text-xs px-3.5 py-1.5 rounded-xl border w-fit flex-wrap ${

@@ -466,14 +466,14 @@ export default function VocabMasterHub({
                   {unlearnedWords.length} từ chờ học
                 </span>
               </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                1. Học Từ Mới (Learn New Words)
+              <h3 className="text-sm md:text-base font-bold text-slate-900 dark:text-white">
+                1. Học Từ Mới
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                Nạp từ vựng có hướng dẫn chuẩn: Từ vựng &rarr; Phát âm bản ngữ &rarr; Từ loại &rarr; Nghĩa tiếng Việt &rarr; Câu ví dụ ngữ cảnh &rarr; Flashcard kiểm tra phản xạ tức thì.
+                Học từ mới qua phát âm chuẩn, nghĩa ngữ cảnh và flashcard phản xạ nhanh.
               </p>
             </div>
-            <div className="pt-4">
+            <div className="pt-3">
               <button
                 onClick={() => {
                   setLastVocabSession({
@@ -483,7 +483,7 @@ export default function VocabMasterHub({
                   });
                   setMainMode('learn');
                 }}
-                className="w-full py-2.5 px-3 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-2 px-3 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition flex items-center justify-center gap-2 cursor-pointer"
               >
                 <i className="fa-solid fa-play text-xs" />
                 <span>Bắt Đầu Học Ngay ({unlearnedWords.length > 0 ? unlearnedWords.length : stats.unlearned} từ)</span>
@@ -499,24 +499,24 @@ export default function VocabMasterHub({
                 : 'bg-[#111827] border-slate-800'
             }`}
           >
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-[11px] font-semibold uppercase tracking-wider">
                   <i className="fa-solid fa-rotate-left text-[10px]" />
-                  Spaced Repetition
+                  Ôn tập
                 </span>
                 <span className="font-mono text-xs font-medium text-slate-400">
                   {stats.unlearned} từ cần ôn
                 </span>
               </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                2. Ôn Tập Đến Hạn (Review Words)
+              <h3 className="text-sm md:text-base font-bold text-slate-900 dark:text-white">
+                2. Ôn Tập Đến Hạn
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                Áp dụng nguyên lý ngắt quãng Leitner 4 cấp độ ghi nhớ. Hệ thống tự động đẩy từ vựng hay quên vào vòng lặp ôn tập cho đến khi đạt mức thành thạo vĩnh viễn.
+                Ôn tập các từ vựng đã học theo chu kỳ lặp ngắt quãng để ghi nhớ sâu.
               </p>
             </div>
-            <div className="pt-4">
+            <div className="pt-3">
               <button
                 onClick={() => setMainMode('review')}
                 className="w-full py-2.5 px-3 rounded-md bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-semibold text-xs transition flex items-center justify-center gap-2 cursor-pointer"
