@@ -22,7 +22,7 @@ import { DEFAULT_USER_LEARNING_PROFILE } from '../config/learningCertifications'
 import { generateDynamicIeltsSchedule } from '../services/dynamicScheduleEngine';
 import PersonalizedOnboardingModal from './PersonalizedOnboardingModal';
 
-export default function IELTSRoadmapHub({ onNavigate, theme = 'dark', initialSubTab }) {
+export default function IELTSRoadmapHub({ onNavigate, theme = 'dark', initialSubTab, initialWeek = 1 }) {
   const isLight = theme === 'light';
 
   const [learningProfile, setLearningProfile] = useUserStorage('user_learning_profile_v1', DEFAULT_USER_LEARNING_PROFILE);
@@ -55,7 +55,13 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark', initialSub
   // Filters for Roadmap
   const [selectedPhase, setSelectedPhase] = useState('ALL');
   const [selectedSkill, setSelectedSkill] = useState('ALL');
-  const [expandedWeek, setExpandedWeek] = useState(1);
+  const [expandedWeek, setExpandedWeek] = useState(initialWeek || 1);
+
+  useEffect(() => {
+    if (initialWeek) {
+      setExpandedWeek(initialWeek);
+    }
+  }, [initialWeek]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sprintFilterActive, setSprintFilterActive] = useState(true);
 
@@ -1007,9 +1013,10 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark', initialSub
                         </div>
 
                         <div className="space-y-2.5">
-                          {weekItem.tasks.map((task) => {
+                          {weekItem.tasks.map((task, taskIdx) => {
                             const isDone = Boolean(completedTasks[task.id]);
                             const skillBadge = getSkillBadge(task.skill);
+                            const DAY_NAMES = ['Thứ Hai • Day 1', 'Thứ Ba • Day 2', 'Thứ Tư • Day 3', 'Thứ Năm • Day 4', 'Thứ Sáu • Day 5'];
 
                             return (
                               <div
@@ -1042,6 +1049,12 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark', initialSub
 
                                   <div className="min-w-0">
                                     <div className="flex items-center gap-2 flex-wrap mb-1">
+                                      {/* Day of Week Badge */}
+                                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 flex items-center gap-1">
+                                        <i className="fa-regular fa-calendar-day text-[9px] text-blue-500" />
+                                        <span>{DAY_NAMES[taskIdx] || `Ngày ${taskIdx + 1}`}</span>
+                                      </span>
+
                                       <span
                                         className={`px-2 py-0.5 rounded-md text-[10px] font-bold border flex items-center gap-1 ${skillBadge.bg}`}
                                       >
@@ -1113,6 +1126,95 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark', initialSub
                               </div>
                             );
                           })}
+                        </div>
+
+                        {/* Weekend Schedule: Thứ 7 (Mini-Test) & Chủ Nhật (Deep Error Log) */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                          {/* Thứ Bảy: Mini-Test Thực Chiến */}
+                          <div
+                            className={`p-3.5 rounded-xl border flex flex-col justify-between gap-3 ${
+                              isLight ? 'bg-amber-50/50 border-amber-200' : 'bg-amber-950/20 border-amber-800/40'
+                            }`}
+                          >
+                            <div>
+                              <div className="flex items-center gap-2 flex-wrap mb-1">
+                                <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 flex items-center gap-1">
+                                  <i className="fa-regular fa-calendar-day text-[9px] text-amber-500" />
+                                  <span>Thứ Bảy • Day 6</span>
+                                </span>
+                                <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/15 text-amber-500 border border-amber-500/30 flex items-center gap-1">
+                                  <i className="fa-solid fa-stopwatch text-[9px]" />
+                                  <span>Mini-Test Thực Chiến</span>
+                                </span>
+                                <span className="text-[11px] font-mono text-slate-400">
+                                  <i className="fa-regular fa-clock text-[10px] mr-1" />
+                                  60 phút
+                                </span>
+                              </div>
+                              <h4 className="text-xs md:text-sm font-bold text-slate-900 dark:text-white">
+                                Mini-Test Cambridge: Giải Đề Bấm Giờ Tuần {weekItem.week}
+                              </h4>
+                              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
+                                Luyện trọn vẹn 1 đề Listening hoặc Reading Cambridge dưới áp lực phòng thi thực tế.
+                              </p>
+                            </div>
+                            <button
+                              onClick={() => {
+                                setActiveSubTab('listening-lab');
+                                setTimeout(() => {
+                                  const el = document.getElementById('ielts-subnav-root');
+                                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                }, 50);
+                              }}
+                              className="self-start px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white transition flex items-center gap-1.5 cursor-pointer shadow-xs"
+                            >
+                              <span>Làm Mini-Test Ngay</span>
+                              <i className="fa-solid fa-arrow-right text-[10px]" />
+                            </button>
+                          </div>
+
+                          {/* Chủ Nhật: Deep Error Log */}
+                          <div
+                            className={`p-3.5 rounded-xl border flex flex-col justify-between gap-3 ${
+                              isLight ? 'bg-purple-50/50 border-purple-200' : 'bg-purple-950/20 border-purple-800/40'
+                            }`}
+                          >
+                            <div>
+                              <div className="flex items-center gap-2 flex-wrap mb-1">
+                                <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 flex items-center gap-1">
+                                  <i className="fa-regular fa-calendar-day text-[9px] text-purple-400" />
+                                  <span>Chủ Nhật • Day 7</span>
+                                </span>
+                                <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-purple-500/15 text-purple-400 border border-purple-500/30 flex items-center gap-1">
+                                  <i className="fa-solid fa-book-bookmark text-[9px]" />
+                                  <span>Deep Error Log</span>
+                                </span>
+                                <span className="text-[11px] font-mono text-slate-400">
+                                  <i className="fa-regular fa-clock text-[10px] mr-1" />
+                                  45 phút
+                                </span>
+                              </div>
+                              <h4 className="text-xs md:text-sm font-bold text-slate-900 dark:text-white">
+                                Sổ Tay Lỗi Sai (Deep Error Log) & Tổng Kết Tuần {weekItem.week}
+                              </h4>
+                              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
+                                Phân tích toàn bộ câu sai & bẫy đề trong tuần, ghi nhớ từ vựng mới & kiểm tra tiến độ 4 kỹ năng.
+                              </p>
+                            </div>
+                            <button
+                              onClick={() => {
+                                setActiveSubTab('routine');
+                                setTimeout(() => {
+                                  const el = document.getElementById('ielts-subnav-root');
+                                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                }, 50);
+                              }}
+                              className="self-start px-3.5 py-1.5 rounded-xl text-xs font-bold bg-purple-600 hover:bg-purple-700 text-white transition flex items-center gap-1.5 cursor-pointer shadow-xs"
+                            >
+                              <span>Xem Sổ Tay & Review</span>
+                              <i className="fa-solid fa-arrow-right text-[10px]" />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     )}

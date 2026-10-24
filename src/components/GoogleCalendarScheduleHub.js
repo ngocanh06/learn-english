@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useUserStorage } from '../hooks/useUserStorage';
 import { UNIFIED_MASTER_DAYS } from '../data/unifiedMasterRoadmap';
+import { IELTS_WEEKS_DATA } from '../data/ieltsAcademicRoadmap';
 import {
   STUDY4_TEST_TRACK,
   STUDY4_VOCAB_TRACK,
@@ -842,24 +843,120 @@ export default function GoogleCalendarScheduleHub({
         ),
       };
     } else {
+      // IELTS Academic: Dynamically map to the specific day's skill & practice lab!
+      const dayOfWeek = (currentDate.getDay() + 6) % 7; // 0 = Thứ 2, 1 = Thứ 3, ..., 6 = Chủ Nhật
+      const studyDay = currentDayPlan?.day || 1;
+      const currentWeekNum = Math.min(24, Math.max(1, Math.floor((studyDay - 1) / 7) + 1));
+      const currentWeekData = IELTS_WEEKS_DATA.find((w) => w.week === currentWeekNum) || IELTS_WEEKS_DATA[0];
+
+      let todayIeltsTask = null;
+      let targetSubTab = 'roadmap';
+      let taskBtnText = 'Vào Học IELTS Hôm Nay ➔';
+      let taskIcon = 'fa-solid fa-graduation-cap';
+      let taskImage = 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400&auto=format&fit=crop&q=80';
+      let taskTag = `1. IELTS ACADEMIC • TUẦN ${currentWeekNum}`;
+      let taskTitle = '';
+      let taskDesc = '';
+      let taskDuration = '60 phút';
+      let taskNextNote = `Nhiệm vụ trọng tâm ${DOW_LABELS[dayOfWeek]} trong Lộ trình Tuần ${currentWeekNum}`;
+
+      if (dayOfWeek < 5) {
+        // Thứ 2 đến Thứ 6: 5 nhiệm vụ cụ thể của tuần
+        todayIeltsTask = currentWeekData?.tasks?.[dayOfWeek];
+        const skill = (todayIeltsTask?.skill || '').toLowerCase();
+        taskTitle = todayIeltsTask?.title || 'Luyện kỹ năng IELTS trọng tâm';
+        taskDesc = todayIeltsTask?.desc || 'Rèn luyện theo phương pháp Cambridge IELTS Academic';
+        taskDuration = todayIeltsTask?.duration || '60 phút';
+
+        if (skill.includes('listen')) {
+          targetSubTab = 'listening-lab';
+          taskBtnText = 'Luyện Nghe IELTS Hôm Nay ➔';
+          taskIcon = 'fa-solid fa-headphones';
+          taskTag = `1. IELTS ACADEMIC • ${DOW_LABELS[dayOfWeek].toUpperCase()} (TUẦN ${currentWeekNum}) - LISTENING`;
+          taskImage = 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&auto=format&fit=crop&q=80';
+        } else if (skill.includes('read')) {
+          targetSubTab = 'reading-lab';
+          taskBtnText = 'Luyện Đọc IELTS Hôm Nay ➔';
+          taskIcon = 'fa-solid fa-book-open';
+          taskTag = `1. IELTS ACADEMIC • ${DOW_LABELS[dayOfWeek].toUpperCase()} (TUẦN ${currentWeekNum}) - READING`;
+          taskImage = 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=400&auto=format&fit=crop&q=80';
+        } else if (skill.includes('writ')) {
+          targetSubTab = 'writing-studio';
+          taskBtnText = 'Luyện Viết IELTS Hôm Nay ➔';
+          taskIcon = 'fa-solid fa-pen-nib';
+          taskTag = `1. IELTS ACADEMIC • ${DOW_LABELS[dayOfWeek].toUpperCase()} (TUẦN ${currentWeekNum}) - WRITING`;
+          taskImage = 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=400&auto=format&fit=crop&q=80';
+        } else if (skill.includes('speak')) {
+          targetSubTab = 'speaking-sim';
+          taskBtnText = 'Luyện Nói IELTS Hôm Nay ➔';
+          taskIcon = 'fa-solid fa-microphone-lines';
+          taskTag = `1. IELTS ACADEMIC • ${DOW_LABELS[dayOfWeek].toUpperCase()} (TUẦN ${currentWeekNum}) - SPEAKING`;
+          taskImage = 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=400&auto=format&fit=crop&q=80';
+        } else {
+          targetSubTab = 'awl-vocab';
+          taskBtnText = 'Học Từ Vựng AWL Hôm Nay ➔';
+          taskIcon = 'fa-solid fa-layer-group';
+          taskTag = `1. IELTS ACADEMIC • ${DOW_LABELS[dayOfWeek].toUpperCase()} (TUẦN ${currentWeekNum}) - AWL VOCAB`;
+          taskImage = 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=400&auto=format&fit=crop&q=80';
+        }
+      } else if (dayOfWeek === 5) {
+        // Thứ 7: Mini-Test Thực Chiến Cambridge
+        targetSubTab = 'listening-lab';
+        taskBtnText = 'Làm Đề Thi Thật IELTS ➔';
+        taskIcon = 'fa-solid fa-stopwatch';
+        taskTag = `1. IELTS ACADEMIC • THỨ 7 (TUẦN ${currentWeekNum}) - MINI-TEST THỰC CHIẾN`;
+        taskTitle = `Mini-Test Cambridge: Giải Đề Bấm Giờ Tuần ${currentWeekNum}`;
+        taskDesc = `Luyện đề trọn vẹn Listening/Reading Cambridge dưới áp lực phòng thi, rèn khả năng tập trung và quản lý thời gian.`;
+        taskDuration = '60 phút';
+        taskImage = 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&auto=format&fit=crop&q=80';
+        taskNextNote = 'Kiểm tra tốc độ làm bài & đối chiếu đáp án với Cambridge IELTS';
+      } else {
+        // Chủ Nhật: Sổ Tay Lỗi Sai (Deep Error Log) & Tổng Kết Tuần
+        targetSubTab = 'roadmap';
+        taskBtnText = 'Mở Sổ Tay Lỗi Sai & Tổng Kết ➔';
+        taskIcon = 'fa-solid fa-book-bookmark';
+        taskTag = `1. IELTS ACADEMIC • CHỦ NHẬT (TUẦN ${currentWeekNum}) - DEEP ERROR LOG`;
+        taskTitle = `Sổ Tay Lỗi Sai (Deep Error Log) & Đánh Giá Tuần ${currentWeekNum}`;
+        taskDesc = `Rà soát toàn bộ bẫy đề đã gặp trong 5 ngày qua, bổ sung từ vựng mới vào sổ tay và chuẩn bị mục tiêu cho tuần kế tiếp.`;
+        taskDuration = '45 phút';
+        taskImage = 'https://images.unsplash.com/photo-1517842645767-c639042777db?w=400&auto=format&fit=crop&q=80';
+        taskNextNote = 'Đúc rút kinh nghiệm & ghi nhớ các lỗi phát âm/ngữ pháp';
+      }
+
+      const isCompleted = Boolean(
+        (todayIeltsTask?.id && completedTasks[todayIeltsTask.id]) ||
+        completedTasks[`${currentDateKey}_ielts`] ||
+        roadmapTasks[`day_${currentDayPlan?.day}_ielts`]
+      );
+
       task1 = {
-        id: 'ielts_academic',
-        tag: '1. LỘ TRÌNH IELTS ACADEMIC (MỤC TIÊU 7.0+)',
+        id: todayIeltsTask?.id || 'ielts_academic',
+        tag: taskTag,
         tagColor: UNIFIED_TAG_STYLE,
-        duration: '60 phút',
-        title: 'Lộ Trình IELTS Academic: Luyện Đề & Kỹ Năng Trọng Tâm',
-        desc: 'Luyện bộ Cambridge IELTS 12 - 19, Writing Task 1 & 2, Speaking Cue Cards & 33 Chủ Đề Từ Vựng (4,050 từ)',
-        nextLessonNote: 'Tập trung bứt phá band điểm 5.5 → 7.0+ phục vụ mục tiêu du học',
-        btnText: 'Mở Lộ Trình IELTS ➔',
+        duration: taskDuration,
+        title: taskTitle,
+        desc: taskDesc,
+        nextLessonNote: taskNextNote,
+        btnText: taskBtnText,
         action: () => {
-          onNavigateTab && onNavigateTab('ielts-roadmap');
+          onNavigateTab &&
+            onNavigateTab('ielts-roadmap', {
+              subTab: targetSubTab,
+              week: currentWeekNum,
+              taskId: todayIeltsTask?.id,
+            });
         },
-        image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400&auto=format&fit=crop&q=80',
-        icon: 'fa-solid fa-graduation-cap',
-        completed: Boolean(
-          completedTasks[`${currentDateKey}_ielts`] ||
-          roadmapTasks[`day_${currentDayPlan?.day}_ielts`]
-        ),
+        secondaryBtnText: `Xem Lộ Trình Tuần ${currentWeekNum} ↗`,
+        secondaryAction: () => {
+          onNavigateTab &&
+            onNavigateTab('ielts-roadmap', {
+              subTab: 'roadmap',
+              week: currentWeekNum,
+            });
+        },
+        image: taskImage,
+        icon: taskIcon,
+        completed: isCompleted,
       };
     }
 
