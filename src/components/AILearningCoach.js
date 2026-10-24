@@ -21,6 +21,7 @@ import GoogleCalendarScheduleHub from './GoogleCalendarScheduleHub';
 import IELTSRoadmapHub from './IELTSRoadmapHub';
 import PersonalizedPlanDashboard from './PersonalizedPlanDashboard';
 import PersonalizedOnboardingModal from './PersonalizedOnboardingModal';
+import StudyReminderModal from './StudyReminderModal';
 import { DEFAULT_USER_LEARNING_PROFILE, CERTIFICATIONS } from '../config/learningCertifications';
 import { generateDynamicToeicSchedule } from '../services/dynamicScheduleEngine';
 import { getRoadmapStartDate, formatDateKey } from '../utils/scheduleDateHelper';
@@ -46,6 +47,7 @@ export default function AILearningCoach({
   // Persistent User Goal Configuration
   const [learningProfile, setLearningProfile] = useUserStorage('user_learning_profile_v1', DEFAULT_USER_LEARNING_PROFILE);
   const [onboardingModalOpen, setOnboardingModalOpen] = useState(false);
+  const [reminderModalOpen, setReminderModalOpen] = useState(false);
   const [ieltsInitialSubTab, setIeltsInitialSubTab] = useState('roadmap');
   const [ieltsInitialWeek, setIeltsInitialWeek] = useState(1);
   const activeCertObj = CERTIFICATIONS.find((c) => c.id === learningProfile?.certification) || CERTIFICATIONS[1];
@@ -335,6 +337,16 @@ export default function AILearningCoach({
               <span className="text-xs font-mono font-medium text-slate-400">
                 {formatDateKey(getRoadmapStartDate())}
               </span>
+              <button
+                type="button"
+                onClick={() => setReminderModalOpen(true)}
+                className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-semibold bg-amber-500/15 hover:bg-amber-500/25 text-amber-700 dark:text-amber-300 border border-amber-500/30 transition-colors cursor-pointer"
+                title="Bật thông báo nhắc nhở học tập trên điện thoại"
+              >
+                <i className="fa-solid fa-bell text-[11px] text-amber-500 animate-pulse" />
+                <span>Nhắc Nhở Điện Thoại</span>
+              </button>
+
               <button
                 type="button"
                 onClick={() => setActiveTab('ielts-roadmap')}
@@ -2086,6 +2098,13 @@ export default function AILearningCoach({
         onTakePlacementTest={() => {
           setActiveTab('ielts-roadmap');
         }}
+        theme={theme}
+      />
+
+      {/* Modal Cài Đặt Nhắc Nhở Học Tập Trên Điện Thoại */}
+      <StudyReminderModal
+        isOpen={reminderModalOpen}
+        onClose={() => setReminderModalOpen(false)}
         theme={theme}
       />
     </div>
