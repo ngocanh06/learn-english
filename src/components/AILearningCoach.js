@@ -1663,31 +1663,7 @@ export default function AILearningCoach({
                   </div>
                 </div>
 
-                {/* ─── DYNAMIC STRATEGY CALLOUT BANNER ─── */}
-                <div className={`p-4 rounded-2xl border transition-all ${
-                  dynamicToeicSchedule.paceType === 'sprint'
-                    ? 'bg-amber-500/10 border-amber-500/30 text-amber-900 dark:text-amber-200'
-                    : dynamicToeicSchedule.paceType === 'comprehensive'
-                    ? 'bg-purple-500/10 border-purple-500/30 text-purple-900 dark:text-purple-200'
-                    : 'bg-blue-500/10 border-blue-500/30 text-blue-900 dark:text-blue-200'
-                }`}>
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-current/15 mb-2">
-                    <div className="flex items-center gap-2">
-                      <span className="font-black text-sm">
-                        {dynamicToeicSchedule.strategyTitle}
-                      </span>
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-current/15">
-                        {dynamicToeicSchedule.totalSessions} Buổi • {dynamicToeicSchedule.dailyMinutes}p/buổi
-                      </span>
-                    </div>
-                    <span className="text-xs font-mono font-bold">
-                      Đề trọng tâm: {dynamicToeicSchedule.eligibleTests.map((t) => `Test ${t}`).join(', ')}
-                    </span>
-                  </div>
-                  <p className="text-xs leading-relaxed opacity-90">
-                    {dynamicToeicSchedule.strategyDesc}
-                  </p>
-                </div>
+
               </div>
 
               {/* ─── DUAL TRACK SELECTOR (SUB-TABS) ─── */}

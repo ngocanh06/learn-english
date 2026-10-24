@@ -448,18 +448,7 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
           </div>
         </div>
 
-        {/* Dynamic IELTS Strategy Banner */}
-        <div className="p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/25 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
-          <div className="flex items-center gap-2">
-            <i className="fa-solid fa-bolt text-blue-500 shrink-0" />
-            <span className="font-extrabold text-blue-700 dark:text-blue-300">
-              {dynamicIelts.strategyTitle}
-            </span>
-          </div>
-          <span className="font-mono text-slate-500 dark:text-slate-400 font-semibold">
-            Tài liệu trọng tâm: <strong className="text-blue-600 dark:text-blue-400">{dynamicIelts.cambridgeSeries}</strong>
-          </span>
-        </div>
+
       </div>
 
       {/* ─── 2. SUB-NAV TABS ────────────────────────────────────────── */}
