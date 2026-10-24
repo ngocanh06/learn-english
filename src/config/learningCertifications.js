@@ -207,12 +207,14 @@ export const STUDY_DAYS_OPTIONS = [
 
 export const DEFAULT_USER_LEARNING_PROFILE = {
   learningGoal: 'certification',
-  currentLevel: 'B1',
+  currentLevel: 'A2',
   certification: 'ielts',
   targetScore: '7.0',
   examDate: null, // YYYY-MM-DD or null
   dailyGoalMin: 45,
   studyDaysPerWeek: 6,
+  hasTakenTest: false,
+  selfAssessed: false,
   onboardingCompleted: true,
   createdAt: new Date().toISOString(),
   lastUpdated: new Date().toISOString(),

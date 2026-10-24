@@ -983,6 +983,9 @@ export function generatePersonalizedRoadmap(rawUserProfile, rawGoal = {}) {
     },
     currentState: {
       overallLevel: userProfile.overallLevel,
+      isTested: skillGapAnalysis.isTested,
+      isSelfAssessed: skillGapAnalysis.isSelfAssessed,
+      diagnosticTestResult: skillGapAnalysis.diagnosticTestResult,
       currentEstimatedScore: skillGapAnalysis.currentEstimatedScore,
       scoreUnit: skillGapAnalysis.scoreUnit,
       targetScoreGap: skillGapAnalysis.targetScoreGap,
