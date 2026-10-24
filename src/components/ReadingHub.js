@@ -9,10 +9,36 @@ export default function ReadingHub({
   initialLevel,
   initialTestId,
   dateKey,
+  fromNav,
+  fromTab,
   onNavigate,
   theme = 'dark',
 }) {
   const isLight = theme === 'light';
+
+  const handleBackToOrigin = () => {
+    if (fromNav) {
+      onNavigate(fromNav, { tab: fromTab, dateKey });
+    } else if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      onNavigate && onNavigate('ai-coach', { tab: 'my-plan' });
+    }
+  };
+
+  const backOriginLabel = fromTab === 'my-plan'
+    ? 'Quay lại Kế hoạch học'
+    : fromTab === 'ielts-roadmap'
+    ? 'Quay lại Lộ trình IELTS'
+    : fromTab === 'study4-toeic'
+    ? 'Quay lại Lộ trình TOEIC'
+    : fromTab === 'master-roadmap'
+    ? 'Quay lại Lộ trình nền tảng'
+    : fromTab === 'calendar-view' || dateKey
+    ? `Quay lại Lịch học ${dateKey ? `ngày ${dateKey}` : ''}`
+    : fromNav === 'dashboard'
+    ? 'Quay lại Trang chủ'
+    : 'Quay lại trang trước';
 
   // Persistence: Completed reading tests & Calendar tasks
   const [completedReading, setCompletedReading] = useUserStorage('reading_completed_tests_v2', {});
@@ -358,8 +384,8 @@ export default function ReadingHub({
       {/* ─── MAIN CONTENT: TEST LIST OR ACTIVE EXAM STUDIO ───────── */}
       {!activeTest ? (
         <div className="space-y-4">
-          {/* Return to Calendar Banner */}
-          {dateKey && onNavigate && (
+          {/* Return to Origin Banner */}
+          {(fromNav || fromTab || dateKey) && onNavigate && (
             <div
               className={`p-3 px-4 rounded-2xl border flex items-center justify-between gap-3 text-xs animate-fadeIn ${
                 isLight
@@ -370,20 +396,17 @@ export default function ReadingHub({
               <div className="flex items-center gap-2">
                 <i className="fa-solid fa-calendar-check text-blue-500 text-sm shrink-0" />
                 <span>
-                  Đang mở bài đọc theo lịch học ngày <strong>{dateKey}</strong>.
+                  {dateKey
+                    ? <>Đang mở bài đọc theo lịch học ngày <strong>{dateKey}</strong>.</>
+                    : <>Đang mở bài đọc từ lộ trình học của bạn.</>}
                 </span>
               </div>
               <button
-                onClick={() =>
-                  onNavigate('ai-coach', {
-                    dateKey,
-                    tab: 'calendar-view',
-                  })
-                }
+                onClick={handleBackToOrigin}
                 className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black shrink-0 transition flex items-center gap-1.5 shadow-xs cursor-pointer"
               >
                 <i className="fa-solid fa-arrow-left text-[11px]" />
-                <span>Quay lại Lịch học {dateKey}</span>
+                <span>{backOriginLabel}</span>
               </button>
             </div>
           )}
@@ -476,22 +499,17 @@ export default function ReadingHub({
                   <span>Quay lại danh sách bài đọc</span>
                 </button>
 
-                {onNavigate && (
+                {onNavigate && (fromNav || fromTab || dateKey) && (
                   <button
-                    onClick={() =>
-                      onNavigate('ai-coach', {
-                        dateKey,
-                        tab: 'calendar-view',
-                      })
-                    }
+                    onClick={handleBackToOrigin}
                     className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold border transition cursor-pointer ${
                       isLight
                         ? 'bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700 shadow-xs'
                         : 'bg-blue-950/50 hover:bg-blue-900/60 border-blue-800 text-blue-300'
                     }`}
                   >
-                    <i className="fa-solid fa-calendar-days text-blue-500" />
-                    <span>Quay lại Lịch học {dateKey ? `ngày ${dateKey}` : ''}</span>
+                    <i className="fa-solid fa-arrow-left text-blue-500" />
+                    <span>{backOriginLabel}</span>
                   </button>
                 )}
               </div>

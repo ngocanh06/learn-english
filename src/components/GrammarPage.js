@@ -5,8 +5,39 @@ import Quiz from './Quiz';
 import GrammarAudioPlayer from './GrammarAudioPlayer';
 import { useUserStorage } from '../hooks/useUserStorage';
 
-export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigate }) {
+export default function GrammarPage({
+  theme,
+  initialLessonId,
+  dateKey,
+  fromNav,
+  fromTab,
+  onNavigate,
+}) {
   const isLight = theme === 'light';
+
+  const handleBackToOrigin = () => {
+    if (fromNav) {
+      onNavigate(fromNav, { tab: fromTab, dateKey });
+    } else if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      onNavigate && onNavigate('ai-coach', { tab: 'my-plan' });
+    }
+  };
+
+  const backOriginLabel = fromTab === 'my-plan'
+    ? 'Quay lại Kế hoạch học'
+    : fromTab === 'ielts-roadmap'
+    ? 'Quay lại Lộ trình IELTS'
+    : fromTab === 'study4-toeic'
+    ? 'Quay lại Lộ trình TOEIC'
+    : fromTab === 'master-roadmap'
+    ? 'Quay lại Lộ trình nền tảng'
+    : fromTab === 'calendar-view' || dateKey
+    ? `Quay lại Lịch học ${dateKey ? `ngày ${dateKey}` : ''}`
+    : fromNav === 'dashboard'
+    ? 'Quay lại Trang chủ'
+    : 'Quay lại trang trước';
 
   // Persistence: Remembered items, Favorites items, Quiz scores, Calendar completed tasks
   const [rememberedIds, setRememberedIds] = useUserStorage('grammar_remembered_v2', {});
@@ -251,8 +282,8 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
       {/* ═════════════════════════════════════════════════════════════════ */}
       {viewMode === 'list' && (
         <div className="flex flex-col gap-4">
-          {/* Return to Calendar Banner if opened from Calendar */}
-          {dateKey && onNavigate && (
+          {/* Return to Origin Banner if opened from a roadmap or calendar */}
+          {(fromNav || fromTab || dateKey) && onNavigate && (
             <div
               className={`p-3 px-4 rounded-lg border flex items-center justify-between gap-3 text-xs animate-fadeIn ${
                 isLight
@@ -263,20 +294,17 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
               <div className="flex items-center gap-2">
                 <i className="fa-solid fa-calendar-check text-blue-500 text-sm shrink-0" />
                 <span>
-                  Đang xem bài học từ lịch học ngày <strong>{dateKey}</strong>.
+                  {dateKey
+                    ? <>Đang xem bài học từ lịch học ngày <strong>{dateKey}</strong>.</>
+                    : <>Đang mở bài học từ lộ trình học của bạn.</>}
                 </span>
               </div>
               <button
-                onClick={() =>
-                  onNavigate('ai-coach', {
-                    dateKey,
-                    tab: 'calendar-view',
-                  })
-                }
+                onClick={handleBackToOrigin}
                 className="px-3 py-1.5 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-bold shrink-0 transition flex items-center gap-1.5 shadow-xs cursor-pointer"
               >
                 <i className="fa-solid fa-arrow-left text-[11px]" />
-                <span>Quay lại Lịch học {dateKey}</span>
+                <span>{backOriginLabel}</span>
               </button>
             </div>
           )}
@@ -762,23 +790,18 @@ export default function GrammarPage({ theme, initialLessonId, dateKey, onNavigat
                 <span>Quay lại Mục Lục</span>
               </button>
 
-              {onNavigate && (
+              {onNavigate && (fromNav || fromTab || dateKey) && (
                 <button
-                  onClick={() =>
-                    onNavigate('ai-coach', {
-                      dateKey,
-                      tab: 'calendar-view',
-                    })
-                  }
+                  onClick={handleBackToOrigin}
                   className={`flex items-center gap-2 px-3.5 py-1.5 rounded-md text-xs font-semibold border transition cursor-pointer ${
                     isLight
                       ? 'bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700 shadow-xs'
                       : 'bg-blue-950/50 hover:bg-blue-900/60 border-blue-800 text-blue-300'
                   }`}
-                  title="Quay lại đúng ngày trên lịch học"
+                  title="Quay lại đúng trang hoặc lộ trình trước đó"
                 >
-                  <i className="fa-solid fa-calendar-days text-blue-500" />
-                  <span>Quay lại Lịch học {dateKey ? `ngày ${dateKey}` : ''}</span>
+                  <i className="fa-solid fa-arrow-left text-blue-500" />
+                  <span>{backOriginLabel}</span>
                 </button>
               )}
             </div>
