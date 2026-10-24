@@ -43,8 +43,20 @@ export function parseDateKey(dateKey) {
 }
 
 /**
+ * Returns next Monday's date at 00:00:00 (26/10/2026 if today is 24/10 or 25/10)
+ */
+export function getNextMondayDate() {
+  const now = new Date();
+  const d = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+  const day = d.getDay(); // 0 is Sunday, 1 is Monday ... 6 is Saturday
+  const diff = day === 0 ? 1 : day === 1 ? 0 : (8 - day);
+  d.setDate(d.getDate() + diff);
+  return d;
+}
+
+/**
  * Get current configured Roadmap start date.
- * Defaults to tomorrow (25/10/2026).
+ * Defaults to next Monday (26/10/2026) for clean weekly structure.
  */
 export function getRoadmapStartDate() {
   try {
@@ -52,25 +64,29 @@ export function getRoadmapStartDate() {
     if (saved) {
       const parsed = parseDateKey(saved);
       if (parsed && !isNaN(parsed.getTime())) {
-        // If saved start date is in the past or was the old 01/10/2026, reset to tomorrow
+        // If saved start date is in the past, or was the old 01/10/2026 or Sunday 25/10/2026, reset to next Monday
         const todayZero = new Date();
         todayZero.setHours(0, 0, 0, 0);
-        if (parsed.getTime() < todayZero.getTime() || (parsed.getFullYear() === 2026 && parsed.getMonth() === 9 && parsed.getDate() === 1)) {
-          const tomorrow = getTomorrowDate();
-          setRoadmapStartDate(tomorrow);
-          return tomorrow;
+        if (
+          parsed.getTime() < todayZero.getTime() ||
+          (parsed.getFullYear() === 2026 && parsed.getMonth() === 9 && parsed.getDate() === 1) ||
+          (parsed.getFullYear() === 2026 && parsed.getMonth() === 9 && parsed.getDate() === 25)
+        ) {
+          const nextMon = getNextMondayDate();
+          setRoadmapStartDate(nextMon);
+          return nextMon;
         }
         return parsed;
       }
     }
   } catch (e) {}
 
-  // Default: Tomorrow
-  const tomorrow = getTomorrowDate();
+  // Default: Next Monday (26/10/2026)
+  const nextMon = getNextMondayDate();
   try {
-    localStorage.setItem(STORAGE_KEY, formatDateKey(tomorrow));
+    localStorage.setItem(STORAGE_KEY, formatDateKey(nextMon));
   } catch (e) {}
-  return tomorrow;
+  return nextMon;
 }
 
 /**
