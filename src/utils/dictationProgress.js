@@ -23,14 +23,21 @@ export const DEFAULT_DICTATION_STARS = {
   'tc-35': true,
   'tc-36': true,
   'tc-37': true,
+  // IELTS Listening completed baseline (Cam 20 Test 1 Part 1 as shown in user's progress)
+  'ielts-17': true,
 };
 
 /**
  * Checks if a specific dictation lesson is locked with PRO Diamond 💎.
  * On DailyDictation, every 10th lesson (10, 20, 30... 300) and SS 288 require PRO upgrade.
+ * For IELTS, lessons with isDiamond: true are PRO lessons.
  */
 export const isDiamondLesson = (lessonId) => {
   if (!lessonId) return false;
+  if (lessonId.startsWith('ielts-')) {
+    const found = (IELTS_LISTENING_LESSONS || []).find((l) => l.id === lessonId);
+    if (found) return Boolean(found.isDiamond);
+  }
   const num = parseInt(lessonId.match(/\d+/)?.[0] || '0', 10);
   if (num === 0) return false;
   if (num % 10 === 0) return true;
@@ -43,10 +50,10 @@ export const isDiamondLesson = (lessonId) => {
  */
 export const getIeltsLessonTitle = (lessonNum) => {
   const num = parseInt(lessonNum, 10);
-  if (isNaN(num) || num <= 0) return 'Bài 1. Student Accommodation Registration';
+  if (isNaN(num) || num <= 0) return 'Cam 21 - Test 1 - Part 1';
   const found = (IELTS_LISTENING_LESSONS || []).find((l) => l.num === num);
-  if (found) return `Bài ${num}. ${found.title}`;
-  return `Bài ${num}. IELTS Daily Social Context`;
+  if (found) return found.title;
+  return `Bài ${num}. IELTS Listening`;
 };
 
 /**
