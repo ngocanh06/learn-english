@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useUserStorage } from '../hooks/useUserStorage';
 import {
   IELTS_PHASES,
@@ -22,7 +22,7 @@ import { DEFAULT_USER_LEARNING_PROFILE } from '../config/learningCertifications'
 import { generateDynamicIeltsSchedule } from '../services/dynamicScheduleEngine';
 import PersonalizedOnboardingModal from './PersonalizedOnboardingModal';
 
-export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
+export default function IELTSRoadmapHub({ onNavigate, theme = 'dark', initialSubTab }) {
   const isLight = theme === 'light';
 
   const [learningProfile, setLearningProfile] = useUserStorage('user_learning_profile_v1', DEFAULT_USER_LEARNING_PROFILE);
@@ -44,7 +44,13 @@ export default function IELTSRoadmapHub({ onNavigate, theme = 'dark' }) {
   } = useGoogleSheet(IELTS_VOCAB_SHEET.baseUrl, ieltsSheetTab.gid, 3);
 
   // Sub-tabs inside IELTS Hub: 'roadmap' | 'calculator' | 'writing' | 'speaking' | 'routine'
-  const [activeSubTab, setActiveSubTab] = useState('roadmap');
+  const [activeSubTab, setActiveSubTab] = useState(initialSubTab || 'roadmap');
+
+  useEffect(() => {
+    if (initialSubTab) {
+      setActiveSubTab(initialSubTab);
+    }
+  }, [initialSubTab]);
 
   // Filters for Roadmap
   const [selectedPhase, setSelectedPhase] = useState('ALL');

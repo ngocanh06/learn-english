@@ -46,6 +46,7 @@ export default function AILearningCoach({
   // Persistent User Goal Configuration
   const [learningProfile, setLearningProfile] = useUserStorage('user_learning_profile_v1', DEFAULT_USER_LEARNING_PROFILE);
   const [onboardingModalOpen, setOnboardingModalOpen] = useState(false);
+  const [ieltsInitialSubTab, setIeltsInitialSubTab] = useState('roadmap');
   const activeCertObj = CERTIFICATIONS.find((c) => c.id === learningProfile?.certification) || CERTIFICATIONS[1];
 
   const [userGoal] = useUserStorage('ai_coach_goal_v1', {
@@ -570,6 +571,9 @@ export default function AILearningCoach({
                 if (['vocab', 'vocabulary', 'reading', 'writing', 'video-hub', 'grammar'].includes(nav)) {
                   onNavigate && onNavigate(nav, params);
                 } else {
+                  if (nav === 'ielts-roadmap' && params?.subTab) {
+                    setIeltsInitialSubTab(params.subTab);
+                  }
                   setActiveTab(nav);
                 }
               }}
@@ -610,7 +614,7 @@ export default function AILearningCoach({
           {/* ─── TAB: LỘ TRÌNH IELTS ACADEMIC 7.0+ (MỤC TIÊU DU HỌC) ────────── */}
           {/* ═════════════════════════════════════════════════════════════════ */}
           {activeTab === 'ielts-roadmap' && (
-            <IELTSRoadmapHub onNavigate={onNavigate} theme={theme} />
+            <IELTSRoadmapHub onNavigate={onNavigate} theme={theme} initialSubTab={ieltsInitialSubTab} />
           )}
 
           {/* ═════════════════════════════════════════════════════════════════ */}

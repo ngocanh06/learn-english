@@ -92,11 +92,73 @@ export function normalizeUserProfile(rawProfile = {}) {
 }
 
 /**
+ * Safely retrieve diagnostic test results from localStorage if available
+ */
+export function getSavedDiagnosticTest() {
+  if (typeof window === 'undefined') return null;
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.includes('ielts_diagnostic_result')) {
+        const val = localStorage.getItem(key);
+        if (val && val !== 'null') {
+          return JSON.parse(val);
+        }
+      }
+    }
+  } catch (e) {}
+  return null;
+}
+
+/**
  * Estimate current score equivalent for a certification based on user profile
  */
 export function estimateCurrentScore(userProfile, certificationId) {
   const profile = normalizeUserProfile(userProfile);
   const cert = certificationId ? certificationId.toLowerCase() : 'toeic';
+
+  const diag = getSavedDiagnosticTest();
+  const hasDiagnostic = Boolean(diag && diag.estimatedBand);
+  const hasMock = Boolean(profile.mockHistory && profile.mockHistory.length > 0);
+  const isTested = Boolean(profile.hasTakenTest || hasDiagnostic || hasMock);
+  const isSelfAssessed = Boolean(profile.selfAssessed);
+
+  // If IELTS and diagnostic test was taken
+  if (cert === 'ielts' && hasDiagnostic) {
+    const band = Number(diag.estimatedBand) || 5.0;
+    return {
+      isTested: true,
+      isSelfAssessed: false,
+      estimatedScore: band.toFixed(1),
+      scoreUnit: 'Band',
+      diagnosticTestResult: diag,
+      accuracyReliability: 'Kết quả Test Đầu Vào',
+    };
+  }
+
+  // If user has not tested at all and not self-assessed
+  if (!isTested && !isSelfAssessed) {
+    return {
+      isTested: false,
+      isSelfAssessed: false,
+      estimatedScore: null,
+      scoreUnit: cert === 'ielts' ? 'Band' : 'điểm',
+      diagnosticTestResult: null,
+      accuracyReliability: 'Chưa làm bài test',
+    };
+  }
+
+  // If user self-assessed their level
+  if (!isTested && isSelfAssessed) {
+    return {
+      isTested: false,
+      isSelfAssessed: true,
+      estimatedScore: profile.overallLevel || 'A2',
+      scoreUnit: 'CEFR',
+      diagnosticTestResult: null,
+      accuracyReliability: 'Tự đánh giá (Chưa làm bài test)',
+    };
+  }
 
   // Calculate weighted competency
   const lisNum = cefrToNumeric(profile.skills.listening);
@@ -114,9 +176,12 @@ export function estimateCurrentScore(userProfile, certificationId) {
     // Clamp to 10 - 990, rounded to nearest 5
     estimated = Math.min(990, Math.max(100, Math.round(estimated / 5) * 5));
     return {
+      isTested: true,
+      isSelfAssessed: false,
       estimatedScore: estimated,
       scoreUnit: 'điểm',
-      accuracyReliability: profile.mockHistory.length > 0 ? 'High (Từ kết quả Mock)' : 'Estimated (Dựa trên CEFR Profile)',
+      diagnosticTestResult: null,
+      accuracyReliability: profile.mockHistory.length > 0 ? 'High (Từ kết quả Mock)' : 'Ước lượng năng lực',
     };
   }
 
@@ -129,9 +194,12 @@ export function estimateCurrentScore(userProfile, certificationId) {
     band = Math.round(band * 2) / 2;
     band = Math.min(9.0, Math.max(3.0, band));
     return {
+      isTested: true,
+      isSelfAssessed: false,
       estimatedScore: band.toFixed(1),
       scoreUnit: 'Band',
-      accuracyReliability: profile.mockHistory.length > 0 ? 'High' : 'Estimated',
+      diagnosticTestResult: null,
+      accuracyReliability: profile.mockHistory.length > 0 ? 'High (Từ kết quả Mock)' : 'Ước lượng năng lực',
     };
   }
 
@@ -140,15 +208,21 @@ export function estimateCurrentScore(userProfile, certificationId) {
     let score = composite * 1.6;
     score = Math.round(score * 2) / 2;
     return {
+      isTested: true,
+      isSelfAssessed: false,
       estimatedScore: score.toFixed(1),
       scoreUnit: '/ 10',
-      accuracyReliability: 'Estimated',
+      diagnosticTestResult: null,
+      accuracyReliability: 'Ước lượng năng lực',
     };
   }
 
   return {
+    isTested: true,
+    isSelfAssessed: false,
     estimatedScore: profile.overallLevel,
     scoreUnit: 'CEFR',
-    accuracyReliability: 'Estimated',
+    diagnosticTestResult: null,
+    accuracyReliability: 'Ước lượng năng lực',
   };
 }

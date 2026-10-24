@@ -14,6 +14,7 @@ export default function IELTSPlacementTest({ onApplyStartingWeek, theme = 'dark'
   // Persistence: Saved Diagnostic Test Result
   const [savedResult, setSavedResult] = useUserStorage('ielts_diagnostic_result_v1', null);
   const [, setRecommendedStartWeek] = useUserStorage('ielts_recommended_start_week_v1', 1);
+  const [, setLearningProfile] = useUserStorage('user_learning_profile_v1', null);
 
   // Active question index in test
   const [currentQIndex, setCurrentQIndex] = useState(0);
@@ -85,6 +86,22 @@ export default function IELTSPlacementTest({ onApplyStartingWeek, theme = 'dark'
     });
     setSavedResult(result);
     setRecommendedStartWeek(result.startingWeek);
+
+    // Sync to user learning profile
+    if (setLearningProfile) {
+      const derivedLevel = result.estimatedBand >= 7.0 ? 'C1' : result.estimatedBand >= 6.0 ? 'B2' : result.estimatedBand >= 5.0 ? 'B1' : 'A2';
+      setLearningProfile((prev) => ({
+        ...(prev || {}),
+        hasTakenTest: true,
+        selfAssessed: false,
+        currentLevel: derivedLevel,
+        overallLevel: derivedLevel,
+        diagnosticScore: result.estimatedBand,
+        diagnosticDate: result.testedDate,
+        lastUpdated: new Date().toISOString(),
+      }));
+    }
+
     setTestStage('result');
   };
 

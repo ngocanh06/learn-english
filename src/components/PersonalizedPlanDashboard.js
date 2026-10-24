@@ -88,7 +88,7 @@ export default function PersonalizedPlanDashboard({
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
           {/* Row 1: Certification & Band */}
           <div className="space-y-1.5 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
             <div className="flex items-center justify-between">
@@ -178,12 +178,62 @@ export default function PersonalizedPlanDashboard({
             </div>
           </div>
 
-          {/* Row 2: Exam Timeline / Deadline */}
-          <div className="space-y-1.5 p-3 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800">
+          {/* Row 2: Starting Level */}
+          <div className="space-y-1.5 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
+                2. Trình Độ Xuất Phát
+              </span>
+              <span className="text-[10px] font-bold text-slate-400">
+                {currentState.isTested ? 'Đã test' : profile?.selfAssessed ? 'Tự chọn' : 'Chưa test'}
+              </span>
+            </div>
+            <div className="grid grid-cols-4 gap-1 pt-0.5">
+              {[
+                { level: 'A1', label: 'A1 Gốc' },
+                { level: 'A2', label: 'A2 Sơ' },
+                { level: 'B1', label: 'B1 Trung' },
+                { level: 'B2', label: 'B2 Khá' },
+              ].map((btn) => {
+                const active = (profile?.overallLevel || profile?.currentLevel) === btn.level;
+                return (
+                  <button
+                    key={btn.level}
+                    type="button"
+                    onClick={() => handleUpdate({
+                      currentLevel: btn.level,
+                      overallLevel: btn.level,
+                      selfAssessed: true,
+                      hasTakenTest: false,
+                      skills: {
+                        listening: btn.level,
+                        reading: btn.level,
+                        grammar: btn.level,
+                        vocabulary: btn.level,
+                        writing: btn.level,
+                        speaking: btn.level,
+                        pronunciation: btn.level,
+                      }
+                    })}
+                    className={`py-1.5 px-0.5 rounded-xl text-center font-black text-[11px] transition cursor-pointer ${
+                      active
+                        ? 'bg-blue-600 text-white shadow-xs'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    {btn.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Row 3: Exam Timeline / Deadline */}
+          <div className="space-y-1.5 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
-              2. Thời Gian Ôn Thi (Hạn)
+              3. Thời Gian Ôn Thi (Hạn)
             </span>
-            <div className="grid grid-cols-4 gap-1">
+            <div className="grid grid-cols-4 gap-1 pt-0.5">
               {[
                 { days: 30, label: '30N' },
                 { days: 60, label: '60N' },
@@ -208,12 +258,12 @@ export default function PersonalizedPlanDashboard({
             </div>
           </div>
 
-          {/* Row 3: Daily Study Time */}
-          <div className="space-y-1.5 p-3 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800">
+          {/* Row 4: Daily Study Time */}
+          <div className="space-y-1.5 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
-              3. Thời Gian Học/Ngày
+              4. Thời Gian Học/Ngày
             </span>
-            <div className="grid grid-cols-3 gap-1">
+            <div className="grid grid-cols-3 gap-1 pt-0.5">
               {[
                 { min: 30, label: '30p' },
                 { min: 60, label: '60p' },
@@ -237,16 +287,16 @@ export default function PersonalizedPlanDashboard({
             </div>
           </div>
 
-          {/* Row 4: Bottleneck */}
-          <div className="space-y-1.5 p-3 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800">
+          {/* Row 5: Bottleneck */}
+          <div className="space-y-1.5 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
-              4. Điểm Nghẽn Cần Ưu Tiên
+              5. Điểm Nghẽn Cần Ưu Tiên
             </span>
-            <div className="grid grid-cols-3 gap-1">
+            <div className="grid grid-cols-3 gap-1 pt-0.5">
               {[
                 { key: 'listening', label: '🎧 Nghe' },
                 { key: 'reading', label: '📖 Đọc' },
-                { key: 'grammar', label: '✍️ Viết/Ngữ pháp' },
+                { key: 'grammar', label: '✍️ Viết' },
               ].map((btn) => {
                 const active = (profile?.primaryBottleneck || 'listening') === btn.key;
                 return (
@@ -265,19 +315,6 @@ export default function PersonalizedPlanDashboard({
               })}
             </div>
           </div>
-        </div>
-
-        {/* Dynamic Engine Strategy Banner */}
-        <div className="p-3.5 rounded-2xl bg-blue-500/10 border border-blue-500/25 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
-          <div className="flex items-center gap-2">
-            <i className="fa-solid fa-compass-drafting text-blue-500 shrink-0" />
-            <span className="font-extrabold text-blue-700 dark:text-blue-300">
-              Chiến Lược Đang Áp Dụng: {currentDays <= 35 ? '⚡ Sprint Cấp Tốc (30 Ngày)' : currentDays <= 70 ? '🚀 Tăng Tốc Chuẩn Điểm (60 Ngày)' : currentDays <= 130 ? '🎯 Tiêu Chuẩn (90 Ngày)' : '📚 Toàn Diện Bền Vững (6 Tháng)'}
-            </span>
-          </div>
-          <span className="font-mono text-slate-600 dark:text-slate-300 font-bold">
-            {phases.length} Chặng Lộ Trình • {goal.totalWeeks} Tuần ({goal.totalAvailableStudyHours} Giờ Học)
-          </span>
         </div>
       </div>
       {/* ─── 1. CORE ENGINE HERO: GOAL + CURRENT STATE + GAP ─── */}
@@ -330,23 +367,94 @@ export default function PersonalizedPlanDashboard({
         {/* 3-Column Metric Box: Where You Are, Target, Gap */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4">
           {/* Box 1: Current State */}
-          <div className={`p-3.5 rounded-xl border ${
-            isLight ? 'bg-slate-50/70 border-slate-200' : 'bg-slate-850/60 border-slate-800'
+          <div className={`p-3.5 rounded-xl border flex flex-col justify-between ${
+            currentState.isTested
+              ? isLight ? 'bg-slate-50/70 border-slate-200' : 'bg-slate-850/60 border-slate-800'
+              : isLight ? 'bg-amber-50/40 border-amber-300/70' : 'bg-amber-950/20 border-amber-800/50'
           }`}>
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-              1. Bạn Đang Ở Đâu?
-            </span>
-            <div className="flex items-baseline gap-2 mt-1">
-              <span className="text-xl font-extrabold text-slate-900 dark:text-white">
-                {currentState.currentEstimatedScore}
-              </span>
-              <span className="text-xs font-bold text-slate-500">
-                {currentState.scoreUnit} (CEFR {currentState.overallLevel})
-              </span>
+            <div>
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                  1. Bạn Đang Ở Đâu?
+                </span>
+                {currentState.isTested ? (
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                    Đã Test
+                  </span>
+                ) : profile?.selfAssessed ? (
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30">
+                    Tự Chọn (Chưa Test)
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/30">
+                    Chưa Kiểm Tra
+                  </span>
+                )}
+              </div>
+
+              {currentState.isTested ? (
+                <>
+                  <div className="flex items-baseline gap-2 mt-1">
+                    <span className="text-xl font-extrabold text-slate-900 dark:text-white">
+                      {currentState.currentEstimatedScore}
+                    </span>
+                    <span className="text-xs font-bold text-slate-500">
+                      {currentState.scoreUnit} (CEFR {currentState.overallLevel})
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 mt-1">
+                    {currentState.diagnosticTestResult
+                      ? `Kết quả từ bài test đầu vào (${currentState.diagnosticTestResult.score || 0}/25 câu)`
+                      : 'Điểm thực tế từ bài kiểm tra năng lực'}
+                  </p>
+                </>
+              ) : profile?.selfAssessed ? (
+                <>
+                  <div className="flex items-baseline gap-2 mt-1">
+                    <span className="text-xl font-extrabold text-slate-900 dark:text-white">
+                      {profile.currentLevel || 'A2'}
+                    </span>
+                    <span className="text-xs font-bold text-amber-600 dark:text-amber-400">
+                      (Tự đánh giá ban đầu)
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 mt-1">
+                    Lộ trình tạm tính theo mức {profile.currentLevel || 'A2'}. Nên làm test 25p để xác định điểm chính xác.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-baseline gap-2 mt-1">
+                    <span className="text-xl font-black text-slate-400 dark:text-slate-500">
+                      --
+                    </span>
+                    <span className="text-xs font-bold text-rose-500 dark:text-rose-400">
+                      Chưa làm bài test
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 mt-1">
+                    Chưa có điểm kiểm tra thực tế. Hãy làm bài test 25p hoặc tự chọn trình độ để lập lộ trình chuẩn.
+                  </p>
+                </>
+              )}
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">
-              Điểm ước lượng từ hồ sơ năng lực hiện tại
-            </p>
+
+            {!currentState.isTested && (
+              <div className="mt-2.5 pt-2 border-t border-slate-200/60 dark:border-slate-800/80">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (onNavigate) {
+                      onNavigate('ielts-roadmap', { subTab: 'placement-test' });
+                    }
+                  }}
+                  className="w-full py-1.5 px-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                >
+                  <i className="fa-solid fa-clipboard-check text-[11px]" />
+                  <span>Làm Bài Test Đầu Vào (25p)</span>
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Box 2: Target */}
@@ -376,17 +484,30 @@ export default function PersonalizedPlanDashboard({
             <span className="text-[11px] font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wider block">
               3. Khoảng Cách Lớn Nhất
             </span>
-            <div className="flex items-baseline gap-2 mt-1">
-              <span className="text-xl font-extrabold text-rose-600 dark:text-rose-400">
-                {currentState.targetScoreGap !== null ? `-${currentState.targetScoreGap}` : `Thâm hụt ${skillGapAnalysis.totalDeficit} bậc`}
-              </span>
-              <span className="text-xs font-bold text-rose-500/80">
-                {currentState.targetScoreGap !== null ? currentState.scoreUnit : 'CEFR'}
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-500 mt-1 truncate">
-              Nút thắt: <strong className="text-rose-600 dark:text-rose-400 capitalize">{currentState.primaryBottleneck}</strong> (Lỗ hổng {skillGapAnalysis.largestGap.gap} bậc)
-            </p>
+            {currentState.isTested || profile?.selfAssessed ? (
+              <>
+                <div className="flex items-baseline gap-2 mt-1">
+                  <span className="text-xl font-extrabold text-rose-600 dark:text-rose-400">
+                    {currentState.targetScoreGap !== null ? `-${currentState.targetScoreGap}` : `Thâm hụt ${skillGapAnalysis.totalDeficit} bậc`}
+                  </span>
+                  <span className="text-xs font-bold text-rose-500/80">
+                    {currentState.targetScoreGap !== null ? currentState.scoreUnit : 'CEFR'}
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500 mt-1 truncate">
+                  Nút thắt: <strong className="text-rose-600 dark:text-rose-400 capitalize">{currentState.primaryBottleneck}</strong> (Lỗ hổng {skillGapAnalysis.largestGap.gap} bậc)
+                </p>
+              </>
+            ) : (
+              <div className="mt-1">
+                <span className="text-xs font-bold text-slate-400 block mt-1">
+                  Cần làm test để đo khoảng cách
+                </span>
+                <p className="text-[11px] text-slate-500 mt-1">
+                  Khoảng cách điểm số sẽ hiển thị chính xác sau khi bạn làm bài test hoặc tự chọn trình độ xuất phát.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -83,10 +83,10 @@ export function calculateSkillGaps(userProfile, targetBlueprintOrGoal) {
   // Target Score Gap (e.g. 650 - 390 = 260)
   const currentEstimation = estimateCurrentScore(profile, blueprint.certificationId);
   let numericalTargetScore = typeof blueprint.score === 'number' ? blueprint.score : parseFloat(blueprint.score);
-  let currentNumScore = parseFloat(currentEstimation.estimatedScore);
+  let currentNumScore = currentEstimation.isTested ? parseFloat(currentEstimation.estimatedScore) : null;
 
   let scoreGap = null;
-  if (!isNaN(numericalTargetScore) && !isNaN(currentNumScore)) {
+  if (!isNaN(numericalTargetScore) && currentNumScore !== null && !isNaN(currentNumScore)) {
     scoreGap = Math.max(0, +(numericalTargetScore - currentNumScore).toFixed(1));
   }
 
@@ -94,6 +94,9 @@ export function calculateSkillGaps(userProfile, targetBlueprintOrGoal) {
     targetId: blueprint.targetId,
     certificationId: blueprint.certificationId,
     targetScore: blueprint.score,
+    isTested: currentEstimation.isTested,
+    isSelfAssessed: currentEstimation.isSelfAssessed,
+    diagnosticTestResult: currentEstimation.diagnosticTestResult,
     currentEstimatedScore: currentEstimation.estimatedScore,
     scoreUnit: currentEstimation.scoreUnit,
     targetScoreGap: scoreGap,
