@@ -223,30 +223,39 @@ function MainApp() {
 
   const navigate = (id, params = {}) => {
     let target = id;
+    let nextParams = { ...params };
     if (id === 'vocab') target = 'vocabulary';
     if (id === 'study4-toeic' || id === 'study4') {
       target = 'ai-coach';
-      params = { tab: 'study4-toeic', ...params };
+      nextParams = { tab: 'study4-toeic', ...nextParams };
     }
     if (id === 'ielts' || id === 'ielts-roadmap') {
       target = 'ai-coach';
-      params = { tab: 'ielts-roadmap', ...params };
+      nextParams = { tab: 'ielts-roadmap', ...nextParams };
     }
     if (id === 'schedule' || id === 'coach') target = 'ai-coach';
     if (id === 'dailydictation' || id === 'dictation') {
       target = 'ai-coach';
-      params = { tab: 'dailydictation', ...params };
+      nextParams = { tab: 'dailydictation', ...nextParams };
     }
     if (id === 'videos' || id === 'shadowing' || id === 'video') target = 'video-hub';
 
+    // Auto-record origin if not already specified and transitioning between pages
+    if (!nextParams.fromNav && target !== activeNav) {
+      nextParams.fromNav = activeNav;
+      if (navParams?.tab) {
+        nextParams.fromTab = navParams.tab;
+      }
+    }
+
     setActiveNav(target);
-    setNavParams(params || {});
+    setNavParams(nextParams);
     setMobileMenu(false);
 
     try {
       localStorage.setItem('app_active_nav_v2', target);
-      localStorage.setItem('app_nav_params_v2', JSON.stringify(params || {}));
-      const newHash = buildHash(target, params);
+      localStorage.setItem('app_nav_params_v2', JSON.stringify(nextParams));
+      const newHash = buildHash(target, nextParams);
       if (window.location.hash !== newHash) {
         window.history.pushState(null, '', newHash);
       }
@@ -318,6 +327,8 @@ function MainApp() {
               initialLevel={navParams.level}
               initialTestId={navParams.testId}
               dateKey={navParams.dateKey}
+              fromNav={navParams.fromNav}
+              fromTab={navParams.fromTab}
               onNavigate={navigate}
               theme={theme}
             />
@@ -329,6 +340,8 @@ function MainApp() {
               initialCategory={navParams.category}
               initialMode={navParams.mode}
               dateKey={navParams.dateKey}
+              fromNav={navParams.fromNav}
+              fromTab={navParams.fromTab}
               onNavigate={navigate}
               theme={theme}
             />
@@ -337,6 +350,8 @@ function MainApp() {
             <GrammarPage
               initialLessonId={navParams.lessonId}
               dateKey={navParams.dateKey}
+              fromNav={navParams.fromNav}
+              fromTab={navParams.fromTab}
               onNavigate={navigate}
               theme={theme}
             />
@@ -345,6 +360,8 @@ function MainApp() {
             <VideoLearningHub
               initialVideoId={navParams.videoId}
               dateKey={navParams.dateKey}
+              fromNav={navParams.fromNav}
+              fromTab={navParams.fromTab}
               onNavigate={navigate}
               theme={theme}
             />
@@ -358,6 +375,8 @@ function MainApp() {
               initialPartFilter={navParams.partFilter}
               initialDay={navParams.day || navParams.dayNum}
               dateKey={navParams.dateKey}
+              fromNav={navParams.fromNav}
+              fromTab={navParams.fromTab}
               onNavigate={navigate}
               theme={theme}
             />
@@ -369,6 +388,8 @@ function MainApp() {
               initialDateKey={navParams.dateKey || navParams.date}
               initialDay={navParams.day}
               initialViewMode={navParams.viewMode}
+              fromNav={navParams.fromNav}
+              fromTab={navParams.fromTab}
               onNavigate={navigate}
               theme={theme}
             />

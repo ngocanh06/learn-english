@@ -21,8 +21,39 @@ function extractYouTubeId(url) {
   return match && match[2].length === 11 ? match[2] : '';
 }
 
-export default function VideoLearningHub({ initialVideoId, dateKey, onNavigate, theme = 'dark' }) {
+export default function VideoLearningHub({
+  initialVideoId,
+  dateKey,
+  fromNav,
+  fromTab,
+  onNavigate,
+  theme = 'dark',
+}) {
   const isLight = theme === 'light';
+
+  const handleBackToOrigin = () => {
+    if (fromNav) {
+      onNavigate(fromNav, { tab: fromTab, dateKey });
+    } else if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      onNavigate && onNavigate('ai-coach', { tab: 'my-plan' });
+    }
+  };
+
+  const backOriginLabel = fromTab === 'my-plan'
+    ? 'Quay lại Kế hoạch học'
+    : fromTab === 'ielts-roadmap'
+    ? 'Quay lại Lộ trình IELTS'
+    : fromTab === 'study4-toeic'
+    ? 'Quay lại Lộ trình TOEIC'
+    : fromTab === 'master-roadmap'
+    ? 'Quay lại Lộ trình nền tảng'
+    : fromTab === 'calendar-view' || dateKey
+    ? `Quay lại Lịch học ${dateKey ? `ngày ${dateKey}` : ''}`
+    : fromNav === 'dashboard'
+    ? 'Quay lại Trang chủ'
+    : 'Quay lại trang trước';
 
   // Persistence: Custom added videos
   const [customVideos, setCustomVideos] = useUserStorage('custom_video_lessons_v1', []);
@@ -127,6 +158,8 @@ export default function VideoLearningHub({ initialVideoId, dateKey, onNavigate, 
         video={playingVideo}
         onBack={() => setPlayingVideo(null)}
         dateKey={dateKey}
+        fromNav={fromNav}
+        fromTab={fromTab}
         onNavigate={onNavigate}
         theme={theme}
       />
@@ -135,8 +168,8 @@ export default function VideoLearningHub({ initialVideoId, dateKey, onNavigate, 
 
   return (
     <div className="flex flex-col gap-6 max-w-7xl mx-auto pb-20 font-sans relative">
-      {/* Return to Calendar Banner if opened from Calendar */}
-      {dateKey && onNavigate && (
+      {/* Return to Origin Banner if opened from a roadmap or calendar */}
+      {(fromNav || fromTab || dateKey) && onNavigate && (
         <div
           className={`p-3 px-4 rounded-2xl border flex items-center justify-between gap-3 text-xs animate-fadeIn ${
             isLight
@@ -147,20 +180,17 @@ export default function VideoLearningHub({ initialVideoId, dateKey, onNavigate, 
           <div className="flex items-center gap-2">
             <i className="fa-solid fa-calendar-check text-blue-500 text-sm shrink-0" />
             <span>
-              Đang mở bài luyện Shadowing Video theo lịch học ngày <strong>{dateKey}</strong>.
+              {dateKey
+                ? <>Đang mở bài luyện Shadowing Video theo lịch học ngày <strong>{dateKey}</strong>.</>
+                : <>Đang mở bài luyện Shadowing Video từ lộ trình học của bạn.</>}
             </span>
           </div>
           <button
-            onClick={() =>
-              onNavigate('ai-coach', {
-                dateKey,
-                tab: 'calendar-view',
-              })
-            }
+            onClick={handleBackToOrigin}
             className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black shrink-0 transition flex items-center gap-1.5 shadow-xs cursor-pointer"
           >
             <i className="fa-solid fa-arrow-left text-[11px]" />
-            <span>Quay lại Lịch học {dateKey}</span>
+            <span>{backOriginLabel}</span>
           </button>
         </div>
       )}

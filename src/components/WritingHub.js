@@ -272,10 +272,36 @@ export default function WritingHub({
   initialLessonId,
   initialCategory,
   dateKey,
+  fromNav,
+  fromTab,
   onNavigate,
 }) {
   const isLight = theme === 'light';
   const { currentUser, isAuthenticated, openLogin } = useAuth();
+
+  const handleBackToOrigin = () => {
+    if (fromNav) {
+      onNavigate(fromNav, { tab: fromTab, dateKey });
+    } else if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      onNavigate && onNavigate('ai-coach', { tab: 'my-plan' });
+    }
+  };
+
+  const backOriginLabel = fromTab === 'my-plan'
+    ? 'Quay lại Kế hoạch học'
+    : fromTab === 'ielts-roadmap'
+    ? 'Quay lại Lộ trình IELTS'
+    : fromTab === 'study4-toeic'
+    ? 'Quay lại Lộ trình TOEIC'
+    : fromTab === 'master-roadmap'
+    ? 'Quay lại Lộ trình nền tảng'
+    : fromTab === 'calendar-view' || dateKey
+    ? `Quay lại Lịch học ${dateKey ? `ngày ${dateKey}` : ''}`
+    : fromNav === 'dashboard'
+    ? 'Quay lại Trang chủ'
+    : 'Quay lại trang trước';
 
   // Persistence for IELTS Translation & Calendar Tasks
   const [completedIeltsTasks, setCompletedIeltsTasks] = useUserStorage('writing_practice_completed_v2', {});
@@ -758,8 +784,8 @@ export default function WritingHub({
         </div>
       </div>
 
-      {/* ─── RETURN TO CALENDAR BANNER (IF NAVIGATED FROM SCHEDULE) ─── */}
-      {dateKey && onNavigate && (
+      {/* ─── RETURN TO ORIGIN BANNER (IF NAVIGATED FROM SCHEDULE OR ROADMAP) ─── */}
+      {(fromNav || fromTab || dateKey) && onNavigate && (
         <div
           className={`p-3.5 px-4 rounded-2xl border flex items-center justify-between gap-3 text-xs animate-fadeIn ${
             isLight
@@ -770,20 +796,17 @@ export default function WritingHub({
           <div className="flex items-center gap-2">
             <i className="fa-solid fa-calendar-check text-blue-500 text-sm shrink-0" />
             <span>
-              Đang mở bài luyện dịch câu theo lịch học ngày <strong>{dateKey}</strong>.
+              {dateKey
+                ? <>Đang mở bài luyện dịch câu theo lịch học ngày <strong>{dateKey}</strong>.</>
+                : <>Đang mở bài luyện dịch câu từ lộ trình học của bạn.</>}
             </span>
           </div>
           <button
-            onClick={() =>
-              onNavigate('ai-coach', {
-                dateKey,
-                tab: 'calendar-view',
-              })
-            }
+            onClick={handleBackToOrigin}
             className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black shrink-0 transition flex items-center gap-1.5 shadow-xs cursor-pointer"
           >
             <i className="fa-solid fa-arrow-left text-[11px]" />
-            <span>Quay lại Lịch học {dateKey}</span>
+            <span>{backOriginLabel}</span>
           </button>
         </div>
       )}

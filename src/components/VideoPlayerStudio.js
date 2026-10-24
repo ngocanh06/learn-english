@@ -112,8 +112,40 @@ function analyzeSpeech(targetText, recognizedText, recordingDurationSec, targetD
   };
 }
 
-export default function VideoPlayerStudio({ video, onBack, theme = 'dark', dateKey, onNavigate }) {
+export default function VideoPlayerStudio({
+  video,
+  onBack,
+  theme = 'dark',
+  dateKey,
+  fromNav,
+  fromTab,
+  onNavigate,
+}) {
   const isLight = theme === 'light';
+
+  const handleBackToOrigin = () => {
+    if (fromNav) {
+      onNavigate(fromNav, { tab: fromTab, dateKey });
+    } else if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      onNavigate && onNavigate('ai-coach', { tab: 'my-plan' });
+    }
+  };
+
+  const backOriginLabel = fromTab === 'my-plan'
+    ? 'Quay lại Kế hoạch học'
+    : fromTab === 'ielts-roadmap'
+    ? 'Quay lại Lộ trình IELTS'
+    : fromTab === 'study4-toeic'
+    ? 'Quay lại Lộ trình TOEIC'
+    : fromTab === 'master-roadmap'
+    ? 'Quay lại Lộ trình nền tảng'
+    : fromTab === 'calendar-view' || dateKey
+    ? `Quay lại Lịch học ${dateKey ? `ngày ${dateKey}` : ''}`
+    : fromNav === 'dashboard'
+    ? 'Quay lại Trang chủ'
+    : 'Quay lại trang trước';
 
   // Persistence: Master Calendar Shadowing Task
   const [calendarCompletedTasks, setCalendarCompletedTasks] = useUserStorage('master_calendar_completed_tasks_v2', {});
@@ -650,22 +682,17 @@ export default function VideoPlayerStudio({ video, onBack, theme = 'dark', dateK
             <i className="fa-solid fa-arrow-left" /> Quay lại danh sách video
           </button>
 
-          {onNavigate && (
+          {onNavigate && (fromNav || fromTab || dateKey) && (
             <button
-              onClick={() =>
-                onNavigate('ai-coach', {
-                  dateKey: effectiveDateKey,
-                  tab: 'calendar-view',
-                })
-              }
+              onClick={handleBackToOrigin}
               className={`flex items-center gap-1.5 px-3.5 py-2 rounded-2xl text-xs font-bold border transition cursor-pointer shrink-0 ${
                 isLight
                   ? 'bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700 shadow-xs'
                   : 'bg-blue-950/50 hover:bg-blue-900/60 border-blue-800 text-blue-300'
               }`}
             >
-              <i className="fa-solid fa-calendar-days text-blue-500" />
-              <span>Quay lại Lịch học {effectiveDateKey ? `ngày ${effectiveDateKey}` : ''}</span>
+              <i className="fa-solid fa-arrow-left text-blue-500" />
+              <span>{backOriginLabel}</span>
             </button>
           )}
         </div>

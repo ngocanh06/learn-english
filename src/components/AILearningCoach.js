@@ -116,6 +116,12 @@ export default function AILearningCoach({
   const setActiveTab = useCallback((tab) => {
     setActiveTabState(tab);
     setSavedActiveTab(tab);
+    try {
+      const newHash = `#/ai-coach?tab=${tab}`;
+      if (window.location.hash !== newHash) {
+        window.history.pushState(null, '', newHash);
+      }
+    } catch (e) {}
   }, [setSavedActiveTab]);
 
   // Study4 Dual Track View: 'tests' (Làm & chữa đề) | 'exams-grid' (Bảng 10 Đề) | 'vocab' (Học từ vựng) | 'all' (Tất cả)
@@ -123,9 +129,10 @@ export default function AILearningCoach({
 
   useEffect(() => {
     if (initialTab && initialTab !== activeTab) {
-      setActiveTab(initialTab);
+      setActiveTabState(initialTab);
+      setSavedActiveTab(initialTab);
     }
-  }, [initialTab, activeTab, setActiveTab]);
+  }, [initialTab]);
 
   // Next Grammar Lesson
   const nextGrammar = useMemo(() => {
@@ -569,7 +576,7 @@ export default function AILearningCoach({
               onUpdateProfile={(updated) => setLearningProfile(updated)}
               onNavigate={(nav, params) => {
                 if (['vocab', 'vocabulary', 'reading', 'writing', 'video-hub', 'grammar'].includes(nav)) {
-                  onNavigate && onNavigate(nav, params);
+                  onNavigate && onNavigate(nav, { fromNav: 'ai-coach', fromTab: 'my-plan', ...params });
                 } else {
                   if (nav === 'ielts-roadmap' && params?.subTab) {
                     setIeltsInitialSubTab(params.subTab);
@@ -601,7 +608,7 @@ export default function AILearningCoach({
               initialViewMode={initialViewMode}
               onNavigateTab={(t, params) => {
                 if (['vocab', 'vocabulary', 'reading', 'writing', 'video-hub', 'grammar'].includes(t)) {
-                  onNavigate && onNavigate(t, params);
+                  onNavigate && onNavigate(t, { fromNav: 'ai-coach', fromTab: 'calendar-view', ...params });
                 } else {
                   setActiveTab(t);
                 }
@@ -614,7 +621,11 @@ export default function AILearningCoach({
           {/* ─── TAB: LỘ TRÌNH IELTS ACADEMIC 7.0+ (MỤC TIÊU DU HỌC) ────────── */}
           {/* ═════════════════════════════════════════════════════════════════ */}
           {activeTab === 'ielts-roadmap' && (
-            <IELTSRoadmapHub onNavigate={onNavigate} theme={theme} initialSubTab={ieltsInitialSubTab} />
+            <IELTSRoadmapHub
+              onNavigate={(nav, params) => onNavigate && onNavigate(nav, { fromNav: 'ai-coach', fromTab: 'ielts-roadmap', ...params })}
+              theme={theme}
+              initialSubTab={ieltsInitialSubTab}
+            />
           )}
 
           {/* ═════════════════════════════════════════════════════════════════ */}
@@ -622,7 +633,7 @@ export default function AILearningCoach({
           {/* ═════════════════════════════════════════════════════════════════ */}
           {activeTab === 'master-roadmap' && (
             <UnifiedMasterRoadmapHub
-              onNavigate={onNavigate}
+              onNavigate={(nav, params) => onNavigate && onNavigate(nav, { fromNav: 'ai-coach', fromTab: 'master-roadmap', ...params })}
               onOpenWriting={() => setActiveTab('writing-studio')}
               theme={theme}
             />
