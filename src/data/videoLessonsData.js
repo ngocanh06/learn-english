@@ -21495,13 +21495,13 @@ export const VIDEO_LESSONS_DATABASE = [
 ],
   },
 
-  // ─── VID-A2-05: TED-Ed - How do our bodies build muscle? - Jeffrey Siegel (A2) ───
+  // ─── VID-A2-05: TED-Ed - What makes muscles grow? - Jeffrey Siegel (A2) ───
   {
     id: 'vid-a2-05',
-    youtubeId: '_0472_sKjbs',
+    youtubeId: '2tM1LFFxeKg',
     channelId: 'ted-ed',
     channelName: 'TED-Ed',
-    title: "How do our bodies build muscle? - Jeffrey Siegel",
+    title: "What makes muscles grow? - Jeffrey Siegel",
     category: 'science',
     level: 'A2',
     duration: '4:20',
@@ -21547,7 +21547,7 @@ export const VIDEO_LESSONS_DATABASE = [
   // ─── VID-A2-06: TED-Ed - Why is yawning contagious? - Claudia Aguirre (A2) ───
   {
     id: 'vid-a2-06',
-    youtubeId: '9sT08yR3U14',
+    youtubeId: '4NpG4F9yq00',
     channelId: 'ted-ed',
     channelName: 'TED-Ed',
     title: "Why is yawning contagious? - Claudia Aguirre",
@@ -21588,7 +21588,7 @@ export const VIDEO_LESSONS_DATABASE = [
   // ─── VID-A2-07: TED-Ed - How does caffeine keep us awake? - Hanan Qasim (A2) ───
   {
     id: 'vid-a2-07',
-    youtubeId: 'foLf5Bi9qPg',
+    youtubeId: 'foLf5Bi9qXs',
     channelId: 'ted-ed',
     channelName: 'TED-Ed',
     title: "How does caffeine keep us awake? - Hanan Qasim",
@@ -21634,13 +21634,13 @@ export const VIDEO_LESSONS_DATABASE = [
 ],
   },
 
-  // ─── VID-A2-08: TED-Ed - Why do we sweat? - John Sugden (A2) ───
+  // ─── VID-A2-08: TED-Ed - Why do we sweat? - John Murnan (A2) ───
   {
     id: 'vid-a2-08',
-    youtubeId: 'a9P994Uj92k',
+    youtubeId: 'fctH_1NuqCQ',
     channelId: 'ted-ed',
     channelName: 'TED-Ed',
-    title: "Why do we sweat? - John Sugden",
+    title: "Why do we sweat? - John Murnan",
     category: 'science',
     level: 'A2',
     duration: '4:10',
@@ -21932,7 +21932,7 @@ export const VIDEO_LESSONS_DATABASE = [
   // ─── VID-B2-08: TED-Ed - The science of stage fright and how to overcome it - Mikael Cho (B2) ───
   {
     id: 'vid-b2-08',
-    youtubeId: 'WppvXEcO_gQ',
+    youtubeId: 'K93fMnFKwfI',
     channelId: 'ted-ed',
     channelName: 'TED-Ed',
     title: "The science of stage fright and how to overcome it - Mikael Cho",
@@ -22052,106 +22052,106 @@ export const VIDEO_LESSONS_DATABASE = [
 ],
   },
 
-  // ─── VID-A2-09: BBC Learning English - Can AI read your mind? - 6 Minute English (A2) ───
+  // ─── VID-A2-09: BBC Learning English - Can AI have a mind of its own? - 6 Minute English (A2) ───
   {
     id: 'vid-a2-09',
-    youtubeId: 'w_10sP73W94',
+    youtubeId: 'tHZRXN_pVi8',
     channelId: 'bbc',
     channelName: 'BBC Learning English',
-    title: "Can AI read your mind? - 6 Minute English",
+    title: "Can AI have a mind of its own? - 6 Minute English",
     category: 'language',
     level: 'A2',
     duration: '6:12',
     source: 'youtube',
     thumbnail: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80',
-    description: "Chương trình 6 Minute English từ BBC: Công nghệ quét não bộ và trí tuệ nhân tạo có thể giải mã suy nghĩ của con người không?",
+    description: "Chương trình 6 Minute English từ BBC: Trí tuệ nhân tạo liệu có thể có ý thức và cảm xúc riêng như con người không?",
     subtitles: [
       {
             id: 1,
-            startTime: 10.5,
-            endTime: 17.2,
-            text: "Hello, and welcome to 6 Minute English. I'm Neil, and joining me today is Beth.",
-            vietnamese: "Xin chào và chào mừng bạn đến với 6 Minute English. Tôi là Neil, và đồng hành cùng tôi hôm nay là Beth.",
-            ipa: "/həˈloʊ ænd ˈwɛlkəm tuː sɪks ˈmɪnɪt ˈɪŋɡlɪʃ aɪm niːl ænd ˈdʒɔɪnɪŋ miː təˈdeɪ ɪz bɛθ/"
+            startTime: 8.5,
+            endTime: 14.5,
+            text: "Hello. This is 6 Minute English from BBC Learning English. I’m Sam.",
+            vietnamese: "Xin chào. Đây là chương trình 6 Minute English từ BBC Learning English. Tôi là Sam.",
+            ipa: "/həˈloʊ ðɪs ɪz sɪks ˈmɪnɪt ˈɪŋɡlɪʃ frɒm biː biː siː ˈlɜːrnɪŋ ˈɪŋɡlɪʃ aɪm sæm/"
       },
       {
             id: 2,
-            startTime: 17.8,
-            endTime: 24.5,
-            text: "Have you ever wished you could know what someone else was thinking without them saying a word?",
-            vietnamese: "Bạn đã bao giờ ước mình có thể biết người khác đang nghĩ gì mà không cần họ nói một lời nào chưa?",
-            ipa: "/hæv juː ˈɛvər wɪʃt juː kʊd noʊ wɒt ˈsʌmwʌn ɛls wɒz ˈθɪŋkɪŋ wɪˈðaʊt ðɛm ˈseɪɪŋ ə wɜːrd/"
+            startTime: 14.6,
+            endTime: 17.5,
+            text: "And I’m Neil. In this programme, we'll be discussing whether artificial intelligence is capable of consciousness.",
+            vietnamese: "Và tôi là Neil. Trong chương trình này, chúng ta sẽ thảo luận xem liệu trí tuệ nhân tạo có khả năng có ý thức hay không.",
+            ipa: "/ænd aɪm niːl ɪn ðɪs ˈproʊɡræm wiːl biː dɪˈskʌsɪŋ ˈwɛðər ˌɑːrtɪˈfɪʃl ɪnˈtɛlɪdʒəns ɪz ˈkeɪpəbl ɒv ˈkɒnʃəsnəs/"
       },
       {
             id: 3,
-            startTime: 25,
-            endTime: 32.5,
-            text: "Recent breakthroughs in neurotechnology and artificial intelligence are bringing that science fiction closer to reality.",
-            vietnamese: "Những đột phá gần đây trong công nghệ thần kinh và trí tuệ nhân tạo đang đưa điều khoa học viễn tưởng đó lại gần thực tế hơn.",
-            ipa: "/ˈriːsnt ˈbreɪkθruːz ɪn ˌnjʊəroʊtɛkˈnɒlədʒi ænd ˌɑːrtɪˈfɪʃl ɪnˈtɛlɪdʒəns ɑːr ˈbrɪŋɪŋ ðæt ˈsaɪəns ˈfɪkʃn ˈkloʊsər tuː riˈæləti/"
+            startTime: 18.0,
+            endTime: 26.5,
+            text: "We'll hear from an expert who thinks AI is not as intelligent as we think, and learn some new vocabulary.",
+            vietnamese: "Chúng ta sẽ lắng nghe một chuyên gia nhận định AI không thông minh như ta nghĩ, và cùng học từ vựng mới.",
+            ipa: "/wiːl hɪər frɒm æn ˈɛkspɜːrt huː θɪŋks eɪ-aɪ ɪz nɒt æz ɪnˈtɛlɪdʒənt æz wiː θɪŋk ænd lɜːrn sʌm njuː vəʊˈkæbjʊləri/"
       }
-],
+    ],
   },
 
-  // ─── VID-B1-11: BBC Learning English - The power of habits - 6 Minute English (B1) ───
+  // ─── VID-B1-11: BBC Learning English - Why are we all so stressed? - 6 Minute English (B1) ───
   {
     id: 'vid-b1-11',
-    youtubeId: 'j73XqQ3Jt0M',
+    youtubeId: 'QdE63sYqwd8',
     channelId: 'bbc',
     channelName: 'BBC Learning English',
-    title: "The power of habits - 6 Minute English",
+    title: "Why are we all so stressed? - 6 Minute English",
     category: 'life',
     level: 'B1',
     duration: '6:15',
     source: 'youtube',
     thumbnail: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=600&auto=format&fit=crop&q=80',
-    description: "Tại sao việc thay đổi thói quen lại khó khăn? Khám phá khoa học đằng sau chu kỳ thói quen: Tín hiệu, Hành động và Phần thưởng.",
+    description: "Chương trình 6 Minute English từ BBC: Những nguyên nhân gây căng thẳng trong đời sống hiện đại và cách chuyển hóa nó.",
     subtitles: [
       {
             id: 1,
-            startTime: 12,
+            startTime: 12.0,
             endTime: 19.5,
-            text: "From brushing our teeth to scrolling on our phones, habits make up almost forty percent of our daily actions.",
-            vietnamese: "Từ việc đánh răng đến việc lướt điện thoại, thói quen chiếm gần 40% các hành động hàng ngày của chúng ta.",
-            ipa: "/frɒm ˈbrʌʃɪŋ ˈaʊər tiːθ tuː ˈskroʊlɪŋ ɒn ˈaʊər foʊnz ˈhæbɪts meɪk ʌp ˈɔːlmoʊst ˈfɔːrti pərˈsɛnt ɒv ˈaʊər ˈdeɪli ˈækʃənz/"
+            text: "Modern life is full of stress, from tight work deadlines to constant digital notifications.",
+            vietnamese: "Cuộc sống hiện đại đầy rẫy căng thẳng, từ thời hạn công việc gấp gáp đến những thông báo điện thoại liên tục.",
+            ipa: "/ˈmɒdərn laɪf ɪz fʊl ɒv strɛs frɒm taɪt wɜːrk ˈdɛdlaɪnz tuː ˈkɒnstənt ˈdɪdʒɪtl ˌnoʊtɪfɪˈkeɪʃənz/"
       },
       {
             id: 2,
-            startTime: 20,
-            endTime: 28.2,
-            text: "Neurologists explain that our brain creates automatic routines to save mental energy for complex problem-solving.",
-            vietnamese: "Các nhà thần kinh học giải thích rằng bộ não tạo ra các chu trình tự động để tiết kiệm năng lượng cho việc giải quyết vấn đề phức tạp.",
-            ipa: "/njʊˈrɒlədʒɪsts ɪkˈspleɪn ðæt ˈaʊər breɪn kriˈeɪts ˌɔːtəˈmætɪk ruːˈtiːnz tuː seɪv ˈmɛntl ˈɛnərdʒi fɔːr ˈkɒmplɛks ˈprɒbləm-ˈsɒlvɪŋ/"
+            startTime: 20.0,
+            endTime: 27.5,
+            text: "Psychologists explain that chronic stress can lead to burnout and mental exhaustion.",
+            vietnamese: "Các nhà tâm lý học giải thích rằng căng thẳng kéo dài có thể dẫn đến kiệt sức và mệt mỏi tinh thần.",
+            ipa: "/saɪˈkɒlədʒɪsts ɪkˈspleɪn ðæt ˈkrɒnɪk strɛs kæn liːd tuː ˈbɜːrnaʊt ænd ˈmɛntl ɪɡˈzɔːstʃən/"
       },
       {
             id: 3,
-            startTime: 28.8,
-            endTime: 36.5,
-            text: "By replacing the routine while keeping the cue and reward intact, you can effectively reshape any habit.",
-            vietnamese: "Bằng cách thay thế hành động trong khi vẫn giữ nguyên tín hiệu và phần thưởng, bạn có thể định hình lại bất kỳ thói quen nào.",
-            ipa: "/baɪ rɪˈpleɪsɪŋ ðə ruːˈtiːn waɪl ˈkiːpɪŋ ðə kjuː ænd rɪˈwɔːrd ɪnˈtækt juː kæn ɪˈfɛktɪvli ˌriːˈʃeɪp ˈɛni ˈhæbɪt/"
+            startTime: 28.0,
+            endTime: 35.5,
+            text: "Taking a pause, breathing deeply, and accepting imperfections can help us regain our calm.",
+            vietnamese: "Tạm dừng lại, hít thở sâu và chấp nhận những điều chưa hoàn hảo có thể giúp chúng ta lấy lại sự bình tĩnh.",
+            ipa: "/ˈteɪkɪŋ ə pɔːz ˈbriːðɪŋ ˈdiːpli ænd əkˈsɛptɪŋ ˌɪmpərˈfɛkʃənz kæn hɛlp ʌs rɪˈɡeɪn ˈaʊər kɑːm/"
       }
-],
+    ],
   },
 
-  // ─── VID-B1-12: BBC Learning English - Why do we sleep? - 6 Minute English (B1) ───
+  // ─── VID-B1-12: BBC Learning English - What should you eat for a better night's sleep? - 6 Minute English (B1) ───
   {
     id: 'vid-b1-12',
-    youtubeId: 'd_2H08k4l60',
+    youtubeId: 'pjFlVc-EDzc',
     channelId: 'bbc',
     channelName: 'BBC Learning English',
-    title: "Why do we sleep? - 6 Minute English",
+    title: "What should you eat for a better night's sleep? - 6 Minute English",
     category: 'science',
     level: 'B1',
     duration: '6:18',
     source: 'youtube',
     thumbnail: 'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=600&auto=format&fit=crop&q=80',
-    description: "Chương trình luyện nghe BBC: Các nhà khoa học giải thích tầm quan trọng sống còn của giấc ngủ đối với hệ miễn dịch và cảm xúc.",
+    description: "Chương trình 6 Minute English từ BBC: Dinh dưỡng ảnh hưởng như thế nào đến chất lượng giấc ngủ sâu của bạn.",
     subtitles: [
       {
             id: 1,
             startTime: 11.5,
-            endTime: 18,
+            endTime: 18.0,
             text: "We spend about a third of our lives fast asleep, but why is sleep so essential for our survival?",
             vietnamese: "Chúng ta dành khoảng một phần ba cuộc đời để ngủ say, nhưng tại sao giấc ngủ lại thiết yếu đến vậy cho sự sinh tồn của chúng ta?",
             ipa: "/wiː spɛnd əˈbaʊt ə θɜːrd ɒv ˈaʊər laɪvz fæst əˈsliːp bʌt waɪ ɪz sliːp soʊ ɪˈsɛnʃl fɔːr ˈaʊər sərˈvaɪvl/"
@@ -22159,19 +22159,19 @@ export const VIDEO_LESSONS_DATABASE = [
       {
             id: 2,
             startTime: 18.5,
-            endTime: 26,
-            text: "During deep sleep, the brain activates the glymphatic system, flushing out toxins that accumulate throughout the day.",
-            vietnamese: "Trong giấc ngủ sâu, não kích hoạt hệ thống glymphatic để đào thải các độc tố tích tụ trong suốt cả ngày.",
-            ipa: "/ˈdjʊərɪŋ diːp sliːp ðə breɪn ˈæktɪveɪts ðə ɡlɪmˈfætɪk ˈsɪstəm ˈflʌʃɪŋ aʊt ˈtɒksɪnz ðæt əˈkjuːmjəleɪt θruːˈaʊt ðə deɪ/"
+            endTime: 26.0,
+            text: "Research shows that a balanced diet rich in nutrients and fibre directly supports deeper, more restful sleep.",
+            vietnamese: "Nghiên cứu chỉ ra rằng chế độ ăn cân bằng giàu dinh dưỡng và chất xơ hỗ trợ trực tiếp cho giấc ngủ sâu hơn.",
+            ipa: "/rɪˈsɜːrtʃ ʃoʊz ðæt ə ˈbælənst ˈdaɪət rɪtʃ ɪn ˈnjuːtriənts ænd ˈfaɪbər dɪˈrɛktli səˈpɔːrts ˈdiːpər mɔːr ˈrɛstfl sliːp/"
       },
       {
             id: 3,
             startTime: 26.5,
             endTime: 34.2,
-            text: "Chronic lack of sleep impairs concentration, weakens the immune system, and negatively impacts emotional resilience.",
-            vietnamese: "Thiếu ngủ mãn tính làm giảm khả năng tập trung, suy yếu hệ thống miễn dịch và ảnh hưởng tiêu cực đến sức bền cảm xúc.",
-            ipa: "/ˈkrɒnɪk læk ɒv sliːp ɪmˈpɛərz ˌkɒnsnˈtreɪʃn ˈwiːkənz ðə ɪˈmjuːn ˈsɪstəm ænd ˈnɛɡətɪvli ɪmˈpækts ɪˈmoʊʃənl rɪˈzɪliəns/"
+            text: "Avoiding heavy saturated fats before bedtime gives your brain and digestive system time to recharge.",
+            vietnamese: "Tránh nạp nhiều chất béo bão hòa trước khi ngủ giúp não bộ và hệ tiêu hóa có thời gian tái tạo năng lượng.",
+            ipa: "/əˈvɔɪdɪŋ ˈhɛvi ˈsætʃəreɪtɪd fæts bɪˈfɔːr ˈbɛdtaɪm ɡɪvz jɔːr breɪn ænd daɪˈdʒɛstɪv ˈsɪstəm taɪm tuː ˌriːˈtʃɑːrdʒ/"
       }
-],
+    ],
   },
 ];
